@@ -5,6 +5,7 @@ AI Context Schema is designed to work across multiple AI coding assistant platfo
 ## Supported Platforms
 
 ### Claude Code
+
 **Status**: ✅ Full Support  
 **Configuration Location**: `.claude/`  
 **Schema Version**: v2.1.0+
@@ -12,6 +13,7 @@ AI Context Schema is designed to work across multiple AI coding assistant platfo
 Claude Code integrates AI Context Schema through memory files and slash commands:
 
 #### Memory Files
+
 ```yaml
 platforms:
   claude-code:
@@ -22,10 +24,12 @@ platforms:
 ```
 
 Generated files:
+
 - `.claude/CLAUDE.md` - Combined memory file with all schemas
 - `.claude/CLAUDE_COMMANDS.md` - Slash command definitions
 
 #### Slash Commands
+
 ```yaml
 platforms:
   claude-code:
@@ -35,6 +39,7 @@ platforms:
 ```
 
 Commands are generated as:
+
 ```markdown
 ## /schema-name
 Brief description of the schema
@@ -43,6 +48,7 @@ Full schema content here...
 ```
 
 #### MCP Integration
+
 ```yaml
 platforms:
   claude-code:
@@ -52,6 +58,7 @@ platforms:
 ```
 
 ### Cursor
+
 **Status**: ✅ Full Support  
 **Configuration Location**: `.cursor/rules/`  
 **Schema Version**: v2.1.0+
@@ -59,6 +66,7 @@ platforms:
 Cursor integrates through MDC (Markdown + Component) rule files:
 
 #### Auto-Attachment
+
 ```yaml
 platforms:
   cursor:
@@ -69,6 +77,7 @@ platforms:
 ```
 
 #### File Pattern Matching
+
 ```yaml
 platforms:
   cursor:
@@ -82,9 +91,11 @@ platforms:
 ```
 
 Generated files:
+
 - `.cursor/rules/{schema-id}.mdc` - Individual rule files with YAML frontmatter
 
 #### Example Generated File
+
 ```yaml
 ---
 title: "React Component Patterns"
@@ -100,6 +111,7 @@ priority: "high"
 ```
 
 ### Windsurf
+
 **Status**: ✅ Full Support  
 **Configuration Location**: `.windsurf/rules/`  
 **Schema Version**: v2.1.0+
@@ -107,6 +119,7 @@ priority: "high"
 Windsurf uses XML-formatted memory files with character limits:
 
 #### Configuration Options
+
 ```yaml
 platforms:
   windsurf:
@@ -118,16 +131,20 @@ platforms:
 ```
 
 #### Character Limit Handling
+
 Windsurf has a 6K character limit per memory file. The adapter:
+
 1. Estimates character usage based on `characterLimit` field
 2. Truncates content intelligently (preserves key sections)
 3. Prioritizes schemas with higher priority values
 4. Provides warnings when content is truncated
 
 Generated files:
+
 - `.windsurf/rules/{schema-id}.xml` - XML memory files
 
 #### Example Generated File
+
 ```xml
 <react-context priority="7">
   <purpose>React component development patterns</purpose>
@@ -138,6 +155,7 @@ Generated files:
 ```
 
 ### GitHub Copilot
+
 **Status**: ✅ Full Support  
 **Configuration Location**: `.github/copilot/`  
 **Schema Version**: v2.1.0+
@@ -145,6 +163,7 @@ Generated files:
 GitHub Copilot integrates through JSON configuration files:
 
 #### Configuration Options
+
 ```yaml
 platforms:
   github-copilot:
@@ -155,17 +174,21 @@ platforms:
 ```
 
 #### Review Integration
+
 GitHub Copilot can use schemas for:
+
 - Code suggestion prioritization
 - Pull request review automation
 - Security pattern enforcement
 - Style guide compliance
 
 Generated files:
+
 - `.github/copilot/guidelines.json` - Combined guidelines
 - `.github/copilot/patterns/{schema-id}.json` - Individual pattern files
 
 #### Example Generated File
+
 ```json
 {
   "name": "React Component Patterns",
@@ -185,6 +208,7 @@ Generated files:
 ## Planned Platform Support
 
 ### VS Code
+
 **Status**: 🚧 Planned  
 **Expected**: Q2 2024
 
@@ -203,6 +227,7 @@ platforms:
 ```
 
 ### IntelliJ IDEA
+
 **Status**: 🚧 Planned  
 **Expected**: Q3 2024
 
@@ -238,24 +263,28 @@ platforms:
 ### Platform-Specific Optimizations
 
 #### Claude Code Optimizations
+
 - **Memory Hierarchy**: Organizes schemas by priority and scope
 - **Command Generation**: Creates contextual slash commands
 - **Tool Integration**: Supports MCP server integration
 - **Context Injection**: Seamless context switching
 
 #### Cursor Optimizations
+
 - **File Pattern Matching**: Intelligent auto-attachment based on file types
 - **Agent Integration**: Works with Cursor's agent system
 - **Real-time Activation**: Immediate schema application when files are opened
 - **IDE Integration**: Deep integration with VS Code base
 
 #### Windsurf Optimizations
+
 - **Content Compression**: Intelligent truncation for character limits
 - **XML Formatting**: Structured XML for optimal parsing
 - **Workspace Awareness**: Project-level context understanding
 - **Memory Management**: Efficient memory usage optimization
 
 #### GitHub Copilot Optimizations
+
 - **Review Integration**: Automated code review based on schemas
 - **Repository Scope**: Organization and repository-level configuration
 - **Security Focus**: Enhanced security pattern enforcement
@@ -370,6 +399,7 @@ describe('MyPlatformAdapter', () => {
 ## Migration from Platform-Specific Formats
 
 ### From Cursor .mdc Files
+
 ```bash
 # Using VDK CLI (reference implementation)
 vdk migrate cursor --input .cursor/rules --output schemas/
@@ -379,6 +409,7 @@ vdk migrate cursor --input .cursor/rules --output schemas/
 ```
 
 ### From Custom JSON Configurations
+
 ```bash
 # Custom migration script
 node scripts/migrate-from-json.js custom-config.json schemas/
@@ -397,24 +428,28 @@ node scripts/migrate-from-json.js custom-config.json schemas/
 ### Common Issues
 
 #### Schema Not Activating
+
 1. Check platform compatibility flag
 2. Verify file patterns (for auto-activation platforms)
 3. Validate schema syntax
 4. Check platform-specific requirements
 
 #### Content Truncation (Windsurf)
+
 1. Reduce schema content length
 2. Increase priority to avoid truncation
 3. Split complex schemas into smaller ones
 4. Use content optimization techniques
 
 #### Command Not Working (Claude Code)
+
 1. Verify `command: true` in platform configuration
 2. Check namespace settings
 3. Restart Claude Code to reload commands
 4. Validate command syntax in generated files
 
 #### Performance Issues
+
 1. Reduce number of active schemas
 2. Optimize schema content length
 3. Use appropriate priority settings
@@ -444,18 +479,21 @@ We welcome contributions for new platform adapters! See [CONTRIBUTING.md](../CON
 ## Platform Roadmap
 
 ### Short-term (Q1-Q2 2024)
+
 - VS Code extension
 - IntelliJ IDEA plugin
 - Improved Windsurf character limit handling
 - Enhanced GitHub Copilot review integration
 
 ### Medium-term (Q3-Q4 2024)
+
 - Vim/Neovim LSP integration
 - Sublime Text plugin
 - Web-based editor support
 - Mobile development platform support
 
 ### Long-term (2025+)
+
 - Custom platform adapter SDK
 - Visual schema builder integration
 - Real-time collaborative editing

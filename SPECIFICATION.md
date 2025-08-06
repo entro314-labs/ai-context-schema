@@ -30,6 +30,7 @@ AI coding assistants use platform-specific configuration formats, creating fragm
 ### 2.1 File Format
 
 Context schemas MUST be valid YAML documents with:
+
 - YAML frontmatter containing schema metadata
 - Markdown content containing AI instructions
 
@@ -102,11 +103,13 @@ platforms:
 ### 3.2 Platform Compatibility
 
 Each platform object MUST include:
+
 - `compatible`: Boolean indicating if schema works with this platform
 
 ### 3.3 Platform-Specific Fields
 
 #### Claude Code Platform
+
 - `memory`: Include in memory files
 - `command`: Enable as slash command
 - `namespace`: Command namespace (project/user)
@@ -114,16 +117,19 @@ Each platform object MUST include:
 - `mcpIntegration`: MCP server integration
 
 #### Cursor Platform  
+
 - `activation`: How schema is activated (auto-attached/agent-requested/manual/always)
 - `globs`: File patterns for auto-attachment
 - `priority`: Blueprint priority (high/medium/low)
 
 #### Windsurf Platform
+
 - `mode`: Application mode (global/workspace)
 - `xmlTag`: XML tag for formatting
 - `characterLimit`: Estimated character usage
 
 #### GitHub Copilot Platform
+
 - `priority`: Priority for guideline selection (1-10)
 - `reviewType`: Review focus (security/performance/code-quality/style)
 
@@ -150,6 +156,7 @@ supersedes: ["legacy-react-patterns"]
 ### 4.3 Resolution Rules
 
 Platform adapters SHOULD:
+
 - Include all required dependencies
 - Warn about missing suggested dependencies
 - Detect and resolve conflicts
@@ -160,6 +167,7 @@ Platform adapters SHOULD:
 ### 5.1 Markdown Content
 
 The content section (after YAML frontmatter) contains:
+
 - Context description and purpose
 - Behavioral instructions for AI assistants
 - Code patterns and examples
@@ -198,6 +206,7 @@ Context schemas MUST validate against the JSON Schema definition in `schemas/v2.
 ### 6.2 Compatibility Validation
 
 Platform adapters SHOULD validate:
+
 - Platform compatibility flags
 - Required field presence for compatible platforms
 - Relationship resolution
@@ -206,6 +215,7 @@ Platform adapters SHOULD validate:
 ### 6.3 Content Validation
 
 Content SHOULD be validated for:
+
 - Markdown syntax correctness
 - Section structure consistency
 - Code example syntax
@@ -216,6 +226,7 @@ Content SHOULD be validated for:
 ### 7.1 Adapter Requirements
 
 Platform adapters MUST:
+
 - Preserve behavioral intent across format translation
 - Handle platform-specific limitations gracefully
 - Support incremental updates
@@ -224,6 +235,7 @@ Platform adapters MUST:
 ### 7.2 Content Transformation
 
 Adapters MAY transform content to fit platform requirements:
+
 - Character limit truncation (with priority preservation)
 - Format conversion (Markdown to XML, JSON, etc.)
 - Command generation for platforms supporting it
@@ -232,6 +244,7 @@ Adapters MAY transform content to fit platform requirements:
 ### 7.3 Fallback Handling
 
 Adapters SHOULD provide fallbacks for:
+
 - Unsupported platform features
 - Content exceeding platform limits
 - Missing dependencies
@@ -242,6 +255,7 @@ Adapters SHOULD provide fallbacks for:
 ### 8.1 Schema Versioning
 
 The specification uses semantic versioning:
+
 - **Major**: Breaking changes to schema structure
 - **Minor**: Backward-compatible additions
 - **Patch**: Bug fixes and clarifications
@@ -249,6 +263,7 @@ The specification uses semantic versioning:
 ### 8.2 Context Schema Versioning
 
 Individual context schemas SHOULD use semantic versioning:
+
 - **Major**: Breaking behavioral changes
 - **Minor**: Feature additions, new platform support
 - **Patch**: Bug fixes, content improvements
@@ -256,6 +271,7 @@ Individual context schemas SHOULD use semantic versioning:
 ### 8.3 Compatibility
 
 Platform adapters SHOULD support:
+
 - Multiple specification versions
 - Schema migration between versions
 - Compatibility warnings for deprecated features
@@ -265,6 +281,7 @@ Platform adapters SHOULD support:
 ### 9.1 Content Safety
 
 Context schemas SHOULD NOT contain:
+
 - Executable code that could be harmful
 - Sensitive information (API keys, passwords)
 - Malicious instructions for AI behavior
@@ -273,6 +290,7 @@ Context schemas SHOULD NOT contain:
 ### 9.2 Validation Security
 
 Schema validation SHOULD:
+
 - Sanitize user input
 - Prevent injection attacks through schema content
 - Validate external references and links
@@ -283,6 +301,7 @@ Schema validation SHOULD:
 ### 10.1 Parser Requirements
 
 Schema parsers MUST:
+
 - Support YAML frontmatter parsing
 - Handle Markdown content preservation
 - Validate against JSON Schema
@@ -291,6 +310,7 @@ Schema parsers MUST:
 ### 10.2 Platform Adapter Guidelines
 
 Adapters SHOULD:
+
 - Be idempotent (same input produces same output)
 - Support batch processing
 - Provide progress reporting for large schema sets
@@ -299,6 +319,7 @@ Adapters SHOULD:
 ### 10.3 Tool Integration
 
 Development tools SHOULD:
+
 - Support schema autocompletion
 - Provide real-time validation
 - Offer migration assistance

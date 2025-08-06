@@ -7,16 +7,19 @@ VDK (Vibe Development Kit) serves as the reference implementation of the AI Cont
 VDK implements AI Context Schema through three integrated components:
 
 ### 1. VDK CLI - Local Analysis Engine
+
 **Repository**: [entro314-labs/vdk-cli](https://github.com/entro314-labs/vdk-cli)  
 **Package**: `@vibe-dev-kit/cli`
 
 The CLI provides:
+
 - **Project Analysis**: Automatic detection of frameworks, languages, and patterns
 - **Schema Resolution**: Fetches relevant context schemas based on project analysis
 - **Platform Deployment**: Generates platform-specific configurations
 - **Validation**: Schema validation and compatibility checking
 
 #### Key Features
+
 ```bash
 # Analyze project and deploy context schemas
 vdk init --interactive
@@ -32,9 +35,11 @@ vdk list --category technology
 ```
 
 ### 2. VDK Blueprints Repository - Context Schema Library
+
 **Repository**: [entro314-labs/VDK-Blueprints](https://github.com/entro314-labs/VDK-Blueprints)
 
 Contains 109+ context schemas organized by:
+
 - **Core (4)**: Fundamental AI behaviors
 - **Languages (6)**: Programming language patterns
 - **Technologies (26)**: Framework-specific guidance
@@ -46,10 +51,12 @@ Contains 109+ context schemas organized by:
 All schemas conform to AI Context Schema v2.1.0 specification.
 
 ### 3. VDK Hub - Web Management Platform
+
 **URL**: [vdk.tools](https://vdk.tools)  
 **Repository**: [entro314-labs/vdk-hub](https://github.com/entro314-labs/vdk-hub)
 
 Web platform providing:
+
 - **Schema Catalog**: Browse and search 109+ context schemas
 - **Generator Wizard**: 7-step custom package creation
 - **Collections**: Personal and team schema libraries
@@ -60,6 +67,7 @@ Web platform providing:
 VDK demonstrates complete platform adapter implementations:
 
 ### Claude Code Adapter
+
 ```typescript
 export class ClaudeCodeAdapter implements PlatformAdapter {
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
@@ -80,6 +88,7 @@ export class ClaudeCodeAdapter implements PlatformAdapter {
 ```
 
 ### Cursor Adapter
+
 ```typescript
 export class CursorAdapter implements PlatformAdapter {
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
@@ -102,6 +111,7 @@ export class CursorAdapter implements PlatformAdapter {
 VDK implements the complete schema processing pipeline:
 
 ### 1. Project Analysis
+
 ```typescript
 interface ProjectAnalysis {
   frameworks: string[];
@@ -125,6 +135,7 @@ class ProjectAnalyzer {
 ```
 
 ### 2. Schema Resolution
+
 ```typescript
 class SchemaResolver {
   async resolveSchemas(analysis: ProjectAnalysis): Promise<ContextSchema[]> {
@@ -149,6 +160,7 @@ class SchemaResolver {
 ```
 
 ### 3. Platform Generation
+
 ```typescript
 class GenerationEngine {
   constructor(private adapters: Map<string, PlatformAdapter>) {}
@@ -180,6 +192,7 @@ class GenerationEngine {
 VDK provides comprehensive validation:
 
 ### Schema Validation
+
 ```typescript
 import Ajv from 'ajv';
 import { contextSchemaDefinition } from './schemas/v2.1.0/context-schema.json';
@@ -245,6 +258,7 @@ VDK demonstrates production-ready performance:
 VDK implements comprehensive testing:
 
 ### Unit Tests
+
 ```typescript
 describe('SchemaResolver', () => {
   it('should resolve dependencies in correct order', async () => {
@@ -262,6 +276,7 @@ describe('SchemaResolver', () => {
 ```
 
 ### Integration Tests
+
 ```typescript
 describe('CLI Integration', () => {
   it('should generate configurations for React project', async () => {
@@ -280,6 +295,7 @@ describe('CLI Integration', () => {
 VDK provides clear extension mechanisms:
 
 ### Custom Platform Adapters
+
 ```typescript
 export interface PlatformAdapter {
   name: string;
@@ -292,6 +308,7 @@ vdk.registerAdapter(new MyCustomAdapter());
 ```
 
 ### Custom Schema Sources
+
 ```typescript
 export interface SchemaSource {
   name: string;

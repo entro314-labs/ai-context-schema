@@ -5,23 +5,27 @@ We welcome contributions to the AI Context Schema specification and its ecosyste
 ## Types of Contributions
 
 ### 1. Specification Improvements
+
 - Clarifications to existing specification
 - New platform support definitions
 - Schema validation enhancements
 - Documentation improvements
 
 ### 2. Example Context Schemas
+
 - Technology-specific context schemas
 - Language pattern schemas
 - Development workflow schemas
 - Best practice demonstrations
 
 ### 3. Platform Adapters
+
 - Adapters for new AI coding platforms
 - Improvements to existing platform support
 - Platform-specific optimization features
 
 ### 4. Validation Tools
+
 - Schema validation utilities
 - Compatibility checking tools
 - Migration helpers
@@ -30,12 +34,14 @@ We welcome contributions to the AI Context Schema specification and its ecosyste
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ for validation tools
 - Git for version control
 - Basic understanding of YAML and JSON Schema
 - Familiarity with AI coding assistants
 
 ### Development Setup
+
 ```bash
 # Fork and clone the repository
 git clone https://github.com/yourusername/ai-context-schema.git
@@ -64,6 +70,7 @@ npm test
 5. **Validate thoroughly**: Use validation tools before submitting
 
 #### Schema Structure Template
+
 ```yaml
 ---
 id: "your-context-id"
@@ -100,6 +107,7 @@ Clear explanation of what this context is for...
 #### Schema Quality Standards
 
 **Required Elements:**
+
 - Clear, specific purpose statement
 - Comprehensive behavioral guidance
 - Code examples with explanations
@@ -107,6 +115,7 @@ Clear explanation of what this context is for...
 - Platform-specific notes where relevant
 
 **Quality Checklist:**
+
 - [ ] Validates against JSON Schema
 - [ ] Contains working code examples
 - [ ] Includes both do's and don'ts
@@ -119,6 +128,7 @@ Clear explanation of what this context is for...
 #### Adapter Requirements
 
 1. **Implement PlatformAdapter interface**:
+
 ```typescript
 interface PlatformAdapter {
   name: string;
@@ -162,6 +172,7 @@ export class MyPlatformAdapter implements PlatformAdapter {
 ### Documentation Contributions
 
 #### Documentation Standards
+
 - Use clear, concise language
 - Provide practical examples
 - Include code samples where relevant
@@ -169,6 +180,7 @@ export class MyPlatformAdapter implements PlatformAdapter {
 - Use proper markdown formatting
 
 #### Areas Needing Documentation
+
 - Platform-specific implementation guides
 - Migration guides from other formats
 - Advanced schema composition patterns
@@ -207,6 +219,7 @@ export class MyPlatformAdapter implements PlatformAdapter {
 ### Review Criteria
 
 **Technical Review:**
+
 - Specification compliance
 - Code quality and testing
 - Documentation completeness
@@ -214,12 +227,14 @@ export class MyPlatformAdapter implements PlatformAdapter {
 - Performance considerations
 
 **Content Review:**
+
 - Accuracy of technical content
 - Clarity of explanations
 - Usefulness of examples
 - Consistency with existing patterns
 
 ### Review Timeline
+
 - **Minor changes**: 2-3 days
 - **New schemas**: 1 week
 - **Platform adapters**: 1-2 weeks
@@ -228,6 +243,7 @@ export class MyPlatformAdapter implements PlatformAdapter {
 ## Community Standards
 
 ### Code of Conduct
+
 - Be respectful and inclusive
 - Focus on constructive feedback
 - Welcome newcomers and questions
@@ -235,6 +251,7 @@ export class MyPlatformAdapter implements PlatformAdapter {
 - Respect diverse perspectives and experiences
 
 ### Communication Channels
+
 - **GitHub Issues**: Bug reports, feature requests, questions
 - **GitHub Discussions**: General discussion, ideas, showcases
 - **Pull Requests**: Code and documentation contributions
@@ -242,12 +259,15 @@ export class MyPlatformAdapter implements PlatformAdapter {
 ## Release Process
 
 ### Versioning
+
 The specification follows semantic versioning:
+
 - **Major (X.0.0)**: Breaking changes to schema structure
 - **Minor (X.Y.0)**: Backward-compatible additions
 - **Patch (X.Y.Z)**: Bug fixes and clarifications
 
 ### Release Schedule
+
 - **Patch releases**: As needed for bug fixes
 - **Minor releases**: Quarterly for new features
 - **Major releases**: Annually or when breaking changes are necessary
@@ -255,14 +275,18 @@ The specification follows semantic versioning:
 ## Recognition
 
 ### Contributors
+
 All contributors are recognized in:
+
 - GitHub contributors list
 - CONTRIBUTORS.md file
 - Release notes for significant contributions
 - Author fields in contributed schemas
 
 ### Maintainership
+
 Long-term contributors may be invited to become maintainers with:
+
 - Commit access to the repository
 - Participation in release planning
 - Review authority for pull requests
@@ -271,6 +295,7 @@ Long-term contributors may be invited to become maintainers with:
 ## Getting Help
 
 ### Where to Get Help
+
 - **GitHub Issues**: For bugs and feature requests
 - **GitHub Discussions**: For questions and general discussion
 - **Documentation**: Check existing docs first

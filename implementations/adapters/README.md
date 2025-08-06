@@ -13,6 +13,7 @@ See the main [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines on creating
 ### Structure
 
 Each adapter should be in its own subdirectory with:
+
 - `README.md` - Adapter documentation
 - `adapter.js` - Main adapter implementation  
 - `package.json` - Dependencies and metadata
@@ -22,6 +23,7 @@ Each adapter should be in its own subdirectory with:
 ### Platform Support
 
 Current platform adapter priorities:
+
 1. VS Code Extension
 2. IntelliJ IDEA Plugin
 3. Vim/Neovim Plugin

@@ -22,7 +22,7 @@ Wrong. The problem was getting worse, not better.
 
 ### For Individual Developers
 
-Sarah, our senior React developer, had her Claude Code perfectly configured with custom React patterns. When she tried Cursor for its VS Code integration, she had to recreate everything in a completely different format. 
+Sarah, our senior React developer, had her Claude Code perfectly configured with custom React patterns. When she tried Cursor for its VS Code integration, she had to recreate everything in a completely different format.
 
 Two hours of productivity lost. For a configuration that should have taken five minutes.
 
@@ -112,16 +112,19 @@ One definition. Four different platform deployments. Zero duplicated effort.
 While building and testing this approach internally, we identified the key impact areas:
 
 **Developer Onboarding:**
+
 - AI setup complexity could drop from hours to minutes
 - Configuration learning could be eliminated through automation
 - Tool switching friction could be nearly eliminated
 
 **Team Consistency:**
+
 - AI behavior could become consistent across team members
 - Code pattern adherence could improve through shared context
 - Configuration drift could be eliminated
 
 **Innovation Velocity:**
+
 - New AI tool evaluation could become frictionless
 - Tool standardization could happen automatically
 - Vendor lock-in risk could be eliminated
@@ -155,18 +158,21 @@ That's what we're building toward.
 ### What We're Launching
 
 **The Technical Solution:**
+
 - Universal schema that works across Claude Code, Cursor, Windsurf, and GitHub Copilot
 - Platform adapters that handle format differences automatically
 - Validation tools for schema development and testing
 - Reference implementation through VDK
 
 **The Vision:**
+
 - Eliminate AI configuration fragmentation industry-wide
 - Enable frictionless experimentation with new AI tools
 - Maintain strategic flexibility without vendor lock-in
 - Accelerate AI-assisted development adoption
 
 **What We Need:**
+
 - Community adoption and feedback
 - Platform vendor support for universal schema import
 - Real-world validation of productivity benefits
@@ -177,21 +183,25 @@ That's what we're building toward.
 If you're dealing with AI assistant fragmentation on your team, here's how to evaluate the solution:
 
 ### Week 1: Assessment
+
 - Audit your current AI configurations across team members
 - Document time spent on AI setup and troubleshooting
 - Identify configuration inconsistencies
 
 ### Week 2: Pilot
+
 - Convert one existing AI configuration to universal schema
 - Test deployment across your team's AI platforms
 - Measure setup time reduction
 
 ### Week 3: Rollout  
+
 - Convert remaining configurations
 - Update onboarding documentation
 - Train team on universal approach
 
 ### Week 4: Expansion
+
 - Experiment with new AI tools using existing schemas
 - Contribute configurations back to community
 - Measure business impact
@@ -220,12 +230,15 @@ We saw this with web browsers (HTML/CSS/JavaScript), APIs (REST/JSON), container
 If you're an engineering leader, AI assistant fragmentation affects three key areas:
 
 ### Talent Acquisition & Retention
+
 Developers increasingly expect modern AI-assisted workflows. Teams with smooth AI tooling have recruiting advantages. Teams with configuration chaos have frustrated developers.
 
 ### Operational Efficiency  
+
 AI configuration overhead scales with team size. A 5-person team spends 10 hours/month on AI setup and troubleshooting. A 50-person team spends 100+ hours. That's real cost.
 
 ### Strategic Flexibility
+
 Vendor lock-in through configuration complexity reduces your ability to adopt new AI tools. Universal standards maintain strategic flexibility.
 
 ## What's Next
@@ -238,8 +251,8 @@ We're open-sourcing AI Context Schema with a complete ecosystem:
 - **Migration utilities** for existing configurations
 - **Community guidelines** for contribution and adoption
 
-**Repository:** https://github.com/ai-context-schema/ai-context-schema  
-**Reference Implementation:** https://vdk.tools
+**Repository:** <https://github.com/ai-context-schema/ai-context-schema>  
+**Reference Implementation:** <https://vdk.tools>
 
 ### Community Building
 
@@ -279,4 +292,4 @@ The fragmentation problem is solved. The standard exists. The tools work.
 
 *AI Context Schema represents more than a technical solution—it's a movement toward mature, interoperable AI tooling. Every team that adopts universal standards makes the ecosystem better for everyone.*
 
-*Ready to eliminate AI configuration fragmentation? Start here: https://github.com/ai-context-schema/ai-context-schema*
+*Ready to eliminate AI configuration fragmentation? Start here: <https://github.com/ai-context-schema/ai-context-schema>*

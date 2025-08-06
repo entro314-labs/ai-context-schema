@@ -74,6 +74,7 @@ Universal interface design principles suggest that consistent interaction models
 We employed a mixed-methods approach combining interviews, workflow observation, and prototype evaluation to understand developer experience with multi-platform AI tool configuration.
 
 **Research Questions**:
+
 1. How do developers experience and cope with multi-platform AI tool configuration complexity?
 2. What usability issues arise from managing multiple AI platform configurations?
 3. How does configuration fragmentation impact developer workflows and productivity?
@@ -82,11 +83,13 @@ We employed a mixed-methods approach combining interviews, workflow observation,
 ### 3.2 Participant Recruitment and Selection
 
 We recruited 12 software developers through professional networks and developer communities. Inclusion criteria required:
+
 - Professional software development experience (minimum 2 years)
 - Active use of at least 2 AI coding assistants
 - Experience with configuration management across platforms
 
 **Participant Demographics**:
+
 - Experience: 2-15 years (mean: 6.8 years)
 - AI Tools Used: Claude Code (12/12), Cursor (10/12), GitHub Copilot (12/12), Windsurf (8/12)
 - Team Size: Individual contributors to teams of 50+ developers
@@ -97,32 +100,38 @@ We recruited 12 software developers through professional networks and developer 
 Semi-structured interviews (60-90 minutes) explored:
 
 **Current Configuration Practices**:
+
 - How participants configure and manage AI tools
 - Workflow patterns and pain points
 - Coping strategies for multi-platform management
 
 **Cognitive Experience**:
+
 - Mental models for different AI platforms
 - Context switching challenges
 - Learning and knowledge transfer experiences
 
 **Tool Adoption Decisions**:
+
 - Factors influencing AI tool selection
 - Barriers to experimenting with new tools
 - Team coordination challenges
 
 **Future Preferences**:
+
 - Desired improvements to current systems
 - Reactions to universal configuration concepts
 
 ### 3.4 Workflow Observation
 
 We conducted think-aloud observation sessions (30-45 minutes) where participants:
+
 1. Configured a new AI context for their current project
 2. Adapted an existing configuration to a new AI platform
 3. Coordinated AI configurations with a team member
 
 Observations focused on:
+
 - Time spent on configuration vs. core development tasks
 - Cognitive strategies for managing platform differences
 - Error patterns and recovery strategies
@@ -131,6 +140,7 @@ Observations focused on:
 ### 3.5 Prototype Evaluation
 
 We developed a prototype universal configuration system based on interview findings and evaluated it through:
+
 - Usability testing with 8 participants
 - Comparative task completion time analysis
 - Perceived cognitive load assessment
@@ -183,6 +193,7 @@ Multi-platform AI tool usage created workflow fragmentation:
 #### 4.2.2 Context Switching Overhead
 
 **Platform Reorientation Time**: Participants required 2-5 minutes to mentally reorient when switching between AI platforms, including:
+
 - Recalling platform-specific syntax and conventions
 - Remembering file locations and structure requirements
 - Adjusting to different activation and deployment models
@@ -192,6 +203,7 @@ Multi-platform AI tool usage created workflow fragmentation:
 #### 4.2.3 Error Patterns and Recovery
 
 **Syntax Confusion Errors**: The most common errors (73% of observed issues) involved mixing syntax between platforms:
+
 - Using YAML frontmatter in non-YAML systems
 - Applying file pattern concepts to platforms without pattern matching
 - Incorrect XML structure when switching from JSON
@@ -394,6 +406,7 @@ We conducted usability testing with 8 participants (subset of original interview
 **Task 3**: Deploy the same configuration to three different AI platforms.
 
 **Metrics**:
+
 - Task completion time
 - Error rate and recovery time
 - Cognitive load (NASA-TLX)
@@ -405,16 +418,19 @@ We conducted usability testing with 8 participants (subset of original interview
 #### 7.2.1 Task Completion Time
 
 **Configuration Creation**:
+
 - Platform-specific: 24.3 ± 8.7 minutes (mean ± SD)
 - Universal prototype: 8.2 ± 3.1 minutes
 - Improvement: 66% reduction (p < 0.001)
 
 **Configuration Modification**:
+
 - Platform-specific: 12.5 ± 4.9 minutes
 - Universal prototype: 4.1 ± 1.8 minutes
 - Improvement: 67% reduction (p < 0.001)
 
 **Multi-Platform Deployment**:
+
 - Platform-specific: 31.7 ± 12.4 minutes
 - Universal prototype: 2.3 ± 0.8 minutes
 - Improvement: 93% reduction (p < 0.001)
@@ -422,11 +438,13 @@ We conducted usability testing with 8 participants (subset of original interview
 #### 7.2.2 Error Rate Analysis
 
 **Syntax Errors**:
+
 - Platform-specific: 3.8 ± 2.1 errors per task
 - Universal prototype: 0.4 ± 0.7 errors per task
 - Improvement: 89% reduction (p < 0.001)
 
 **Configuration Errors**:
+
 - Platform-specific: 2.1 ± 1.3 errors per task
 - Universal prototype: 0.3 ± 0.5 errors per task
 - Improvement: 86% reduction (p < 0.001)

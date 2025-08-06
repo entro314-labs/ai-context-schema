@@ -5,16 +5,19 @@ This directory contains community-contributed platform adapters for AI Context S
 ## Available Adapters
 
 ### Production Ready
+
 - **VS Code Extension** - Full VS Code integration via extension API
 - **IntelliJ IDEA Plugin** - Complete IntelliJ platform support
 - **Vim/Neovim LSP** - Language Server Protocol integration
 
 ### Beta/Experimental
+
 - **Sublime Text Plugin** - Basic Sublime Text support
 - **Emacs Mode** - Emacs integration via package
 - **JetBrains Fleet** - Early Fleet support
 
 ### Planned/Requested
+
 - **Replit Integration** - Cloud IDE support
 - **CodeSandbox** - Browser-based development
 - **GitHub Codespaces** - Remote development environments
@@ -24,6 +27,7 @@ This directory contains community-contributed platform adapters for AI Context S
 ### Creating a New Adapter
 
 1. **Create adapter directory**:
+
    ```
    implementations/adapters/your-platform/
    ├── README.md
@@ -36,6 +40,7 @@ This directory contains community-contributed platform adapters for AI Context S
    ```
 
 2. **Implement PlatformAdapter interface**:
+
    ```typescript
    interface PlatformAdapter {
      name: string;
@@ -47,6 +52,7 @@ This directory contains community-contributed platform adapters for AI Context S
    ```
 
 3. **Add platform support to schema**:
+
    ```yaml
    platforms:
      your-platform:
@@ -107,6 +113,7 @@ export class YourPlatformAdapter implements PlatformAdapter {
 ## VS Code Extension
 
 ### Installation
+
 ```bash
 # Install from VS Code Marketplace
 ext install ai-context-schema.vscode
@@ -116,6 +123,7 @@ code --install-extension ai-context-schema-1.0.0.vsix
 ```
 
 ### Configuration
+
 ```json
 {
   "aiContextSchema.autoActivate": true,
@@ -126,6 +134,7 @@ code --install-extension ai-context-schema-1.0.0.vsix
 ```
 
 ### Platform Schema Configuration
+
 ```yaml
 platforms:
   vscode:
@@ -143,6 +152,7 @@ platforms:
 ```
 
 ### Features
+
 - **Auto-activation**: Schemas automatically applied based on file patterns
 - **Status bar integration**: Current schema status displayed
 - **Command palette**: Schema management commands
@@ -152,12 +162,14 @@ platforms:
 ## IntelliJ IDEA Plugin
 
 ### Installation
+
 ```bash
 # Install from JetBrains Marketplace
 # Or download from releases page
 ```
 
 ### Configuration
+
 ```xml
 <!-- .idea/ai-context-schema.xml -->
 <component name="AiContextSchema">
@@ -168,6 +180,7 @@ platforms:
 ```
 
 ### Platform Schema Configuration
+
 ```yaml
 platforms:
   intellij:
@@ -185,6 +198,7 @@ platforms:
 ```
 
 ### Features
+
 - **File templates**: Generate files using schema patterns
 - **Code inspections**: Validate code against schemas
 - **Intentions**: Quick-fix actions based on schemas
@@ -196,6 +210,7 @@ platforms:
 ### Installation
 
 **Neovim with built-in LSP**:
+
 ```lua
 -- ~/.config/nvim/init.lua
 require('lspconfig').ai_context_schema.setup({
@@ -212,6 +227,7 @@ require('lspconfig').ai_context_schema.setup({
 ```
 
 **Vim with vim-lsp**:
+
 ```vim
 " ~/.vimrc
 if executable('ai-context-schema-lsp')
@@ -224,6 +240,7 @@ endif
 ```
 
 ### Platform Schema Configuration
+
 ```yaml
 platforms:
   vim:
@@ -241,6 +258,7 @@ platforms:
 ```
 
 ### Features
+
 - **LSP integration**: Native Language Server Protocol support
 - **Auto-completion**: Schema-aware suggestions
 - **Diagnostics**: Real-time schema validation
@@ -250,6 +268,7 @@ platforms:
 ## Sublime Text Plugin
 
 ### Installation
+
 ```bash
 # Package Control
 # Command Palette > Package Control: Install Package > AI Context Schema
@@ -260,6 +279,7 @@ git clone https://github.com/ai-context-schema/sublime-text-plugin.git "AI Conte
 ```
 
 ### Configuration
+
 ```json
 {
   "ai_context_schema": {
@@ -272,6 +292,7 @@ git clone https://github.com/ai-context-schema/sublime-text-plugin.git "AI Conte
 ```
 
 ### Platform Schema Configuration
+
 ```yaml
 platforms:
   sublime:
@@ -300,18 +321,21 @@ platforms:
 ### Quality Standards
 
 **Required Features**:
+
 - Schema parsing and validation
 - Platform-specific file generation
 - Error handling and logging
 - Documentation and examples
 
 **Testing Requirements**:
+
 - Unit tests for core functionality
 - Integration tests with sample schemas
 - Platform-specific testing
 - Performance benchmarks
 
 **Documentation Requirements**:
+
 - Installation instructions
 - Configuration examples
 - Usage guide with examples
@@ -320,18 +344,21 @@ platforms:
 ### Support Levels
 
 **Tier 1 - Official Support**
+
 - Maintained by core team
 - Full feature support
 - Regular updates and bug fixes
 - Included in main distribution
 
 **Tier 2 - Community Maintained**
+
 - Maintained by community contributors
 - Core feature support
 - Community-driven updates
 - Listed in official documentation
 
 **Tier 3 - Experimental**
+
 - Early-stage adapters
 - Limited feature support
 - No guaranteed maintenance
@@ -432,12 +459,14 @@ npx ai-context-schema adapters search "vs code"
 ### Deprecation Policy
 
 Adapters may be deprecated if:
+
 - Platform is no longer maintained
 - Significant security vulnerabilities
 - Lack of maintenance or updates
 - Better alternatives available
 
 Deprecated adapters will be:
+
 - Marked as deprecated in documentation
 - Given 6-month notice before removal
 - Archived with historical access
@@ -456,6 +485,7 @@ Deprecated adapters will be:
 ### Community Requests
 
 Popular adapter requests from the community:
+
 - Cloud IDE integrations (Replit, CodeSandbox, Gitpod)
 - Mobile development platforms
 - AI-powered code editors

@@ -16,7 +16,7 @@
     "lint": "eslint validation/ --ext .js",
     "lint:fix": "eslint validation/ --ext .js --fix",
     "check-compatibility": "node validation/compatibility-checker.js",
-    "docs:serve": "markdownlint-cli2 '**/*.md' && echo 'Documentation validated'",
+    "docs:serve": "markdownlint-cli2 'docs/**/*.md' 'implementations/**/*.md' 'schemas/**/*.md' '*.md' && echo 'Documentation validated'",
     "prepare": "npm run validate-all"
   },
   "repository": {
@@ -53,9 +53,7 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "eslint": "^9.32.0",
-    "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^7.2.1",
     "jest": "^30.0.5",
     "markdownlint-cli2": "^0.18.1",

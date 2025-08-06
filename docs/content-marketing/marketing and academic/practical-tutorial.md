@@ -153,6 +153,7 @@ class UserProfile extends React.Component {
 ```
 
 ### Component Composition
+
 Favor composition over complex prop interfaces:
 
 ```tsx
@@ -190,6 +191,7 @@ export const Card: React.FC<CardProps> = ({
 ## Performance Optimization
 
 ### Memoization Patterns
+
 Use React.memo, useMemo, and useCallback appropriately:
 
 ```tsx
@@ -237,6 +239,7 @@ const handleCardClick = useCallback(() => {
 ## TypeScript Integration
 
 ### Props Interfaces
+
 Define clear, specific interfaces:
 
 ```tsx
@@ -275,6 +278,7 @@ export const Button: React.FC<ButtonProps> = ({
 ## Anti-Patterns to Avoid
 
 ### State Management Anti-Patterns
+
 ```tsx
 // ❌ Avoid - Too much state in one component
 const [userState, setUserState] = useState({
@@ -293,6 +297,7 @@ const [posts, setPosts] = useState<Post[]>([]);
 ```
 
 ### Props Drilling Anti-Patterns
+
 ```tsx
 // ❌ Avoid - Excessive prop drilling
 <UserDashboard user={user} theme={theme} onUpdate={onUpdate} />
@@ -313,24 +318,29 @@ const ThemeContext = createContext();
 ## Platform-Specific Notes
 
 ### Claude Code
+
 - Use `/react-component` command to scaffold new components
 - Memory context includes performance optimization reminders
 - Slash commands available for common React patterns
 
 ### Cursor  
+
 - Auto-activates for .tsx/.jsx files and component directories
 - File pattern matching works with standard React project structures
 - High priority ensures React patterns override generic TypeScript rules
 
 ### Windsurf
+
 - Workspace-level context understands your entire React project
 - Character limit optimized for essential patterns only
 - XML structure preserves React-specific formatting
 
 ### GitHub Copilot
+
 - High priority influences code suggestions and autocompletion
 - Code quality review focus catches React anti-patterns in PRs
 - Repository scope ensures consistency across all React files
+
 ```
 
 **Key insight:** Same content, different platform optimizations. You write it once, each platform gets what it needs.
@@ -351,6 +361,7 @@ ai-context-schema check-compatibility schemas/react-patterns.yaml
 ```
 
 Example output:
+
 ```
 ✅ Schema validation passed
 ✅ All required fields present  
@@ -420,6 +431,7 @@ Open files that should trigger your schema:
 3. **Test across multiple AI platforms** to ensure consistency
 
 Example test:
+
 ```tsx
 // Type this in TestComponent.tsx
 interface TestComponentProps {
@@ -449,6 +461,7 @@ schemas/
 ```
 
 Deploy all schemas:
+
 ```bash
 # Deploy all schemas at once
 vdk generate --schemas schemas/
@@ -476,12 +489,14 @@ This creates a dependency graph ensuring schemas are applied in the right order 
 ### Schema Validation Errors
 
 **Error:** "Invalid platform configuration"
+
 ```bash
 # Check platform-specific requirements
 ai-context-schema validate --platform cursor schemas/your-schema.yaml
 ```
 
 **Error:** "Content too large for Windsurf"
+
 ```yaml
 # Reduce content or adjust character limit estimate
 platforms:
@@ -493,6 +508,7 @@ platforms:
 ### Platform Deployment Issues
 
 **Issue:** Cursor not auto-activating
+
 ```yaml
 # Check file patterns are correct
 platforms:
@@ -502,6 +518,7 @@ platforms:
 ```
 
 **Issue:** Claude commands not appearing
+
 ```yaml
 # Verify command configuration
 platforms:
@@ -519,6 +536,7 @@ platforms:
 ## Best Practices for Production
 
 ### 1. Version Control
+
 ```bash
 # Add schemas to version control
 git add schemas/
@@ -531,6 +549,7 @@ echo ".windsurf/rules/" >> .gitignore
 ```
 
 ### 2. Team Onboarding
+
 ```bash
 # New team member setup
 git clone your-repo
@@ -539,6 +558,7 @@ vdk generate --schemas schemas/  # Auto-configure all AI tools
 ```
 
 ### 3. Continuous Integration
+
 ```yaml
 # .github/workflows/validate-schemas.yml
 name: Validate AI Schemas
@@ -553,6 +573,7 @@ jobs:
 ```
 
 ### 4. Schema Updates
+
 ```bash
 # Update schema version
 vim schemas/react-patterns.yaml  # Bump version field
@@ -568,21 +589,25 @@ git add schemas/ && git commit -m "Update React patterns v1.1.0"
 Track these metrics to measure the impact as you adopt universal schemas:
 
 **Time Savings to Measure:**
+
 - AI setup time for new developers: Track before vs. after
 - Tool switching time: Compare platform migration effort  
 - Configuration maintenance: Time spent managing AI configs
 
 **Consistency Improvements to Track:**
+
 - AI suggestion consistency across team members
 - Code pattern adherence in reviews
 - Configuration drift incidents over time
 
 **Productivity Indicators:**
+
 - Developer satisfaction with AI tools
 - Time spent on AI configuration vs. building features
 - Willingness to experiment with new AI tools
 
 **Community Contribution:**
+
 - Share your results to help validate the approach
 - Contribute back successful schemas
 - Report issues and improvements
@@ -610,8 +635,8 @@ We're launching the solution to the fragmentation problem. Now we need community
 
 ## Resources
 
-- **AI Context Schema Repository:** https://github.com/ai-context-schema/ai-context-schema
-- **VDK Reference Implementation:** https://vdk.tools  
+- **AI Context Schema Repository:** <https://github.com/ai-context-schema/ai-context-schema>
+- **VDK Reference Implementation:** <https://vdk.tools>  
 - **Example Schemas:** [Browse 20+ working examples](https://github.com/ai-context-schema/ai-context-schema/tree/main/schemas/v2.1.0/examples)
 - **Platform Support Guide:** [Detailed platform documentation](https://github.com/ai-context-schema/ai-context-schema/blob/main/docs/platform-support.md)
 

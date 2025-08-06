@@ -92,9 +92,11 @@ const [count, setCount] = useState(0);
 ## Anti-Patterns
 
 Avoid these patterns:
+
 - Class components for new code
 - Inline styles
 - Prop drilling beyond 2 levels
+
 ```
 
 ### 3. Validate Your Schema
@@ -110,6 +112,7 @@ npx ai-context-schema check-compatibility my-first-schema.yaml
 ### 4. Deploy to Platforms
 
 #### Using VDK (Reference Implementation)
+
 ```bash
 # Install VDK CLI
 npm install -g @vibe-dev-kit/cli
@@ -122,6 +125,7 @@ vdk generate cursor --schema my-first-schema.yaml
 ```
 
 #### Manual Deployment
+
 Each platform has specific file locations and formats:
 
 **Claude Code**: Place in `.claude/` directory
@@ -152,6 +156,7 @@ platforms:
 Each platform has specific configuration options:
 
 #### Claude Code
+
 ```yaml
 claude-code:
   compatible: true
@@ -162,6 +167,7 @@ claude-code:
 ```
 
 #### Cursor
+
 ```yaml
 cursor:
   compatible: true
@@ -171,6 +177,7 @@ cursor:
 ```
 
 #### Windsurf
+
 ```yaml
 windsurf:
   compatible: true
@@ -180,6 +187,7 @@ windsurf:
 ```
 
 #### GitHub Copilot
+
 ```yaml
 github-copilot:
   compatible: true
@@ -243,6 +251,7 @@ Platform-specific considerations...
 ### Effective Guidelines
 
 **Be Specific**: Instead of "write good code," provide concrete examples:
+
 ```markdown
 ❌ Write clean functions
 ✅ Keep functions under 20 lines and single-purpose:
@@ -261,6 +270,7 @@ const processUser = (user: User) => {
 ```
 
 **Include Context**: Explain why patterns are recommended:
+
 ```markdown
 ## Use Functional Components
 
@@ -272,6 +282,7 @@ Prefer functional components over class components because they:
 ```
 
 **Show Anti-Patterns**: Help AI avoid common mistakes:
+
 ```markdown
 ## Anti-Patterns
 
@@ -281,9 +292,11 @@ Prefer functional components over class components because they:
 ```
 
 ✅ **Use**: CSS classes or styled-components
+
 ```jsx
 <div className="error-text">Text</div>
 ```
+
 ```
 
 ## Testing Your Schema
@@ -440,18 +453,21 @@ Use the project's TypeScript configuration from `${projectRoot}/tsconfig.json`.
 ### Common Validation Errors
 
 **Invalid ID format**
+
 ```bash
 Error: ID must be kebab-case
 ✅ Fix: Use "my-schema-name" instead of "My Schema Name"
 ```
 
 **Missing required platforms**
+
 ```bash
 Error: At least one platform must be compatible
 ✅ Fix: Set compatible: true for at least one platform
 ```
 
 **Invalid version format**
+
 ```bash
 Error: Version must follow semantic versioning
 ✅ Fix: Use "1.0.0" instead of "v1.0"
@@ -460,12 +476,14 @@ Error: Version must follow semantic versioning
 ### Platform-Specific Issues
 
 **Windsurf character limit exceeded**
+
 ```bash
 Warning: Content may exceed Windsurf limit (6000 chars)
 ✅ Fix: Reduce content length or increase characterLimit estimate
 ```
 
 **Cursor auto-attachment without globs**
+
 ```bash
 Error: Auto-attached activation requires globs
 ✅ Fix: Add globs: ["**/*.ext"] for auto-attachment
@@ -474,11 +492,13 @@ Error: Auto-attached activation requires globs
 ### Content Issues
 
 **Schema too verbose**
+
 - Break into smaller, focused schemas
 - Use clear, concise language
 - Focus on most important patterns
 
 **Missing examples**
+
 - Add working code examples
 - Include both good and bad patterns
 - Explain why patterns are recommended
@@ -488,6 +508,7 @@ Error: Auto-attached activation requires globs
 ### Explore Examples
 
 Study the example schemas in this repository:
+
 - [`react-components.yaml`](../schemas/v2.1.0/examples/react-components.yaml) - React development patterns
 - [`api-development.yaml`](../schemas/v2.1.0/examples/api-development.yaml) - REST API patterns
 - [`testing-strategy.yaml`](../schemas/v2.1.0/examples/testing-strategy.yaml) - Testing approaches

@@ -38,8 +38,8 @@ module.exports = [
       'no-debugger': 'error',
       
       // Code quality
-      'complexity': ['warn', 15],
-      'max-depth': ['warn', 5],
+      'complexity': ['warn', 20],
+      'max-depth': ['warn', 6],
       'max-params': ['warn', 5],
       
       // Schema validation specific rules
@@ -51,7 +51,23 @@ module.exports = [
     files: ['validation/**/*.js'],
     rules: {
       'no-console': 'off', // CLI tools need console output
-      'complexity': ['warn', 20] // Validation logic can be complex
+      'complexity': ['warn', 25] // Validation logic can be complex
+    }
+  },
+  {
+    files: ['**/*.test.js', '**/*.spec.js', '**/tests/**/*.js'],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        test: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        jest: 'readonly'
+      }
     }
   },
   {

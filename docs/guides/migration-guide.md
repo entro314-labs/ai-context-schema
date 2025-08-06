@@ -5,6 +5,7 @@ This guide helps you migrate from existing AI assistant configurations to AI Con
 ## Migration Overview
 
 ### Benefits of Migration
+
 - **Universal compatibility**: One schema works across all AI platforms
 - **Improved validation**: Structured validation and error checking
 - **Better organization**: Standardized metadata and relationships
@@ -12,6 +13,7 @@ This guide helps you migrate from existing AI assistant configurations to AI Con
 - **Team collaboration**: Shared schemas and collections
 
 ### Migration Strategy
+
 1. **Assess current configurations**: Inventory existing AI assistant configurations
 2. **Plan migration order**: Start with most critical/frequently used contexts
 3. **Convert incrementally**: Migrate one context at a time
@@ -21,6 +23,7 @@ This guide helps you migrate from existing AI assistant configurations to AI Con
 ## Migrating from Cursor MDC Files
 
 ### Current Cursor Format
+
 ```yaml
 ---
 title: "React Patterns"
@@ -36,6 +39,7 @@ Use functional components with hooks...
 ```
 
 ### AI Context Schema Equivalent
+
 ```yaml
 ---
 id: "react-patterns"
@@ -71,6 +75,7 @@ Use functional components with hooks...
 ```
 
 ### Automated Migration
+
 ```bash
 # Using VDK CLI (reference implementation)
 vdk migrate cursor --input .cursor/rules --output schemas/
@@ -83,12 +88,15 @@ node scripts/migrate-cursor.js .cursor/rules/ schemas/
 
 1. **Create new schema file**: `schemas/react-patterns.yaml`
 2. **Add required metadata**:
+
    ```yaml
    id: "react-patterns"           # kebab-case identifier
    version: "1.0.0"               # semantic version
    category: "technology"         # appropriate category
    ```
+
 3. **Convert platform configuration**:
+
    ```yaml
    platforms:
      cursor:
@@ -97,19 +105,23 @@ node scripts/migrate-cursor.js .cursor/rules/ schemas/
        globs: ["**/*.tsx"]          # preserve file patterns
        priority: "high"             # preserve priority
    ```
+
 4. **Add multi-platform support**:
+
    ```yaml
    platforms:
      claude-code: { compatible: true, memory: true }
      windsurf: { compatible: true, mode: "workspace" }
      github-copilot: { compatible: true, priority: 8 }
    ```
+
 5. **Preserve content**: Copy markdown content as-is
 6. **Validate**: `npx ai-context-schema validate schemas/react-patterns.yaml`
 
 ## Migrating from Claude Code Memory Files
 
 ### Current Claude Format
+
 ```markdown
 # CLAUDE.md
 
@@ -133,6 +145,7 @@ This is a React TypeScript project using Next.js...
 3. **Add proper metadata**: Include versioning and platform support
 
 #### Example: Component Guidelines Schema
+
 ```yaml
 ---
 id: "react-component-guidelines"
@@ -160,6 +173,7 @@ Use functional components with hooks for all new components...
 ```
 
 #### Example: API Development Schema
+
 ```yaml
 ---
 id: "nextjs-api-patterns"
@@ -187,6 +201,7 @@ Create API routes following REST principles...
 ## Migrating from GitHub Copilot JSON
 
 ### Current Copilot Format
+
 ```json
 {
   "guidelines": [
@@ -204,6 +219,7 @@ Create API routes following REST principles...
 ```
 
 ### AI Context Schema Equivalent
+
 ```yaml
 ---
 id: "react-patterns-copilot"
@@ -247,7 +263,9 @@ class MyComponent extends React.Component {
 ```
 
 ## Prop Types
+
 Implement proper TypeScript interfaces for props...
+
 ```
 
 ## Migrating from Windsurf XML
@@ -263,6 +281,7 @@ Implement proper TypeScript interfaces for props...
 ```
 
 ### AI Context Schema Equivalent
+
 ```yaml
 ---
 id: "typescript-guidelines"
@@ -295,6 +314,7 @@ Use strict type checking for all TypeScript projects...
 ## Migrating from Custom JSON Formats
 
 ### Generic JSON Configuration
+
 ```json
 {
   "name": "API Guidelines",
@@ -312,6 +332,7 @@ Use strict type checking for all TypeScript projects...
 ```
 
 ### Migration Script Template
+
 ```javascript
 // migrate-custom.js
 const fs = require('fs');
@@ -372,16 +393,19 @@ function generateMarkdownContent(config) {
 ### Content Migration
 
 #### Preserve Intent
+
 - Keep the original behavioral intent intact
 - Don't change the meaning or purpose during migration
 - Maintain the same level of detail and specificity
 
 #### Improve Structure
+
 - Break large monolithic configs into focused schemas
 - Use clear section headers and organization
 - Add examples and anti-patterns where missing
 
 #### Enhance Metadata
+
 ```yaml
 # Add comprehensive metadata
 id: "descriptive-kebab-case-id"
@@ -398,6 +422,7 @@ maturity: "experimental|beta|stable"
 ### Platform Configuration
 
 #### Start Conservative
+
 ```yaml
 platforms:
   # Start with platforms you can test
@@ -411,6 +436,7 @@ platforms:
 ```
 
 #### Expand Gradually
+
 ```yaml
 platforms:
   cursor:
@@ -428,12 +454,14 @@ platforms:
 ### Validation and Testing
 
 #### Pre-migration Checklist
+
 - [ ] Inventory all existing configurations
 - [ ] Identify dependencies between configurations
 - [ ] Plan migration order (dependencies first)
 - [ ] Set up validation environment
 
 #### Post-migration Validation
+
 ```bash
 # Validate schema syntax
 npx ai-context-schema validate schemas/*.yaml
@@ -446,6 +474,7 @@ diff -u original-config schemas/migrated-schema.yaml
 ```
 
 #### Testing Across Platforms
+
 1. **Generate configurations**: Test generation for each target platform
 2. **Deploy to test environment**: Test in isolated development environment
 3. **Verify behavior**: Ensure AI assistant behavior matches expectations
@@ -455,6 +484,7 @@ diff -u original-config schemas/migrated-schema.yaml
 ### Team Migration
 
 #### Communication Plan
+
 1. **Announce migration**: Inform team of migration timeline and benefits
 2. **Provide training**: Share documentation and examples
 3. **Gradual rollout**: Start with volunteer early adopters
@@ -462,6 +492,7 @@ diff -u original-config schemas/migrated-schema.yaml
 5. **Full deployment**: Roll out to entire team after validation
 
 #### Migration Timeline Template
+
 ```
 Week 1: Planning and Assessment
 - Inventory existing configurations
@@ -489,6 +520,7 @@ Week 5: Production Deployment
 ### Common Migration Problems
 
 #### Schema Validation Errors
+
 ```bash
 # Check specific validation errors
 npx ai-context-schema validate --verbose schemas/problematic-schema.yaml
@@ -501,16 +533,19 @@ npx ai-context-schema validate --verbose schemas/problematic-schema.yaml
 ```
 
 #### Content Loss During Migration
+
 - **Problem**: Important context lost during automated migration
 - **Solution**: Manual review and content enhancement
 - **Prevention**: Use migration scripts as starting point, not final result
 
 #### Platform Compatibility Issues
+
 - **Problem**: Schema doesn't work as expected on target platform
 - **Solution**: Check platform-specific requirements and limitations
 - **Prevention**: Test incrementally on each target platform
 
 #### Performance Degradation
+
 - **Problem**: Slower AI response times after migration
 - **Solution**: Optimize schema content length and priority settings
 - **Prevention**: Monitor performance during gradual rollout
@@ -518,12 +553,14 @@ npx ai-context-schema validate --verbose schemas/problematic-schema.yaml
 ### Migration Support
 
 #### Getting Help
+
 - **Documentation**: Check platform-specific documentation
 - **Community**: Use GitHub Discussions for migration questions
 - **Issues**: Report bugs or missing features via GitHub Issues
 - **Examples**: Study existing schema examples for patterns
 
 #### Migration Tools
+
 - **VDK CLI**: `vdk migrate` command for common formats
 - **Validation**: `npx ai-context-schema validate` for schema checking
 - **Generation**: `npx ai-context-schema generate` for testing output
@@ -532,18 +569,21 @@ npx ai-context-schema validate --verbose schemas/problematic-schema.yaml
 ## Post-Migration Optimization
 
 ### Performance Tuning
+
 1. **Monitor AI response times**: Compare before/after performance
 2. **Optimize schema content**: Remove unnecessary verbosity
 3. **Adjust priorities**: Fine-tune platform priority settings
 4. **Consolidate schemas**: Merge related schemas where appropriate
 
 ### Content Enhancement
+
 1. **Add missing examples**: Include code examples and anti-patterns
 2. **Improve organization**: Use clear sections and headers
 3. **Update for modern practices**: Incorporate latest best practices
 4. **Add platform-specific notes**: Include platform-specific guidance
 
 ### Maintenance Planning
+
 1. **Version management**: Plan for schema updates and versioning
 2. **Team ownership**: Assign ownership for schema maintenance
 3. **Review schedule**: Regular review and update cycles

@@ -42,6 +42,7 @@ This paper makes the following contributions:
 The software engineering community has extensively studied developer tool ecosystems and their evolution [5,6]. Traditional tool interoperability research has focused on established categories like editors, compilers, and build systems, where standardization efforts have been successful (e.g., Language Server Protocol [7], Debug Adapter Protocol [8]).
 
 However, AI development tools represent a new category with unique characteristics:
+
 - Rapid emergence and evolution
 - Complex contextual requirements
 - Diverse interaction models
@@ -52,6 +53,7 @@ However, AI development tools represent a new category with unique characteristi
 Configuration management has been studied primarily in the context of software deployment [9,10] and system administration [11,12]. These works focus on managing configurations for well-understood, stable systems with defined interfaces.
 
 AI tool configuration presents different challenges:
+
 - Behavioral specification rather than system configuration
 - Semantic preservation across incompatible platforms
 - Rapid platform evolution requiring adaptive configuration systems
@@ -65,6 +67,7 @@ Recent studies of AI coding tool adoption [17,18] identify configuration challen
 ### 2.4 Interoperability Standards
 
 Successful interoperability standards in software engineering provide models for our approach:
+
 - **Language Server Protocol**: Standardizes editor-compiler communication [7]
 - **OpenAPI Specification**: Enables API interoperability [19]
 - **Container Standards**: Enable deployment platform interoperability [20]
@@ -78,6 +81,7 @@ These standards demonstrate that universal specifications can enable ecosystem g
 We developed a systematic framework for analyzing AI development platform configuration systems:
 
 **Configuration Taxonomy**: We categorize configuration elements across multiple dimensions:
+
 - Format (syntax and structure)
 - Activation (how configurations are applied)
 - Scope (project, workspace, global)
@@ -85,12 +89,14 @@ We developed a systematic framework for analyzing AI development platform config
 - Constraints (limitations and requirements)
 
 **Compatibility Assessment**: We evaluate configuration compatibility across platforms using:
+
 - Semantic equivalence analysis
 - Feature mapping assessment
 - Constraint compatibility evaluation
 - Translation feasibility analysis
 
 **Complexity Metrics**: We quantify configuration complexity using:
+
 - Learning curve assessment (time to productive configuration)
 - Maintenance overhead (effort to maintain synchronized configurations)
 - Migration costs (effort to switch between platforms)
@@ -105,6 +111,7 @@ We selected four major AI development platforms based on adoption, feature diver
 4. **GitHub Copilot**: Widely-adopted AI assistant with repository integration
 
 For each platform, we analyzed:
+
 - Configuration file formats and structures
 - Activation and deployment mechanisms
 - Platform-specific features and constraints
@@ -113,6 +120,7 @@ For each platform, we analyzed:
 ### 3.3 Developer Impact Study
 
 While formal user studies are planned for future work, we gathered initial feedback through:
+
 - Developer interviews (N=12) with multi-platform AI tool users
 - Community forum analysis examining configuration-related discussions
 - GitHub repository analysis identifying configuration patterns and issues
@@ -126,6 +134,7 @@ While formal user studies are planned for future work, we gathered initial feedb
 Our analysis reveals substantial diversity in configuration formats across platforms:
 
 **Claude Code Configuration**:
+
 ```markdown
 # CLAUDE.md
 ## Project Context
@@ -138,6 +147,7 @@ This React TypeScript project uses modern patterns...
 ```
 
 **Cursor Configuration**:
+
 ```yaml
 ---
 title: "React Development Guidelines"
@@ -151,6 +161,7 @@ Use functional components with hooks...
 ```
 
 **Windsurf Configuration**:
+
 ```xml
 <react-context priority="8">
   <purpose>React component development patterns</purpose>
@@ -161,6 +172,7 @@ Use functional components with hooks...
 ```
 
 **GitHub Copilot Configuration**:
+
 ```json
 {
   "guidelines": [
@@ -189,21 +201,25 @@ Each platform employs different activation mechanisms:
 Platforms provide different capabilities that cannot be directly mapped:
 
 **Claude Code Unique Features**:
+
 - Slash command generation (`/component`, `/api`)
 - Memory hierarchy with priority systems
 - Namespace management (project vs. user)
 
 **Cursor Unique Features**:
+
 - File pattern-based auto-activation
 - Integration with VS Code extension ecosystem
 - Agent-based interaction model
 
 **Windsurf Unique Features**:
+
 - Character limit constraints (6K maximum)
 - XML-structured context with metadata
 - Workspace-aware context inheritance
 
 **GitHub Copilot Unique Features**:
+
 - Repository and organization-level scoping
 - Integration with pull request reviews
 - Suggestion priority systems
@@ -213,6 +229,7 @@ Platforms provide different capabilities that cannot be directly mapped:
 #### 4.2.1 Learning Overhead Analysis
 
 **Cognitive Load**: Developers must learn fundamentally different systems:
+
 - 4 distinct file formats (Markdown, YAML+Markdown, XML, JSON)
 - 4 different activation models
 - 4 sets of platform-specific features and constraints
@@ -225,6 +242,7 @@ Platforms provide different capabilities that cannot be directly mapped:
 #### 4.2.2 Maintenance Burden Quantification
 
 **Synchronization Overhead**: Changes to development patterns require updates to multiple configuration files:
+
 - Format conversion (manual translation between syntaxes)
 - Feature adaptation (mapping capabilities across platforms)
 - Constraint handling (character limits, pattern requirements)
@@ -237,12 +255,14 @@ Platforms provide different capabilities that cannot be directly mapped:
 #### 4.2.3 Migration Friction Analysis
 
 **Switching Costs**: Moving between AI platforms requires:
+
 - Complete configuration recreation (no automated translation)
 - Learning new syntax and activation models
 - Adapting to different feature sets and constraints
 - Retraining muscle memory for new workflows
 
 **Vendor Lock-in Effects**: Platform-specific configuration investments create switching costs unrelated to AI capability differences:
+
 - Time investment in learning platform-specific systems
 - Accumulated configuration complexity
 - Team knowledge siloed in platform-specific formats
@@ -262,6 +282,7 @@ Platforms provide different capabilities that cannot be directly mapped:
 #### 4.3.2 Standardization Difficulties
 
 **Multi-Platform Teams**: Teams using multiple AI platforms face coordination challenges:
+
 - Maintaining consistent AI behavior across platforms
 - Sharing configuration updates and improvements
 - Establishing team-wide AI usage guidelines
@@ -362,6 +383,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ userId, onUpdate }) =>
 ```
 
 ## Anti-Patterns
+
 Avoid class components for new code:
 
 ```tsx
@@ -370,6 +392,7 @@ class UserProfile extends React.Component {
   // Legacy pattern
 }
 ```
+
 ```
 
 #### 5.2.2 Platform Adapter Design
@@ -498,12 +521,14 @@ We implemented AI Context Schema as part of VDK (Vibe Development Kit), providin
 We tested schema generation across all four target platforms with various configuration types:
 
 **Compatibility Results**:
+
 - Claude Code: 100% successful generation for all tested schemas
 - Cursor: 100% successful generation with proper glob pattern validation
 - Windsurf: 93% successful generation (7% required content optimization for character limits)
 - GitHub Copilot: 100% successful generation for all supported review types
 
 **Feature Mapping Success**:
+
 - Priority systems: Successfully mapped across all platforms supporting priorities
 - Auto-activation: Correctly translated to Cursor file pattern matching
 - Command generation: Properly handled for Claude Code slash commands
@@ -512,12 +537,14 @@ We tested schema generation across all four target platforms with various config
 #### 6.2.2 Performance Analysis
 
 **Generation Performance**:
+
 - Single schema processing: <50ms average
 - Multi-platform generation (4 platforms): <500ms average
 - Validation time: <100ms including relationship checking
 - Memory usage: <10MB for typical workloads (10-20 schemas)
 
 **Scalability Testing**:
+
 - Tested with up to 50 schemas simultaneously
 - Linear performance scaling with schema count
 - No memory leaks or performance degradation observed
@@ -526,6 +553,7 @@ We tested schema generation across all four target platforms with various config
 #### 6.2.3 Content Optimization Effectiveness
 
 **Windsurf Character Limit Handling**:
+
 - Tested schemas from 1KB to 15KB in size
 - Intelligent truncation preserved essential content in 94% of cases
 - Average content retention: 85% for schemas exceeding 6KB limit
@@ -538,17 +566,20 @@ We tested schema generation across all four target platforms with various config
 Early adopters (N=8 developers from 3 teams) reported:
 
 **Positive Feedback**:
+
 - "Dramatically simplified our multi-platform AI setup"
 - "Finally able to experiment with new AI tools without configuration overhead"
 - "Team consistency improved significantly"
 - "Onboarding new developers became much faster"
 
 **Learning Curve**:
+
 - Average time to productive use: 30 minutes
 - Universal schema concepts understood quickly
 - Platform-specific knowledge no longer required
 
 **Workflow Integration**:
+
 - Seamless integration with existing development workflows
 - Version control friendly (single files vs. multiple platform configs)
 - Easy to share and collaborate on configurations
@@ -556,14 +587,17 @@ Early adopters (N=8 developers from 3 teams) reported:
 #### 6.3.2 Identified Limitations
 
 **Platform Evolution Tracking**:
+
 - New platform features require adapter updates
 - Platform-specific optimizations may lag behind platform releases
 
 **Complex Configuration Mapping**:
+
 - Some advanced platform-specific features cannot be expressed universally
 - Manual platform-specific extensions sometimes needed
 
 **Community Coordination**:
+
 - Success depends on community adoption and contribution
 - Platform vendor support would accelerate adoption
 
@@ -572,12 +606,14 @@ Early adopters (N=8 developers from 3 teams) reported:
 #### 6.4.1 Configuration Overhead Reduction
 
 **Before Universal Schema (per platform)**:
+
 - Initial setup time: 2-4 hours per platform
 - Maintenance time: 30-60 minutes per configuration change
 - Platform switching time: 4-8 hours
 - Total multi-platform overhead: 8-16 hours initial + ongoing maintenance
 
 **After Universal Schema**:
+
 - Initial setup time: 30 minutes (covers all platforms)
 - Maintenance time: 5 minutes per configuration change
 - Platform switching time: 5 minutes (automatic deployment)
@@ -733,9 +769,9 @@ We thank the early adopters who provided valuable feedback and the AI developmen
 
 [6] Mockus, A., et al. "Understanding and predicting effort in software projects." Proceedings of the 25th international conference on Software engineering. 2003.
 
-[7] Microsoft. "Language Server Protocol Specification." https://microsoft.github.io/language-server-protocol/
+[7] Microsoft. "Language Server Protocol Specification." <https://microsoft.github.io/language-server-protocol/>
 
-[8] Microsoft. "Debug Adapter Protocol." https://microsoft.github.io/debug-adapter-protocol/
+[8] Microsoft. "Debug Adapter Protocol." <https://microsoft.github.io/debug-adapter-protocol/>
 
 [9] Humble, J., and Farley, D. "Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation." Addison-Wesley Professional, 2010.
 
@@ -757,9 +793,9 @@ We thank the early adopters who provided valuable feedback and the AI developmen
 
 [18] Vaithilingam, P., et al. "Expectation vs. Experience: Evaluating the Usability of Code Generation Tools Powered by Large Language Models." Proceedings of the 2022 CHI Conference on Human Factors in Computing Systems. 2022.
 
-[19] OpenAPI Initiative. "OpenAPI Specification." https://swagger.io/specification/
+[19] OpenAPI Initiative. "OpenAPI Specification." <https://swagger.io/specification/>
 
-[20] Open Container Initiative. "OCI Specifications." https://opencontainers.org/
+[20] Open Container Initiative. "OCI Specifications." <https://opencontainers.org/>
 
 ---
 

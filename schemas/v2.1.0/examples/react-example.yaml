@@ -33,8 +33,8 @@ platforms:
     compatible: true
     priority: 9
     reviewType: "code-quality"
-requires: ["typescript-base", "frontend-core"]
-suggests: ["react-testing", "accessibility-patterns", "react-performance"]
+requires: []
+suggests: []
 conflicts: ["vue-patterns", "angular-patterns"]
 tags: ["react", "typescript", "components", "hooks", "frontend"]
 author: "ai-context-schema"

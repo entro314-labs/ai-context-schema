@@ -61,6 +61,7 @@ Our approach adapts schema-based interoperability to AI tool configuration, exte
 We conducted a systematic analysis of configuration systems across major AI development platforms to understand the scope and nature of fragmentation challenges.
 
 **Platform Survey**: We examined four leading AI development platforms:
+
 - **Claude Code**: Memory-based context with markdown formatting and slash command generation
 - **Cursor**: Rule-based activation with YAML frontmatter and file pattern matching
 - **Windsurf**: XML-structured memory with workspace scoping and character limitations
@@ -169,6 +170,7 @@ AI behavioral specifications in markdown format...
 ```
 
 **Schema Structure**:
+
 - **Identity Fields**: Unique identification and versioning
 - **Platform Configurations**: Platform-specific adaptation parameters
 - **Relationship Graph**: Dependencies, suggestions, and conflicts
@@ -188,6 +190,7 @@ interface PlatformAdapter {
 ```
 
 **Adapter Responsibilities**:
+
 1. **Format Translation**: Convert universal schema to platform-specific format
 2. **Constraint Handling**: Respect platform limitations (character limits, file patterns)
 3. **Feature Mapping**: Adapt universal specifications to platform capabilities
@@ -209,6 +212,7 @@ Multi-level validation ensures correctness and compatibility:
 We implemented AI Context Schema through VDK (Vibe Development Kit), providing a complete reference implementation with CLI tools, validation utilities, and platform adapters.
 
 **Core Components**:
+
 - **Schema Parser**: YAML frontmatter and markdown content parsing
 - **Validation Engine**: Multi-level validation with comprehensive error reporting
 - **Platform Adapters**: Complete implementations for Claude Code, Cursor, Windsurf, and GitHub Copilot
@@ -217,6 +221,7 @@ We implemented AI Context Schema through VDK (Vibe Development Kit), providing a
 ### 5.2 Platform Adapter Implementations
 
 #### Claude Code Adapter
+
 ```typescript
 export class ClaudeCodeAdapter implements PlatformAdapter {
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
@@ -242,6 +247,7 @@ export class ClaudeCodeAdapter implements PlatformAdapter {
 ```
 
 #### Cursor Adapter
+
 ```typescript
 export class CursorAdapter implements PlatformAdapter {
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
@@ -269,6 +275,7 @@ export class CursorAdapter implements PlatformAdapter {
 ```
 
 #### Windsurf Adapter with Constraint Handling
+
 ```typescript
 export class WindsurfAdapter implements PlatformAdapter {
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
@@ -396,6 +403,7 @@ We evaluated AI Context Schema across multiple dimensions to assess its effectiv
 | GitHub Copilot | 15 | 100% | Limited to supported review types |
 
 **Platform Feature Mapping**: We successfully mapped universal schema features to platform-specific capabilities:
+
 - Priority systems (Claude Code, Windsurf, GitHub Copilot)
 - Auto-activation (Cursor file patterns)
 - Command generation (Claude Code slash commands)
@@ -404,12 +412,14 @@ We evaluated AI Context Schema across multiple dimensions to assess its effectiv
 #### 6.1.2 Performance Metrics
 
 **Generation Performance**:
+
 - Schema parsing time: <50ms for typical schemas (2-5KB)
 - Multi-platform generation: <500ms for 4 platforms
 - Validation time: <100ms including relationship checking
 - Memory usage: <10MB for typical workloads
 
 **Scalability Analysis**:
+
 - Tested with up to 50 schemas simultaneously
 - Linear scaling with schema count
 - Dependency resolution complexity: O(n²) for n schemas
@@ -418,12 +428,14 @@ We evaluated AI Context Schema across multiple dimensions to assess its effectiv
 #### 6.1.3 Content Optimization Analysis
 
 **Windsurf Character Limit Handling**:
+
 - Tested schemas ranging from 1KB to 15KB
 - Intelligent truncation preserved essential content in 94% of cases
 - Average content retention: 85% for schemas exceeding limits
 - No critical information loss in test cases
 
 **Format Conversion Accuracy**:
+
 - YAML frontmatter conversion: 100% accuracy
 - Markdown structure preservation: 100% accuracy
 - XML formatting compliance: 100% validity
@@ -434,11 +446,13 @@ We evaluated AI Context Schema across multiple dimensions to assess its effectiv
 We analyzed the expressiveness and complexity of universal schemas compared to platform-specific configurations.
 
 **Configuration Completeness**:
+
 - Universal schemas captured 95% of platform-specific configuration options
 - Missing features primarily related to platform-unique capabilities
 - All essential behavioral specifications successfully represented
 
 **Maintenance Overhead Reduction**:
+
 - Single universal schema replaces 4 platform-specific configurations
 - Configuration changes require single file modification
 - Cross-platform consistency maintained automatically
@@ -446,12 +460,14 @@ We analyzed the expressiveness and complexity of universal schemas compared to p
 ### 6.3 Validation Framework Effectiveness
 
 **Error Detection Accuracy**:
+
 - JSON Schema validation: 100% syntax error detection
 - Platform compatibility: 98% configuration error detection
 - Dependency validation: 100% cycle detection accuracy
 - Relationship validation: 95% conflict detection success
 
 **Warning Generation**:
+
 - Character limit warnings: 100% accuracy for Windsurf constraints
 - Missing configuration warnings: 90% helpful prediction rate
 - Optimization suggestions: 85% relevance rating
@@ -555,7 +571,7 @@ We thank the AI development tool community for identifying this problem and the 
 
 [10] Gamma, E., et al. "Design Patterns: Elements of Reusable Object-Oriented Software." Addison-Wesley, 1994.
 
-[11] Microsoft. "Language Server Protocol Specification." https://microsoft.github.io/language-server-protocol/
+[11] Microsoft. "Language Server Protocol Specification." <https://microsoft.github.io/language-server-protocol/>
 
 [12] Barke, S., et al. "Grounded Copilot: How Programmers Interact with Code-Generating Models." Proceedings of the ACM on Programming Languages 7.OOPSLA1 (2023): 85-111.
 

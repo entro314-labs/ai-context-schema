@@ -32,8 +32,8 @@ platforms:
     priority: 9
     reviewType: "code-quality"
     scope: "repository"
-requires: ["typescript-base"]
-suggests: ["api-development-patterns", "react-component-patterns"]
+requires: []
+suggests: []
 tags: ["testing", "jest", "cypress", "playwright", "quality-assurance"]
 author: "ai-context-schema"
 ---

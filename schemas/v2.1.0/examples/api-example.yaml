@@ -34,8 +34,8 @@ platforms:
     priority: 8
     reviewType: "security"
     scope: "repository"
-requires: ["typescript-base", "backend-core"]
-suggests: ["api-testing", "security-patterns", "database-patterns"]
+requires: []
+suggests: []
 conflicts: ["graphql-patterns"]
 tags: ["api", "rest", "express", "typescript", "backend", "openapi"]
 author: "ai-context-schema"

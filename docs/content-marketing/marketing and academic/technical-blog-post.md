@@ -35,17 +35,20 @@ Four platforms, four completely different approaches. Same purpose, zero interop
 This isn't just an annoyance—it's a systematic problem that creates vendor lock-in and reduces innovation:
 
 **For Developers:**
+
 - Learning curve multiplied by platform count
 - Context drift as configurations diverge
 - High switching costs between tools
 - Maintenance overhead scales with platforms
 
 **For Platform Builders:**
+
 - Reinventing the same configuration concepts
 - Limited ecosystem interoperability
 - Reduced adoption due to migration friction
 
 **For Teams:**
+
 - Inconsistent AI behavior across developers
 - Onboarding complexity for new team members
 - Tool standardization becomes impossible
@@ -61,24 +64,28 @@ Building a universal schema isn't just about file formats—it's about preservin
 Each platform has specific technical requirements:
 
 **Claude Code:**
+
 - Memory hierarchy with priority systems
 - Slash command generation
 - Context injection mechanisms
 - MCP (Model Context Protocol) integration
 
 **Cursor:**
+
 - File pattern-based auto-activation
 - YAML frontmatter with markdown content
 - Agent system integration
 - VS Code deep integration
 
 **Windsurf:**
+
 - XML-formatted memory with structure
 - 6K character limits requiring intelligent truncation
 - Workspace vs. global scope management
 - Performance-optimized parsing
 
 **GitHub Copilot:**
+
 - JSON-based configuration
 - Priority systems for suggestion ranking
 - Repository and organization-level scope
@@ -150,6 +157,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ userId, onUpdate }) =>
 ```
 
 [Additional patterns and anti-patterns...]
+
 ```
 
 ## Platform Adapter Architecture
@@ -389,18 +397,21 @@ class CompatibilityChecker {
 While building VDK, we've validated the core technical approach:
 
 **Technical Validation:**
+
 - Universal schema successfully generates platform-specific configs
 - All major AI platforms (Claude Code, Cursor, Windsurf, GitHub Copilot) supported
 - <500ms generation time for multi-platform deployment
 - Platform-specific constraints (character limits, format requirements) handled correctly
 
 **Implementation Results:**
+
 - Schema creation significantly faster than manual platform-specific configs
 - Platform switching requires no configuration recreation
 - New schemas work across all compatible platforms automatically
 - Zero format conversion errors in testing
 
 **What We're Launching:**
+
 - Complete universal schema specification (v2.1.0)
 - Working platform adapters for 4 major AI tools
 - Validation and compatibility checking tools
@@ -411,6 +422,7 @@ While building VDK, we've validated the core technical approach:
 What makes this more than just a file format is the ecosystem of tooling:
 
 ### CLI Tools
+
 ```bash
 # Validate schema syntax and compatibility
 npx ai-context-schema validate my-schema.yaml
@@ -423,13 +435,16 @@ npx ai-context-schema generate cursor --schemas react-patterns
 ```
 
 ### IDE Integration
+
 - VS Code extension with real-time validation
 - IntelliJ plugin with schema autocompletion  
 - Vim/Neovim LSP integration
 - Sublime Text package
 
 ### Community Contributions
+
 The schema repository includes:
+
 - 20+ example schemas for common technologies
 - Platform adapter development kit
 - Migration tools from existing formats
@@ -440,18 +455,21 @@ The schema repository includes:
 Open-sourcing AI Context Schema is just the beginning. Here's what we're building:
 
 **Immediate (Q1 2024):**
+
 - VS Code and IntelliJ platform adapters
 - Enhanced validation with performance profiling
 - Migration tools for popular existing configurations
 - Community contribution guidelines and workflows
 
 **Medium-term (Q2-Q3 2024):**
+
 - Web-based schema builder and validator
 - Integration with package managers (npm, PyPI, etc.)
 - Schema marketplace for community sharing
 - Analytics and usage insights
 
 **Long-term (Q4 2024+):**
+
 - AI-powered schema optimization recommendations
 - Real-time collaboration on schema development
 - Integration with CI/CD pipelines for automated deployment
@@ -459,9 +477,10 @@ Open-sourcing AI Context Schema is just the beginning. Here's what we're buildin
 
 ## Why Standards Matter in AI Tooling
 
-We're at an inflection point in AI-assisted development. The tools are maturing rapidly, but the ecosystem is fragmenting just as fast. 
+We're at an inflection point in AI-assisted development. The tools are maturing rapidly, but the ecosystem is fragmenting just as fast.
 
 History shows us this pattern:
+
 - **Early innovation:** Multiple approaches, rapid experimentation
 - **Fragmentation:** Incompatible solutions, vendor lock-in
 - **Standardization:** Universal standards emerge, ecosystem consolidates
@@ -476,6 +495,7 @@ AI Context Schema represents the standardization phase. By solving fragmentation
 Ready to eliminate AI assistant configuration fragmentation? Here's how to begin:
 
 ### 1. Explore the Repository
+
 ```bash
 git clone https://github.com/ai-context-schema/ai-context-schema.git
 cd ai-context-schema
@@ -483,6 +503,7 @@ npm install
 ```
 
 ### 2. Validate Existing Configs
+
 ```bash
 # Convert your current configs to universal schema
 npx ai-context-schema migrate cursor .cursor/rules/
@@ -492,6 +513,7 @@ npx ai-context-schema validate schemas/
 ```
 
 ### 3. Create Your First Schema
+
 ```bash
 # Use the interactive wizard
 npx ai-context-schema create --interactive
@@ -501,6 +523,7 @@ cp schemas/v2.1.0/examples/react-components.yaml my-schema.yaml
 ```
 
 ### 4. Deploy Everywhere
+
 ```bash
 # Generate for all compatible platforms
 npx ai-context-schema generate --all
@@ -511,7 +534,7 @@ npx ai-context-schema generate claude-code cursor
 
 ## Join the Movement
 
-AI Context Schema isn't just a technical solution—it's a movement toward interoperable AI tooling. 
+AI Context Schema isn't just a technical solution—it's a movement toward interoperable AI tooling.
 
 **For developers:** Stop managing multiple configuration formats. Define once, deploy everywhere.
 
@@ -523,9 +546,9 @@ AI Context Schema isn't just a technical solution—it's a movement toward inter
 
 The fragmentation problem is solved. Now we need ecosystem adoption.
 
-**Repository:** https://github.com/ai-context-schema/ai-context-schema  
-**Reference Implementation:** https://vdk.tools  
-**Documentation:** https://ai-context-schema.org (coming soon)
+**Repository:** <https://github.com/ai-context-schema/ai-context-schema>  
+**Reference Implementation:** <https://vdk.tools>  
+**Documentation:** <https://ai-context-schema.org> (coming soon)
 
 *The future of AI-assisted development is universal, interoperable, and standardized. It starts with solving configuration fragmentation.*
 
