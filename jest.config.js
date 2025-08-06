@@ -1,17 +1,13 @@
 module.exports = {
   // Test environment
   testEnvironment: 'node',
-  
+
   // Root directory for tests
   rootDir: '.',
-  
+
   // Test file patterns
-  testMatch: [
-    '**/__tests__/**/*.js',
-    '**/*.test.js',
-    '**/*.spec.js'
-  ],
-  
+  testMatch: ['**/__tests__/**/*.js', '**/*.test.js', '**/*.spec.js'],
+
   // Ignore patterns
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
@@ -21,30 +17,23 @@ module.exports = {
     '<rootDir>/.next/',
     '<rootDir>/generated/'
   ],
-  
+
   // File extensions to consider
-  moduleFileExtensions: [
-    'js',
-    'ts',
-    'json'
-  ],
-  
+  moduleFileExtensions: ['js', 'ts', 'json'],
+
   // Module name mapping
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/validation/$1',
     '^@schemas/(.*)$': '<rootDir>/schemas/$1',
     '^@examples/(.*)$': '<rootDir>/schemas/v2.1.0/examples/$1'
   },
-  
+
   // Setup files
-  setupFilesAfterEnv: [
-    '<rootDir>/tests/setup.js'
-  ],
-  
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+
   // Transform configuration (only for JS since we don't have TypeScript setup)
   transform: {},
-  
-  
+
   // Coverage configuration
   collectCoverage: false, // Enable with --coverage flag
   collectCoverageFrom: [
@@ -55,17 +44,11 @@ module.exports = {
     '!**/dist/**',
     '!**/build/**'
   ],
-  
+
   coverageDirectory: 'coverage',
-  
-  coverageReporters: [
-    'text',
-    'text-summary',
-    'html',
-    'lcov',
-    'clover'
-  ],
-  
+
+  coverageReporters: ['text', 'text-summary', 'html', 'lcov', 'clover'],
+
   coverageThreshold: {
     global: {
       branches: 80,
@@ -80,28 +63,28 @@ module.exports = {
       statements: 90
     }
   },
-  
+
   // Verbose output
   verbose: true,
-  
+
   // Error reporting
   errorOnDeprecated: true,
-  
+
   // Test timeout (in milliseconds)
   testTimeout: 10000,
-  
+
   // Clear mocks between tests
   clearMocks: true,
-  
+
   // Restore mocks after each test
   restoreMocks: true,
-  
+
   // Watch plugins
   watchPlugins: [],
-  
+
   // Reporter configuration
   reporters: ['default'],
-  
+
   // Global test configuration
   globals: {
     __DEV__: true,

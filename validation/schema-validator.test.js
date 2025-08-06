@@ -48,6 +48,8 @@ invalid: yaml: content:
   test('should throw error for missing frontmatter', () => {
     const content = 'Just markdown content without frontmatter';
 
-    expect(() => validator.parseSchema(content)).toThrow('Invalid format: YAML frontmatter not found');
+    expect(() => validator.parseSchema(content)).toThrow(
+      'Invalid format: YAML frontmatter not found'
+    );
   });
 });

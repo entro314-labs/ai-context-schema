@@ -6,16 +6,16 @@
 // Extend Jest matchers
 expect.extend({
   toBeValidSchema(received) {
-    const { SchemaValidator } = require('./validation/schema-validator');
+    const { SchemaValidator } = require('../validation/schema-validator');
     const validator = new SchemaValidator();
-    
+
     try {
       const result = validator.validateSchema(received, 'test-schema');
       return {
-        message: () => 
-          result.valid 
-            ? `Expected schema to be invalid`
-            : `Expected schema to be valid, but got errors: ${result.errors.map(e => e.message).join(', ')}`,
+        message: () =>
+          result.valid
+            ? 'Expected schema to be invalid'
+            : `Expected schema to be valid, but got errors: ${result.errors.map((e) => e.message).join(', ')}`,
         pass: result.valid
       };
     } catch (error) {
@@ -29,9 +29,9 @@ expect.extend({
   toHavePlatformSupport(received, platform) {
     const platforms = received.platforms || {};
     const hasSupport = platforms[platform]?.compatible === true;
-    
+
     return {
-      message: () => 
+      message: () =>
         hasSupport
           ? `Expected schema not to support platform "${platform}"`
           : `Expected schema to support platform "${platform}"`,
@@ -41,9 +41,9 @@ expect.extend({
 
   toMatchSchemaVersion(received, version) {
     const schemaVersion = received.version;
-    
+
     return {
-      message: () => 
+      message: () =>
         schemaVersion === version
           ? `Expected schema version not to be "${version}"`
           : `Expected schema version to be "${version}", got "${schemaVersion}"`,
@@ -61,7 +61,7 @@ global.createTestSchema = (overrides = {}) => ({
   category: 'test',
   platforms: {
     'claude-code': { compatible: true, memory: true },
-    'cursor': { compatible: true, activation: 'auto-attached', globs: ['**/*.test.js'] }
+    cursor: { compatible: true, activation: 'auto-attached', globs: ['**/*.test.js'] }
   },
   tags: ['test'],
   author: 'test',
@@ -103,7 +103,7 @@ global.testSchemas = {
       'claude-code': { compatible: true }
     }
   },
-  
+
   complex: {
     id: 'complex-test',
     title: 'Complex Test Schema',
@@ -125,13 +125,13 @@ global.testSchemas = {
         namespace: 'project',
         priority: 8
       },
-      'cursor': {
+      cursor: {
         compatible: true,
         activation: 'auto-attached',
         globs: ['**/*.ts', '**/*.tsx'],
         priority: 'high'
       },
-      'windsurf': {
+      windsurf: {
         compatible: true,
         mode: 'workspace',
         xmlTag: 'test-context',
@@ -169,7 +169,7 @@ global.testPlatforms = {
     allowedTools: ['web_search'],
     mcpIntegration: false
   },
-  
+
   cursor: {
     compatible: true,
     activation: 'auto-attached',
@@ -177,7 +177,7 @@ global.testPlatforms = {
     priority: 'high',
     fileTypes: ['typescript', 'javascript']
   },
-  
+
   windsurf: {
     compatible: true,
     mode: 'workspace',
@@ -185,7 +185,7 @@ global.testPlatforms = {
     characterLimit: 5000,
     priority: 7
   },
-  
+
   githubCopilot: {
     compatible: true,
     priority: 8,
@@ -195,14 +195,16 @@ global.testPlatforms = {
 };
 
 // Async test helpers
-global.waitFor = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+global.waitFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 global.expectAsync = async (asyncFn) => {
   try {
     const result = await asyncFn();
     return expect(result);
   } catch (error) {
-    return expect(() => { throw error; });
+    return expect(() => {
+      throw error;
+    });
   }
 };
 
@@ -241,7 +243,7 @@ process.on('unhandledRejection', (reason, promise) => {
 afterAll(() => {
   // Restore console
   global.restoreConsole();
-  
+
   // Clean up any global state
   jest.clearAllMocks();
   jest.restoreAllMocks();

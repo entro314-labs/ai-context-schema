@@ -14,7 +14,13 @@ const addFormats = require('ajv-formats');
 // Load the JSON Schema definition
 const schemaDefinition = require('../schemas/v2.1.0/context-schema.json');
 
+/**
+ *
+ */
 class SchemaValidator {
+  /**
+   *
+   */
   constructor() {
     this.ajv = new Ajv({
       allErrors: true,
@@ -42,11 +48,13 @@ class SchemaValidator {
       return {
         valid: false,
         filePath,
-        errors: [{
-          type: 'parse_error',
-          message: `Failed to parse file: ${error.message}`,
-          path: null
-        }]
+        errors: [
+          {
+            type: 'parse_error',
+            message: `Failed to parse file: ${error.message}`,
+            path: null
+          }
+        ]
       };
     }
   }
@@ -76,14 +84,11 @@ class SchemaValidator {
     // Second pass: validate relationships
     for (const result of results) {
       if (result.valid && result.schema) {
-        const relationshipErrors = this.validateRelationships(
-          result.schema,
-          allSchemas
-        );
+        const relationshipErrors = this.validateRelationships(result.schema, allSchemas);
 
         if (relationshipErrors.length > 0) {
           result.errors.push(...relationshipErrors);
-          result.valid = relationshipErrors.every(e => e.severity !== 'error');
+          result.valid = relationshipErrors.every((e) => e.severity !== 'error');
         }
       }
     }
@@ -97,7 +102,7 @@ class SchemaValidator {
   /**
    * Parse a schema file (YAML frontmatter + markdown content)
    * @param {string} content - File content
-   * @returns {Object} Parsed schema
+   * @returns {object} Parsed schema
    */
   parseSchema(content) {
     // Split YAML frontmatter from markdown content
@@ -125,7 +130,7 @@ class SchemaValidator {
 
   /**
    * Validate a parsed schema against the JSON Schema definition
-   * @param {Object} schema - Parsed schema object
+   * @param {object} schema - Parsed schema object
    * @param {string} filePath - Source file path
    * @returns {ValidationResult}
    */
@@ -147,13 +152,13 @@ class SchemaValidator {
 
     // Business logic validation
     const businessErrors = this.validateBusinessRules(schema);
-    result.errors.push(...businessErrors.filter(e => e.severity === 'error'));
-    result.warnings.push(...businessErrors.filter(e => e.severity === 'warning'));
+    result.errors.push(...businessErrors.filter((e) => e.severity === 'error'));
+    result.warnings.push(...businessErrors.filter((e) => e.severity === 'warning'));
 
     // Content validation
     const contentErrors = this.validateContent(schema);
-    result.errors.push(...contentErrors.filter(e => e.severity === 'error'));
-    result.warnings.push(...contentErrors.filter(e => e.severity === 'warning'));
+    result.errors.push(...contentErrors.filter((e) => e.severity === 'error'));
+    result.warnings.push(...contentErrors.filter((e) => e.severity === 'warning'));
 
     if (result.errors.length > 0) {
       result.valid = false;
@@ -168,7 +173,7 @@ class SchemaValidator {
    * @returns {Array} Formatted error objects
    */
   formatAjvErrors(ajvErrors) {
-    return ajvErrors.map(error => ({
+    return ajvErrors.map((error) => ({
       type: 'schema_validation',
       severity: 'error',
       path: error.instancePath || error.schemaPath,
@@ -180,7 +185,7 @@ class SchemaValidator {
 
   /**
    * Validate business rules beyond JSON Schema
-   * @param {Object} schema - Schema object
+   * @param {object} schema - Schema object
    * @returns {Array} Business rule validation errors
    */
   validateBusinessRules(schema) {
@@ -213,7 +218,10 @@ class SchemaValidator {
     }
 
     // Version format validation
-    if (schema.version && !/^\d+\.\d+\.\d+(-[a-zA-Z0-9-]+)?(\+[a-zA-Z0-9-]+)?$/.test(schema.version)) {
+    if (
+      schema.version &&
+      !/^\d+\.\d+\.\d+(-[a-zA-Z0-9-]+)?(\+[a-zA-Z0-9-]+)?$/.test(schema.version)
+    ) {
       errors.push({
         type: 'invalid_version',
         severity: 'error',
@@ -232,7 +240,7 @@ class SchemaValidator {
   /**
    * Validate platform-specific configuration
    * @param {string} platform - Platform name
-   * @param {Object} config - Platform configuration
+   * @param {object} config - Platform configuration
    * @returns {Array} Platform validation errors
    */
   validatePlatformConfig(platform, config) {
@@ -243,49 +251,49 @@ class SchemaValidator {
     }
 
     switch (platform) {
-    case 'claude-code':
-      if (config.command && !config.namespace) {
-        errors.push({
-          type: 'missing_namespace',
-          severity: 'warning',
-          path: `platforms.${platform}.namespace`,
-          message: 'Namespace recommended when command is enabled'
-        });
-      }
-      break;
+      case 'claude-code':
+        if (config.command && !config.namespace) {
+          errors.push({
+            type: 'missing_namespace',
+            severity: 'warning',
+            path: `platforms.${platform}.namespace`,
+            message: 'Namespace recommended when command is enabled'
+          });
+        }
+        break;
 
-    case 'cursor':
-      if (config.activation === 'auto-attached' && !config.globs) {
-        errors.push({
-          type: 'missing_globs',
-          severity: 'error',
-          path: `platforms.${platform}.globs`,
-          message: 'Globs required for auto-attached activation'
-        });
-      }
-      break;
+      case 'cursor':
+        if (config.activation === 'auto-attached' && !config.globs) {
+          errors.push({
+            type: 'missing_globs',
+            severity: 'error',
+            path: `platforms.${platform}.globs`,
+            message: 'Globs required for auto-attached activation'
+          });
+        }
+        break;
 
-    case 'windsurf':
-      if (config.characterLimit && config.characterLimit > 6000) {
-        errors.push({
-          type: 'character_limit_exceeded',
-          severity: 'warning',
-          path: `platforms.${platform}.characterLimit`,
-          message: 'Character limit exceeds Windsurf maximum (6000)'
-        });
-      }
-      break;
+      case 'windsurf':
+        if (config.characterLimit && config.characterLimit > 6000) {
+          errors.push({
+            type: 'character_limit_exceeded',
+            severity: 'warning',
+            path: `platforms.${platform}.characterLimit`,
+            message: 'Character limit exceeds Windsurf maximum (6000)'
+          });
+        }
+        break;
 
-    case 'github-copilot':
-      if (config.priority && (config.priority < 1 || config.priority > 10)) {
-        errors.push({
-          type: 'invalid_priority',
-          severity: 'error',
-          path: `platforms.${platform}.priority`,
-          message: 'Priority must be between 1 and 10'
-        });
-      }
-      break;
+      case 'github-copilot':
+        if (config.priority && (config.priority < 1 || config.priority > 10)) {
+          errors.push({
+            type: 'invalid_priority',
+            severity: 'error',
+            path: `platforms.${platform}.priority`,
+            message: 'Priority must be between 1 and 10'
+          });
+        }
+        break;
     }
 
     return errors;
@@ -293,7 +301,7 @@ class SchemaValidator {
 
   /**
    * Validate schema content
-   * @param {Object} schema - Schema object
+   * @param {object} schema - Schema object
    * @returns {Array} Content validation errors
    */
   validateContent(schema) {
@@ -349,7 +357,7 @@ class SchemaValidator {
 
   /**
    * Check for cyclic dependencies
-   * @param {Object} schema - Schema object
+   * @param {object} schema - Schema object
    * @returns {boolean} True if cyclic dependencies exist
    */
   hasCyclicDependencies(schema) {
@@ -383,7 +391,7 @@ class SchemaValidator {
 
   /**
    * Find relationship conflicts
-   * @param {Object} schema - Schema object
+   * @param {object} schema - Schema object
    * @returns {Array} Relationship conflict errors
    */
   findRelationshipConflicts(schema) {
@@ -392,7 +400,7 @@ class SchemaValidator {
     const conflicts = new Set(schema.conflicts || []);
 
     // Check for schemas that are both required and conflicted
-    const intersection = [...requires].filter(id => conflicts.has(id));
+    const intersection = [...requires].filter((id) => conflicts.has(id));
     if (intersection.length > 0) {
       errors.push({
         type: 'conflicting_relationships',
@@ -407,7 +415,7 @@ class SchemaValidator {
 
   /**
    * Validate relationships between schemas
-   * @param {Object} schema - Schema to validate
+   * @param {object} schema - Schema to validate
    * @param {Map} allSchemas - Map of all schemas by ID
    * @returns {Array} Relationship validation errors
    */
@@ -456,13 +464,13 @@ class SchemaValidator {
   /**
    * Generate validation summary
    * @param {Array} results - Validation results
-   * @returns {Object} Summary statistics
+   * @returns {object} Summary statistics
    */
   generateSummary(results) {
     const summary = {
       total: results.length,
-      valid: results.filter(r => r.valid).length,
-      invalid: results.filter(r => !r.valid).length,
+      valid: results.filter((r) => r.valid).length,
+      invalid: results.filter((r) => !r.valid).length,
       errors: results.reduce((sum, r) => sum + r.errors.length, 0),
       warnings: results.reduce((sum, r) => sum + (r.warnings?.length || 0), 0),
       errorTypes: {},
@@ -554,8 +562,8 @@ async function main() {
 
 /**
  * Print validation results to console
- * @param {Object} results - Validation results
- * @param {Object} options - Output options
+ * @param {object} results - Validation results
+ * @param {object} options - Output options
  */
 function printResults(results, options) {
   const { summary } = results;
@@ -621,7 +629,7 @@ function printResults(results, options) {
 
 // Run CLI if this file is executed directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('Validation failed:', error.message);
     process.exit(1);
   });

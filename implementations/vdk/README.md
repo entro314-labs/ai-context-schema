@@ -72,13 +72,13 @@ VDK demonstrates complete platform adapter implementations:
 export class ClaudeCodeAdapter implements PlatformAdapter {
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
     const memoryFiles = schemas
-      .filter(s => s.platforms['claude-code']?.memory)
-      .map(s => this.generateMemoryFile(s));
-    
+      .filter((s) => s.platforms['claude-code']?.memory)
+      .map((s) => this.generateMemoryFile(s));
+
     const commands = schemas
-      .filter(s => s.platforms['claude-code']?.command)
-      .map(s => this.generateSlashCommand(s));
-    
+      .filter((s) => s.platforms['claude-code']?.command)
+      .map((s) => this.generateSlashCommand(s));
+
     return {
       '.claude/CLAUDE.md': this.combineMemoryFiles(memoryFiles),
       '.claude/CLAUDE_COMMANDS.md': this.generateCommandsFile(commands)
@@ -93,14 +93,14 @@ export class ClaudeCodeAdapter implements PlatformAdapter {
 export class CursorAdapter implements PlatformAdapter {
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
     const files: GeneratedFiles = {};
-    
+
     for (const schema of schemas) {
       const cursorConfig = schema.platforms.cursor;
       if (!cursorConfig?.compatible) continue;
-      
+
       files[`.cursor/rules/${schema.id}.mdc`] = this.generateMDCFile(schema);
     }
-    
+
     return files;
   }
 }
@@ -128,7 +128,7 @@ class ProjectAnalyzer {
     const frameworks = this.detectFrameworks(dependencies, structure);
     const languages = this.detectLanguages(structure);
     const patterns = this.detectPatterns(structure, dependencies);
-    
+
     return { frameworks, languages, patterns, dependencies, structure };
   }
 }
@@ -142,18 +142,18 @@ class SchemaResolver {
     const candidates = await this.findCandidateSchemas(analysis);
     const resolved = await this.resolveDependencies(candidates);
     const filtered = this.resolveConflicts(resolved);
-    
+
     return this.sortByPriority(filtered);
   }
-  
+
   private async resolveDependencies(schemas: ContextSchema[]): Promise<ContextSchema[]> {
     const resolved = new Set<string>();
     const result: ContextSchema[] = [];
-    
+
     for (const schema of schemas) {
       await this.addWithDependencies(schema, resolved, result);
     }
-    
+
     return result;
   }
 }
@@ -164,24 +164,22 @@ class SchemaResolver {
 ```typescript
 class GenerationEngine {
   constructor(private adapters: Map<string, PlatformAdapter>) {}
-  
+
   async generateAll(
-    schemas: ContextSchema[], 
+    schemas: ContextSchema[],
     platforms: string[]
   ): Promise<Map<string, GeneratedFiles>> {
     const results = new Map<string, GeneratedFiles>();
-    
+
     for (const platform of platforms) {
       const adapter = this.adapters.get(platform);
       if (!adapter) continue;
-      
-      const compatibleSchemas = schemas.filter(s => 
-        s.platforms[platform]?.compatible
-      );
-      
+
+      const compatibleSchemas = schemas.filter((s) => s.platforms[platform]?.compatible);
+
       results.set(platform, await adapter.generate(compatibleSchemas));
     }
-    
+
     return results;
   }
 }
@@ -200,23 +198,23 @@ import { contextSchemaDefinition } from './schemas/v2.1.0/context-schema.json';
 class SchemaValidator {
   private ajv = new Ajv({ allErrors: true });
   private validator = this.ajv.compile(contextSchemaDefinition);
-  
+
   validate(schema: any): ValidationResult {
     const valid = this.validator(schema);
-    
+
     if (!valid) {
       return {
         valid: false,
         errors: this.validator.errors || []
       };
     }
-    
+
     return this.validateBusinessRules(schema);
   }
-  
+
   private validateBusinessRules(schema: ContextSchema): ValidationResult {
     const errors: ValidationError[] = [];
-    
+
     // Check dependency cycles
     if (this.hasCyclicDependencies(schema)) {
       errors.push({
@@ -224,7 +222,7 @@ class SchemaValidator {
         message: 'Cyclic dependency detected'
       });
     }
-    
+
     // Validate platform compatibility
     for (const [platform, config] of Object.entries(schema.platforms)) {
       if (config.compatible && !this.validatePlatformConfig(platform, config)) {
@@ -234,7 +232,7 @@ class SchemaValidator {
         });
       }
     }
-    
+
     return {
       valid: errors.length === 0,
       errors
@@ -267,10 +265,10 @@ describe('SchemaResolver', () => {
       createSchema('derived', { requires: ['base'] }),
       createSchema('complex', { requires: ['derived', 'base'] })
     ];
-    
+
     const resolved = await resolver.resolveDependencies(schemas);
-    
-    expect(resolved.map(s => s.id)).toEqual(['base', 'derived', 'complex']);
+
+    expect(resolved.map((s) => s.id)).toEqual(['base', 'derived', 'complex']);
   });
 });
 ```
@@ -282,7 +280,7 @@ describe('CLI Integration', () => {
   it('should generate configurations for React project', async () => {
     const projectPath = './test-fixtures/react-project';
     const result = await cli.run(['init', '--project', projectPath]);
-    
+
     expect(result.exitCode).toBe(0);
     expect(fs.existsSync(`${projectPath}/.claude/CLAUDE.md`)).toBe(true);
     expect(fs.existsSync(`${projectPath}/.cursor/rules/react-components.mdc`)).toBe(true);

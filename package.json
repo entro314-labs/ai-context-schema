@@ -1,28 +1,59 @@
 {
   "name": "ai-context-schema",
   "version": "2.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Universal schema for defining AI assistant behavior across development platforms",
-  "main": "validation/schema-validator.js",
-  "bin": {
-    "ai-context-schema": "validation/schema-validator.js"
-  },
-  "scripts": {
-    "validate": "node validation/schema-validator.js",
-    "validate-all": "node validation/schema-validator.js schemas/v2.1.0/examples --warnings",
-    "validate-verbose": "node validation/schema-validator.js schemas/v2.1.0/examples --verbose --warnings",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "lint": "eslint validation/ --ext .js",
-    "lint:fix": "eslint validation/ --ext .js --fix",
-    "check-compatibility": "node validation/compatibility-checker.js",
-    "docs:serve": "markdownlint-cli2 'docs/**/*.md' 'implementations/**/*.md' 'schemas/**/*.md' '*.md' && echo 'Documentation validated'",
-    "prepare": "npm run validate-all"
-  },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/ai-context-schema/ai-context-schema.git"
   },
+  "author": "AI Context Schema Contributors",
+  "homepage": "https://github.com/ai-context-schema/ai-context-schema#readme",
+  "bugs": {
+    "url": "https://github.com/ai-context-schema/ai-context-schema/issues"
+  },
+  "main": "validation/schema-validator.js",
+  "bin": {
+    "ai-context-schema": "validation/schema-validator.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "check": "pnpm run lint:all && pnpm run test && pnpm run validate-all",
+    "check-compatibility": "node validation/compatibility-checker.js",
+    "ci": "pnpm run check",
+    "docs:serve": "markdownlint-cli2 'docs/**/*.md' 'implementations/**/*.md' 'schemas/**/*.md' '*.md' && echo 'Documentation validated'",
+    "fix:all": "pnpm run lint:fix && pnpm run format",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:all": "pnpm run lint && pnpm run format:check && pnpm run lint:docs",
+    "lint:docs": "markdownlint-cli2 'docs/**/*.md' 'implementations/**/*.md' 'schemas/**/*.md' '*.md'",
+    "lint:fix": "eslint . --fix",
+    "lint:js": "eslint validation/ --ext .js",
+    "lint:json": "eslint **/*.json",
+    "prepare": "husky",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "validate": "node validation/schema-validator.js",
+    "validate-all": "node validation/schema-validator.js schemas/v2.1.0/examples --warnings",
+    "validate-verbose": "node validation/schema-validator.js schemas/v2.1.0/examples --verbose --warnings"
+  },
+  "files": [
+    "CONTRIBUTING.md",
+    "docs/",
+    "implementations/",
+    "schemas/",
+    "SPECIFICATION.md",
+    "validation/",
+    "LICENSE",
+    "README.md"
+  ],
   "keywords": [
     "ai",
     "artificial-intelligence",
@@ -36,15 +67,6 @@
     "development",
     "standardization"
   ],
-  "author": "AI Context Schema Contributors",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ai-context-schema/ai-context-schema/issues"
-  },
-  "homepage": "https://github.com/ai-context-schema/ai-context-schema#readme",
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "dependencies": {
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
@@ -54,27 +76,30 @@
     "@eslint/js": "^9.32.0",
     "eslint": "^9.32.0",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^52.0.4",
+    "eslint-plugin-jsonc": "^2.20.1",
+    "eslint-plugin-n": "^17.21.3",
     "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-sonarjs": "^3.0.4",
+    "eslint-plugin-yml": "^1.18.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.5",
+    "jsonc-eslint-parser": "^2.4.0",
+    "lint-staged": "^16.1.4",
     "markdownlint-cli2": "^0.18.1",
-    "rimraf": "^6.0.1"
+    "prettier": "^3.6.2",
+    "prettier-plugin-package": "^2.0.0",
+    "prettier-plugin-sh": "^0.18.0",
+    "remark-cli": "^12.0.1",
+    "remark-preset-lint-recommended": "^7.0.1",
+    "rimraf": "^6.0.1",
+    "yaml-lint": "^1.7.0"
   },
-  "files": [
-    "schemas/",
-    "validation/",
-    "docs/",
-    "implementations/",
-    "README.md",
-    "SPECIFICATION.md",
-    "CONTRIBUTING.md",
-    "LICENSE"
-  ],
   "directories": {
     "doc": "docs",
     "example": "schemas/v2.1.0/examples"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "funding": {
     "type": "github",

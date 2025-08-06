@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
     # Run weekly validation check
     - cron: '0 2 * * 1'
@@ -16,99 +16,99 @@ jobs:
   validate-schemas:
     name: Validate Schema Files
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Validate JSON Schema definition
-      run: |
-        node -e "
-          const schema = require('./schemas/v2.1.0/context-schema.json');
-          const Ajv = require('ajv');
-          const ajv = new Ajv();
-          const validate = ajv.compile(schema);
-          console.log('JSON Schema definition is valid');
-        "
-        
-    - name: Validate example schemas
-      run: npm run validate-all
-      
-    - name: Check schema compatibility
-      run: npm run check-compatibility
-      
-    - name: Upload validation results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: validation-results
-        path: |
-          validation-results.json
-          compatibility-report.json
-        retention-days: 30
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate JSON Schema definition
+        run: |
+          node -e "
+            const schema = require('./schemas/v2.1.0/context-schema.json');
+            const Ajv = require('ajv');
+            const ajv = new Ajv();
+            const validate = ajv.compile(schema);
+            console.log('JSON Schema definition is valid');
+          "
+
+      - name: Validate example schemas
+        run: npm run validate-all
+
+      - name: Check schema compatibility
+        run: npm run check-compatibility
+
+      - name: Upload validation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-results
+          path: |
+            validation-results.json
+            compatibility-report.json
+          retention-days: 30
 
   test-validation-tools:
     name: Test Validation Tools
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run unit tests
-      run: npm test
-      
-    - name: Run tests with coverage
-      run: npm run test:coverage
-      
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage/lcov.info
-        flags: unittests
-        name: codecov-umbrella
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
 
   lint-and-format:
     name: Lint and Format Check
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run ESLint
-      run: npm run lint
-      
-    - name: Check Markdown formatting
-      run: npm run docs:serve
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check Markdown formatting
+        run: npm run docs:serve
 
   test-platform-adapters:
     name: Test Platform Adapter Compatibility
@@ -116,226 +116,226 @@ jobs:
     strategy:
       matrix:
         platform: [claude-code, cursor, windsurf, github-copilot]
-        
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Test platform compatibility
-      run: |
-        node validation/compatibility-checker.js schemas/v2.1.0/examples \
-          --platform=${{ matrix.platform }} \
-          --json > compatibility-${{ matrix.platform }}.json
-        
-    - name: Upload platform test results
-      uses: actions/upload-artifact@v4
-      with:
-        name: platform-compatibility-${{ matrix.platform }}
-        path: compatibility-${{ matrix.platform }}.json
-        retention-days: 30
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test platform compatibility
+        run: |
+          node validation/compatibility-checker.js schemas/v2.1.0/examples \
+            --platform=${{ matrix.platform }} \
+            --json > compatibility-${{ matrix.platform }}.json
+
+      - name: Upload platform test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-compatibility-${{ matrix.platform }}
+          path: compatibility-${{ matrix.platform }}.json
+          retention-days: 30
 
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run npm audit
-      run: npm audit --audit-level moderate
-      
-    - name: Run security scan with njsscan
-      uses: ajinabraham/njsscan-action@v7
-      with:
-        args: '--sarif --output results.sarif validation/ || true'
-        
-    - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: results.sarif
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level moderate
+
+      - name: Run security scan with njsscan
+        uses: ajinabraham/njsscan-action@v7
+        with:
+          args: '--sarif --output results.sarif validation/ || true'
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
 
   documentation-check:
     name: Documentation Check
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Check for broken links
-      uses: gaurav-nelson/github-action-markdown-link-check@v1
-      with:
-        use-quiet-mode: 'yes'
-        use-verbose-mode: 'yes'
-        config-file: '.github/markdown-link-check.json'
-        
-    - name: Validate documentation structure
-      run: |
-        # Check required documentation files
-        required_files=(
-          "README.md"
-          "SPECIFICATION.md"
-          "CONTRIBUTING.md"
-          "docs/platform-support.md"
-          "docs/migration-guide.md"
-        )
-        
-        for file in "${required_files[@]}"; do
-          if [ ! -f "$file" ]; then
-            echo "Error: Required documentation file missing: $file"
-            exit 1
-          fi
-        done
-        
-        echo "All required documentation files present"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for broken links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/markdown-link-check.json'
+
+      - name: Validate documentation structure
+        run: |
+          # Check required documentation files
+          required_files=(
+            "README.md"
+            "SPECIFICATION.md"
+            "CONTRIBUTING.md"
+            "docs/platform-support.md"
+            "docs/migration-guide.md"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "Error: Required documentation file missing: $file"
+              exit 1
+            fi
+          done
+
+          echo "All required documentation files present"
 
   release-check:
     name: Release Readiness Check
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: [validate-schemas, test-validation-tools, lint-and-format, test-platform-adapters]
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Check package version
-      run: |
-        PACKAGE_VERSION=$(node -p "require('./package.json').version")
-        SCHEMA_VERSION=$(node -p "require('./schemas/v2.1.0/context-schema.json').properties.version.pattern")
-        echo "Package version: $PACKAGE_VERSION"
-        echo "Schema version pattern: $SCHEMA_VERSION"
-        
-    - name: Validate release readiness
-      run: |
-        # Check if CHANGELOG.md exists and is updated
-        if [ ! -f "CHANGELOG.md" ]; then
-          echo "Warning: CHANGELOG.md not found"
-        fi
-        
-        # Validate all examples pass validation
-        npm run validate-all
-        
-        # Check compatibility across all platforms
-        npm run check-compatibility
-        
-        echo "Release readiness check completed"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check package version
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          SCHEMA_VERSION=$(node -p "require('./schemas/v2.1.0/context-schema.json').properties.version.pattern")
+          echo "Package version: $PACKAGE_VERSION"
+          echo "Schema version pattern: $SCHEMA_VERSION"
+
+      - name: Validate release readiness
+        run: |
+          # Check if CHANGELOG.md exists and is updated
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "Warning: CHANGELOG.md not found"
+          fi
+
+          # Validate all examples pass validation
+          npm run validate-all
+
+          # Check compatibility across all platforms
+          npm run check-compatibility
+
+          echo "Release readiness check completed"
 
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'release:')
     needs: [release-check]
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        registry-url: 'https://registry.npmjs.org'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build package
-      run: npm run prepare
-      
-    - name: Publish to NPM
-      run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run prepare
+
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'release:')
     needs: [publish-npm]
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Extract version from package.json
-      id: package-version
-      run: |
-        VERSION=$(node -p "require('./package.json').version")
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.package-version.outputs.version }}
-        release_name: Release v${{ steps.package-version.outputs.version }}
-        body: |
-          ## Changes in v${{ steps.package-version.outputs.version }}
-          
-          ### Schema Updates
-          - Updated AI Context Schema specification
-          - New example schemas and validation improvements
-          
-          ### Platform Support
-          - Enhanced platform adapter compatibility
-          - Improved validation and error reporting
-          
-          See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
-          
-          ## Installation
-          ```bash
-          npm install -g ai-context-schema@${{ steps.package-version.outputs.version }}
-          ```
-          
-          ## Validation
-          ```bash
-          npx ai-context-schema validate your-schema.yaml
-          ```
-        draft: false
-        prerelease: false
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version from package.json
+        id: package-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.version }}
+          release_name: Release v${{ steps.package-version.outputs.version }}
+          body: |
+            ## Changes in v${{ steps.package-version.outputs.version }}
+
+            ### Schema Updates
+            - Updated AI Context Schema specification
+            - New example schemas and validation improvements
+
+            ### Platform Support
+            - Enhanced platform adapter compatibility
+            - Improved validation and error reporting
+
+            See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
+
+            ## Installation
+            ```bash
+            npm install -g ai-context-schema@${{ steps.package-version.outputs.version }}
+            ```
+
+            ## Validation
+            ```bash
+            npx ai-context-schema validate your-schema.yaml
+            ```
+          draft: false
+          prerelease: false
 
   notify-community:
     name: Notify Community
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'release:')
     needs: [create-release]
-    
+
     steps:
-    - name: Notify via webhook
-      if: secrets.DISCORD_WEBHOOK_URL
-      run: |
-        curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{\"content\":\"🚀 New AI Context Schema release: v${{ steps.package-version.outputs.version }} is now available!\"}" \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+      - name: Notify via webhook
+        if: secrets.DISCORD_WEBHOOK_URL
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{\"content\":\"🚀 New AI Context Schema release: v${{ steps.package-version.outputs.version }} is now available!\"}" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}

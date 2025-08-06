@@ -57,7 +57,7 @@ This directory contains community-contributed platform adapters for AI Context S
    platforms:
      your-platform:
        compatible: true
-       customProperty: "value"
+       customProperty: 'value'
    ```
 
 ### Adapter Template
@@ -71,40 +71,44 @@ export class YourPlatformAdapter implements PlatformAdapter {
 
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
     const files: GeneratedFiles = {};
-    
+
     for (const schema of schemas) {
       const config = schema.platforms[this.name];
       if (!config?.compatible) continue;
-      
+
       // Transform schema to your platform's format
       const content = this.transformSchema(schema, config);
       files[`.your-platform/${schema.id}.config`] = content;
     }
-    
+
     return files;
   }
 
   private transformSchema(schema: ContextSchema, config: any): string {
     // Platform-specific transformation logic
-    return JSON.stringify({
-      id: schema.id,
-      title: schema.title,
-      content: schema._content,
-      config: config
-    }, null, 2);
+    return JSON.stringify(
+      {
+        id: schema.id,
+        title: schema.title,
+        content: schema._content,
+        config: config
+      },
+      null,
+      2
+    );
   }
 
   validate(config: any): ValidationResult {
     const errors: string[] = [];
-    
+
     // Validate platform-specific configuration
     if (!config.requiredProperty) {
       errors.push('requiredProperty is required');
     }
-    
+
     return {
       valid: errors.length === 0,
-      errors: errors.map(message => ({ message, type: 'validation_error' }))
+      errors: errors.map((message) => ({ message, type: 'validation_error' }))
     };
   }
 }
@@ -139,16 +143,9 @@ code --install-extension ai-context-schema-1.0.0.vsix
 platforms:
   vscode:
     compatible: true
-    extension: "ai-context-schema.vscode"
-    settings: {
-      "aiContext.autoActivate": true,
-      "aiContext.priority": "high"
-    }
-    commands: [
-      "aiContext.apply",
-      "aiContext.validate",
-      "aiContext.generate"
-    ]
+    extension: 'ai-context-schema.vscode'
+    settings: { 'aiContext.autoActivate': true, 'aiContext.priority': 'high' }
+    commands: ['aiContext.apply', 'aiContext.validate', 'aiContext.generate']
 ```
 
 ### Features
@@ -185,16 +182,10 @@ platforms:
 platforms:
   intellij:
     compatible: true
-    plugin: "ai-context-schema-plugin"
+    plugin: 'ai-context-schema-plugin'
     fileTemplates: true
-    inspections: [
-      "ai-context-patterns",
-      "schema-compliance"
-    ]
-    intentions: [
-      "apply-schema",
-      "generate-from-schema"
-    ]
+    inspections: ['ai-context-patterns', 'schema-compliance']
+    intentions: ['apply-schema', 'generate-from-schema']
 ```
 
 ### Features
@@ -246,15 +237,12 @@ platforms:
   vim:
     compatible: true
     lsp: true
-    commands: [
-      "AiContextApply",
-      "AiContextValidate",
-      "AiContextList"
-    ]
-    autocommands: [
-      "BufEnter *.ts :AiContextApply typescript-patterns",
-      "BufEnter *.py :AiContextApply python-patterns"
-    ]
+    commands: ['AiContextApply', 'AiContextValidate', 'AiContextList']
+    autocommands:
+      [
+        'BufEnter *.ts :AiContextApply typescript-patterns',
+        'BufEnter *.py :AiContextApply python-patterns'
+      ]
 ```
 
 ### Features
@@ -297,15 +285,9 @@ git clone https://github.com/ai-context-schema/sublime-text-plugin.git "AI Conte
 platforms:
   sublime:
     compatible: true
-    plugin: "AI Context Schema"
-    settings: {
-      "auto_apply": true,
-      "show_status": true
-    }
-    commands: [
-      "ai_context_apply",
-      "ai_context_validate"
-    ]
+    plugin: 'AI Context Schema'
+    settings: { 'auto_apply': true, 'show_status': true }
+    commands: ['ai_context_apply', 'ai_context_validate']
 ```
 
 ## Contributing Adapters
@@ -377,7 +359,7 @@ describe('YourPlatformAdapter', () => {
   it('should generate valid configuration files', async () => {
     const schemas = [createTestSchema()];
     const result = await testSuite.testGeneration(schemas);
-    
+
     expect(result.files).toHaveProperty('.your-platform/test-schema.config');
     expect(result.valid).toBe(true);
   });
@@ -386,7 +368,7 @@ describe('YourPlatformAdapter', () => {
     const schema = createSchemaWithPlatformConfig('your-platform', {
       customProperty: 'test-value'
     });
-    
+
     const result = await testSuite.testPlatformFeatures(schema);
     expect(result.features.customProperty).toBe('test-value');
   });
@@ -415,14 +397,14 @@ Add your adapter to the community registry:
 ```yaml
 # .github/adapters-registry.yml
 adapters:
-  - name: "your-platform"
-    version: "1.0.0"
-    author: "your-username"
-    repository: "https://github.com/your-username/ai-context-schema-your-platform"
-    description: "AI Context Schema adapter for Your Platform"
-    platforms: ["your-platform"]
-    status: "stable"
-    lastUpdated: "2024-01-15"
+  - name: 'your-platform'
+    version: '1.0.0'
+    author: 'your-username'
+    repository: 'https://github.com/your-username/ai-context-schema-your-platform'
+    description: 'AI Context Schema adapter for Your Platform'
+    platforms: ['your-platform']
+    status: 'stable'
+    lastUpdated: '2024-01-15'
 ```
 
 ### Adapter Discovery

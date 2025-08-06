@@ -73,34 +73,32 @@ npm test
 
 ```yaml
 ---
-id: "your-context-id"
-title: "Clear, Descriptive Title"
-description: "Detailed description of what this context provides (10-500 chars)"
-version: "1.0.0"
-category: "technology" # or language, stack, task, etc.
+id: 'your-context-id'
+title: 'Clear, Descriptive Title'
+description: 'Detailed description of what this context provides (10-500 chars)'
+version: '1.0.0'
+category: 'technology' # or language, stack, task, etc.
 platforms:
   claude-code:
     compatible: true
     memory: true
   cursor:
     compatible: true
-    activation: "auto-attached"
-    globs: ["**/*.ext"]
+    activation: 'auto-attached'
+    globs: ['**/*.ext']
   windsurf:
     compatible: true
-    mode: "workspace"
+    mode: 'workspace'
   github-copilot:
     compatible: true
     priority: 8
-tags: ["relevant", "searchable", "tags"]
-author: "your-github-username"
+tags: ['relevant', 'searchable', 'tags']
+author: 'your-github-username'
 ---
-
 # Context Title
 
 ## Purpose
 Clear explanation of what this context is for...
-
 ## [Additional sections as needed]
 ```
 
@@ -147,21 +145,21 @@ interface PlatformAdapter {
 ```typescript
 export class MyPlatformAdapter implements PlatformAdapter {
   name = 'my-platform';
-  
+
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
     const files: GeneratedFiles = {};
-    
+
     for (const schema of schemas) {
       const platformConfig = schema.platforms['my-platform'];
       if (!platformConfig?.compatible) continue;
-      
+
       // Transform schema to platform-specific format
       files[`config/${schema.id}.config`] = this.transformSchema(schema);
     }
-    
+
     return files;
   }
-  
+
   private transformSchema(schema: ContextSchema): string {
     // Platform-specific transformation logic
     return transformedContent;

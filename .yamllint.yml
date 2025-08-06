@@ -1,0 +1,35 @@
+extends: default
+
+rules:
+  # Allow long lines for schema documentation
+  line-length:
+    max: 120
+
+  # Allow indentation of 2 spaces
+  indentation:
+    spaces: 2
+
+  # Allow quoted strings for clarity in schemas
+  quoted-strings:
+    quote-type: single
+    required: false
+
+  # Allow empty values for optional schema properties
+  empty-values:
+    forbid-in-block-mappings: false
+    forbid-in-flow-mappings: false
+
+  # Allow comments for schema documentation
+  comments:
+    min-spaces-from-content: 1
+
+  # Don't enforce document start for example files
+  document-start:
+    present: false
+
+  # Allow duplicate keys in examples (for demonstration purposes)
+  key-duplicates: disable
+
+  # Allow truthy values like 'yes', 'no', 'on', 'off'
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']

@@ -106,10 +106,10 @@ Each platform has specific configuration options:
 ```yaml
 claude-code:
   compatible: true
-  memory: true          # Include in memory files
-  command: true         # Enable as slash command
-  namespace: "project"  # project or user scope
-  priority: 8           # Memory hierarchy (1-10)
+  memory: true # Include in memory files
+  command: true # Enable as slash command
+  namespace: 'project' # project or user scope
+  priority: 8 # Memory hierarchy (1-10)
 ```
 
 #### Cursor
@@ -117,9 +117,9 @@ claude-code:
 ```yaml
 cursor:
   compatible: true
-  activation: "auto-attached"    # auto-attached, manual, always
-  globs: ["**/*.tsx"]           # File patterns for activation
-  priority: "high"              # high, medium, low
+  activation: 'auto-attached' # auto-attached, manual, always
+  globs: ['**/*.tsx'] # File patterns for activation
+  priority: 'high' # high, medium, low
 ```
 
 #### Windsurf
@@ -127,9 +127,9 @@ cursor:
 ```yaml
 windsurf:
   compatible: true
-  mode: "workspace"       # workspace or global
-  xmlTag: "context"       # XML wrapper tag
-  characterLimit: 4500    # Content size estimate
+  mode: 'workspace' # workspace or global
+  xmlTag: 'context' # XML wrapper tag
+  characterLimit: 4500 # Content size estimate
 ```
 
 #### GitHub Copilot
@@ -137,18 +137,18 @@ windsurf:
 ```yaml
 github-copilot:
   compatible: true
-  priority: 8                    # Suggestion priority (1-10)
-  reviewType: "code-quality"     # security, performance, code-quality, style
-  scope: "repository"            # repository or organization
+  priority: 8 # Suggestion priority (1-10)
+  reviewType: 'code-quality' # security, performance, code-quality, style
+  scope: 'repository' # repository or organization
 ```
 
 ### Schema Relationships
 
 ```yaml
-requires: ["typescript-base"]     # Hard dependencies
-suggests: ["testing-patterns"]    # Soft recommendations
-conflicts: ["vue-patterns"]       # Incompatible schemas
-supersedes: ["old-patterns"]      # Schemas this replaces
+requires: ['typescript-base'] # Hard dependencies
+suggests: ['testing-patterns'] # Soft recommendations
+conflicts: ['vue-patterns'] # Incompatible schemas
+supersedes: ['old-patterns'] # Schemas this replaces
 ```
 
 ## Platform Adapter System
@@ -169,6 +169,7 @@ interface PlatformAdapter {
 
 ```markdown
 # React Development Guidelines
+
 [Schema content optimized for Claude Code...]
 ```
 
@@ -176,9 +177,9 @@ interface PlatformAdapter {
 
 ```yaml
 ---
-title: "React Development Guidelines"
-activation: "auto-attached"
-globs: ["**/*.tsx"]
+title: 'React Development Guidelines'
+activation: 'auto-attached'
+globs: ['**/*.tsx']
 ---
 [Schema content...]
 ```
@@ -214,14 +215,14 @@ The specification includes comprehensive validation:
 
 ## Implementation Status
 
-| Platform | Status | Configuration Location | Features |
-|----------|--------|----------------------|----------|
-| Claude Code | ✅ Full | `.claude/` | Memory files, commands |
-| Cursor | ✅ Full | `.cursor/rules/` | Auto-attachment, patterns |
-| Windsurf | ✅ Full | `.windsurf/rules/` | XML format, limits |
-| GitHub Copilot | ✅ Full | `.github/copilot/` | Review integration |
-| VS Code | 🚧 Planned | Extension-based | Settings integration |
-| IntelliJ | 🚧 Planned | Plugin-based | Inspections, templates |
+| Platform       | Status     | Configuration Location | Features                  |
+| -------------- | ---------- | ---------------------- | ------------------------- |
+| Claude Code    | ✅ Full    | `.claude/`             | Memory files, commands    |
+| Cursor         | ✅ Full    | `.cursor/rules/`       | Auto-attachment, patterns |
+| Windsurf       | ✅ Full    | `.windsurf/rules/`     | XML format, limits        |
+| GitHub Copilot | ✅ Full    | `.github/copilot/`     | Review integration        |
+| VS Code        | 🚧 Planned | Extension-based        | Settings integration      |
+| IntelliJ       | 🚧 Planned | Plugin-based           | Inspections, templates    |
 
 ## Examples
 

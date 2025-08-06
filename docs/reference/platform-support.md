@@ -18,9 +18,9 @@ Claude Code integrates AI Context Schema through memory files and slash commands
 platforms:
   claude-code:
     compatible: true
-    memory: true           # Include in memory files
-    priority: 8           # Memory hierarchy priority (1-10)
-    namespace: "project"  # project or user scope
+    memory: true # Include in memory files
+    priority: 8 # Memory hierarchy priority (1-10)
+    namespace: 'project' # project or user scope
 ```
 
 Generated files:
@@ -34,14 +34,15 @@ Generated files:
 platforms:
   claude-code:
     compatible: true
-    command: true         # Enable as slash command
-    namespace: "project"  # Command scope
+    command: true # Enable as slash command
+    namespace: 'project' # Command scope
 ```
 
 Commands are generated as:
 
 ```markdown
 ## /schema-name
+
 Brief description of the schema
 
 Full schema content here...
@@ -53,8 +54,8 @@ Full schema content here...
 platforms:
   claude-code:
     compatible: true
-    mcpIntegration: true    # Uses MCP servers
-    allowedTools: ["web_search", "web_fetch"]
+    mcpIntegration: true # Uses MCP servers
+    allowedTools: ['web_search', 'web_fetch']
 ```
 
 ### Cursor
@@ -71,9 +72,9 @@ Cursor integrates through MDC (Markdown + Component) rule files:
 platforms:
   cursor:
     compatible: true
-    activation: "auto-attached"    # auto-attached, agent-requested, manual, always
-    globs: ["**/*.tsx", "**/*.ts"] # File patterns for activation
-    priority: "high"               # high, medium, low
+    activation: 'auto-attached' # auto-attached, agent-requested, manual, always
+    globs: ['**/*.tsx', '**/*.ts'] # File patterns for activation
+    priority: 'high' # high, medium, low
 ```
 
 #### File Pattern Matching
@@ -83,11 +84,11 @@ platforms:
   cursor:
     compatible: true
     globs: [
-      "**/*.{ts,tsx}",        # TypeScript files
-      "**/components/**/*",   # Component directories
-      "**/pages/**/*",        # Page directories
-      "**/{test,spec}/**/*"   # Test directories
-    ]
+        '**/*.{ts,tsx}', # TypeScript files
+        '**/components/**/*', # Component directories
+        '**/pages/**/*', # Page directories
+        '**/{test,spec}/**/*' # Test directories
+      ]
 ```
 
 Generated files:
@@ -98,13 +99,12 @@ Generated files:
 
 ```yaml
 ---
-title: "React Component Patterns"
-description: "Modern React development patterns"
-activation: "auto-attached"
-globs: ["**/*.tsx", "**/*.jsx"]
-priority: "high"
+title: 'React Component Patterns'
+description: 'Modern React development patterns'
+activation: 'auto-attached'
+globs: ['**/*.tsx', '**/*.jsx']
+priority: 'high'
 ---
-
 # React Component Development
 
 [Schema content here...]
@@ -124,10 +124,10 @@ Windsurf uses XML-formatted memory files with character limits:
 platforms:
   windsurf:
     compatible: true
-    mode: "workspace"         # global or workspace
-    xmlTag: "react-context"   # XML wrapper tag
-    characterLimit: 4500      # Estimated character usage
-    priority: 7               # Context priority (1-10)
+    mode: 'workspace' # global or workspace
+    xmlTag: 'react-context' # XML wrapper tag
+    characterLimit: 4500 # Estimated character usage
+    priority: 7 # Context priority (1-10)
 ```
 
 #### Character Limit Handling
@@ -168,9 +168,9 @@ GitHub Copilot integrates through JSON configuration files:
 platforms:
   github-copilot:
     compatible: true
-    priority: 8                    # Priority for guideline selection (1-10)
-    reviewType: "code-quality"     # security, performance, code-quality, style
-    scope: "repository"            # repository or organization
+    priority: 8 # Priority for guideline selection (1-10)
+    reviewType: 'code-quality' # security, performance, code-quality, style
+    scope: 'repository' # repository or organization
 ```
 
 #### Review Integration
@@ -218,12 +218,10 @@ VS Code extension to support AI Context Schema:
 platforms:
   vscode:
     compatible: true
-    extension: "ai-context-schema"    # Required extension
-    settings: {                      # VS Code settings integration
-      "aiContext.autoActivate": true,
-      "aiContext.showInStatusBar": true
-    }
-    commands: ["aiContext.apply", "aiContext.validate"]
+    extension: 'ai-context-schema' # Required extension
+    settings: # VS Code settings integration
+      { 'aiContext.autoActivate': true, 'aiContext.showInStatusBar': true }
+    commands: ['aiContext.apply', 'aiContext.validate']
 ```
 
 ### IntelliJ IDEA
@@ -237,28 +235,26 @@ IntelliJ plugin for AI Context Schema support:
 platforms:
   intellij:
     compatible: true
-    plugin: "ai-context-schema-plugin"  # Required plugin
-    fileTemplates: true                 # Uses file templates
-    inspections: [                      # Code inspections to enable
-      "react-patterns",
-      "typescript-conventions"
-    ]
+    plugin: 'ai-context-schema-plugin' # Required plugin
+    fileTemplates: true # Uses file templates
+    inspections: # Code inspections to enable
+      ['react-patterns', 'typescript-conventions']
 ```
 
 ## Platform-Specific Features
 
 ### Feature Comparison
 
-| Feature | Claude Code | Cursor | Windsurf | GitHub Copilot | VS Code* | IntelliJ* |
-|---------|-------------|--------|----------|----------------|----------|-----------|
-| **Memory/Context** | ✅ Memory files | ✅ Rule files | ✅ XML memory | ✅ Guidelines | 🚧 Settings | 🚧 Config |
-| **Auto-activation** | ✅ Always active | ✅ File patterns | ✅ Workspace | ✅ Repository | 🚧 Planned | 🚧 Planned |
-| **Commands** | ✅ Slash commands | ❌ Not supported | ❌ Not supported | ❌ Not supported | 🚧 Planned | 🚧 Planned |
-| **Character Limits** | ❌ No limits | ❌ No limits | ⚠️ 6K limit | ❌ No limits | 🚧 TBD | 🚧 TBD |
-| **Priority System** | ✅ 1-10 scale | ✅ High/Med/Low | ✅ 1-10 scale | ✅ 1-10 scale | 🚧 Planned | 🚧 Planned |
-| **Real-time Updates** | ✅ File watching | ✅ File watching | ✅ File watching | ⚠️ Git-based | 🚧 Planned | 🚧 Planned |
+| Feature               | Claude Code       | Cursor           | Windsurf         | GitHub Copilot   | VS Code\*   | IntelliJ\* |
+| --------------------- | ----------------- | ---------------- | ---------------- | ---------------- | ----------- | ---------- |
+| **Memory/Context**    | ✅ Memory files   | ✅ Rule files    | ✅ XML memory    | ✅ Guidelines    | 🚧 Settings | 🚧 Config  |
+| **Auto-activation**   | ✅ Always active  | ✅ File patterns | ✅ Workspace     | ✅ Repository    | 🚧 Planned  | 🚧 Planned |
+| **Commands**          | ✅ Slash commands | ❌ Not supported | ❌ Not supported | ❌ Not supported | 🚧 Planned  | 🚧 Planned |
+| **Character Limits**  | ❌ No limits      | ❌ No limits     | ⚠️ 6K limit      | ❌ No limits     | 🚧 TBD      | 🚧 TBD     |
+| **Priority System**   | ✅ 1-10 scale     | ✅ High/Med/Low  | ✅ 1-10 scale    | ✅ 1-10 scale    | 🚧 Planned  | 🚧 Planned |
+| **Real-time Updates** | ✅ File watching  | ✅ File watching | ✅ File watching | ⚠️ Git-based     | 🚧 Planned  | 🚧 Planned |
 
-*Planned features
+\*Planned features
 
 ### Platform-Specific Optimizations
 
@@ -309,41 +305,45 @@ interface PlatformAdapter {
 ```typescript
 export class MyPlatformAdapter implements PlatformAdapter {
   name = 'my-platform';
-  
+
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
     const files: GeneratedFiles = {};
-    
+
     for (const schema of schemas) {
       // Check platform compatibility
       const config = schema.platforms['my-platform'];
       if (!config?.compatible) continue;
-      
+
       // Generate platform-specific file
       const content = this.transformSchema(schema, config);
       files[`.my-platform/schemas/${schema.id}.config`] = content;
     }
-    
+
     return files;
   }
-  
+
   private transformSchema(schema: ContextSchema, config: any): string {
     // Transform schema to platform-specific format
-    return JSON.stringify({
-      id: schema.id,
-      title: schema.title,
-      content: schema.content,
-      config: config
-    }, null, 2);
+    return JSON.stringify(
+      {
+        id: schema.id,
+        title: schema.title,
+        content: schema.content,
+        config: config
+      },
+      null,
+      2
+    );
   }
-  
+
   validate(config: any): ValidationResult {
     // Validate platform-specific configuration
     const errors: string[] = [];
-    
+
     if (!config.someRequiredField) {
       errors.push('someRequiredField is required');
     }
-    
+
     return {
       valid: errors.length === 0,
       errors
@@ -366,7 +366,7 @@ export class MyPlatformAdapter implements PlatformAdapter {
 ```typescript
 describe('MyPlatformAdapter', () => {
   const adapter = new MyPlatformAdapter();
-  
+
   it('should generate files for compatible schemas', async () => {
     const schema: ContextSchema = {
       id: 'test-schema',
@@ -375,12 +375,12 @@ describe('MyPlatformAdapter', () => {
       }
       // ... other required fields
     };
-    
+
     const files = await adapter.generate([schema]);
-    
+
     expect(files).toHaveProperty('.my-platform/schemas/test-schema.config');
   });
-  
+
   it('should skip incompatible schemas', async () => {
     const schema: ContextSchema = {
       id: 'incompatible',
@@ -388,9 +388,9 @@ describe('MyPlatformAdapter', () => {
         'my-platform': { compatible: false }
       }
     };
-    
+
     const files = await adapter.generate([schema]);
-    
+
     expect(Object.keys(files)).toHaveLength(0);
   });
 });

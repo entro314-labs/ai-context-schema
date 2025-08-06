@@ -31,7 +31,7 @@ npx ai-context-schema --version
 
 Create a file called `my-first-schema.yaml`:
 
-```yaml
+````yaml
 ---
 id: "my-react-patterns"
 title: "My React Development Patterns"
@@ -79,7 +79,7 @@ export const MyComponent: React.FC<Props> = ({ title, children }) => {
     </div>
   );
 };
-```
+````
 
 ## State Management
 
@@ -97,7 +97,7 @@ Avoid these patterns:
 - Inline styles
 - Prop drilling beyond 2 levels
 
-```
+````
 
 ### 3. Validate Your Schema
 
@@ -107,7 +107,7 @@ npx ai-context-schema validate my-first-schema.yaml
 
 # Check platform compatibility
 npx ai-context-schema check-compatibility my-first-schema.yaml
-```
+````
 
 ### 4. Deploy to Platforms
 
@@ -140,11 +140,11 @@ Each platform has specific file locations and formats:
 Every schema MUST include these fields:
 
 ```yaml
-id: "unique-kebab-case-identifier"
-title: "Human Readable Title"
-description: "Detailed description of what this schema provides"
-version: "1.0.0"  # Semantic versioning
-category: "technology"  # or language, stack, task, etc.
+id: 'unique-kebab-case-identifier'
+title: 'Human Readable Title'
+description: 'Detailed description of what this schema provides'
+version: '1.0.0' # Semantic versioning
+category: 'technology' # or language, stack, task, etc.
 platforms:
   # At least one platform must be specified
   claude-code:
@@ -160,10 +160,10 @@ Each platform has specific configuration options:
 ```yaml
 claude-code:
   compatible: true
-  memory: true           # Include in memory files
-  command: true          # Create slash command
-  namespace: "project"   # project or user
-  priority: 8           # 1-10, higher = more important
+  memory: true # Include in memory files
+  command: true # Create slash command
+  namespace: 'project' # project or user
+  priority: 8 # 1-10, higher = more important
 ```
 
 #### Cursor
@@ -171,9 +171,9 @@ claude-code:
 ```yaml
 cursor:
   compatible: true
-  activation: "auto-attached"    # auto-attached, manual, always
-  globs: ["**/*.tsx"]           # File patterns for activation
-  priority: "high"              # high, medium, low
+  activation: 'auto-attached' # auto-attached, manual, always
+  globs: ['**/*.tsx'] # File patterns for activation
+  priority: 'high' # high, medium, low
 ```
 
 #### Windsurf
@@ -181,9 +181,9 @@ cursor:
 ```yaml
 windsurf:
   compatible: true
-  mode: "workspace"       # workspace or global
-  xmlTag: "react-context" # XML wrapper tag
-  characterLimit: 4000    # Estimated content size
+  mode: 'workspace' # workspace or global
+  xmlTag: 'react-context' # XML wrapper tag
+  characterLimit: 4000 # Estimated content size
 ```
 
 #### GitHub Copilot
@@ -191,9 +191,9 @@ windsurf:
 ```yaml
 github-copilot:
   compatible: true
-  priority: 8             # 1-10 for suggestion priority
-  reviewType: "code-quality"  # security, performance, code-quality, style
-  scope: "repository"     # repository or organization
+  priority: 8 # 1-10 for suggestion priority
+  reviewType: 'code-quality' # security, performance, code-quality, style
+  scope: 'repository' # repository or organization
 ```
 
 ### Optional Fields
@@ -202,25 +202,25 @@ Enhance your schema with these optional fields:
 
 ```yaml
 # Categorization
-subcategory: "frontend-framework"
-framework: "react"
-language: "typescript"
-complexity: "medium"        # simple, medium, complex
-scope: "component"          # file, component, feature, project, system
-audience: "developer"       # developer, architect, team-lead, junior
-maturity: "stable"          # experimental, beta, stable, deprecated
+subcategory: 'frontend-framework'
+framework: 'react'
+language: 'typescript'
+complexity: 'medium' # simple, medium, complex
+scope: 'component' # file, component, feature, project, system
+audience: 'developer' # developer, architect, team-lead, junior
+maturity: 'stable' # experimental, beta, stable, deprecated
 
 # Relationships
-requires: ["typescript-base"]     # Hard dependencies
-suggests: ["react-testing"]       # Soft recommendations
-conflicts: ["vue-patterns"]       # Incompatible schemas
-supersedes: ["old-react-guide"]   # Schemas this replaces
+requires: ['typescript-base'] # Hard dependencies
+suggests: ['react-testing'] # Soft recommendations
+conflicts: ['vue-patterns'] # Incompatible schemas
+supersedes: ['old-react-guide'] # Schemas this replaces
 
 # Metadata
-tags: ["react", "typescript", "components"]
-author: "your-username"
-contributors: ["teammate1", "teammate2"]
-discussionUrl: "https://github.com/org/repo/discussions/123"
+tags: ['react', 'typescript', 'components']
+author: 'your-username'
+contributors: ['teammate1', 'teammate2']
+discussionUrl: 'https://github.com/org/repo/discussions/123'
 ```
 
 ## Content Best Practices
@@ -233,18 +233,23 @@ Use clear markdown sections:
 # Schema Title
 
 ## Purpose
+
 Brief explanation of what this schema is for...
 
 ## Guidelines
+
 Core principles and rules...
 
 ## Code Examples
+
 Working code samples with explanations...
 
 ## Anti-Patterns
+
 What to avoid and why...
 
 ## Platform Notes
+
 Platform-specific considerations...
 ```
 
@@ -252,7 +257,7 @@ Platform-specific considerations...
 
 **Be Specific**: Instead of "write good code," provide concrete examples:
 
-```markdown
+````markdown
 ❌ Write clean functions
 ✅ Keep functions under 20 lines and single-purpose:
 
@@ -268,6 +273,7 @@ const processUser = (user: User) => {
   return name;
 };
 ```
+````
 
 **Include Context**: Explain why patterns are recommended:
 
@@ -275,6 +281,7 @@ const processUser = (user: User) => {
 ## Use Functional Components
 
 Prefer functional components over class components because they:
+
 - Have simpler syntax and less boilerplate
 - Better support for React Hooks
 - Easier to test and debug
@@ -283,13 +290,15 @@ Prefer functional components over class components because they:
 
 **Show Anti-Patterns**: Help AI avoid common mistakes:
 
-```markdown
+````markdown
 ## Anti-Patterns
 
 ❌ **Avoid**: Inline styles
+
 ```jsx
 <div style={{ color: 'red', fontSize: '16px' }}>Text</div>
 ```
+````
 
 ✅ **Use**: CSS classes or styled-components
 
@@ -297,7 +306,7 @@ Prefer functional components over class components because they:
 <div className="error-text">Text</div>
 ```
 
-```
+````
 
 ## Testing Your Schema
 
@@ -314,7 +323,7 @@ npx ai-context-schema validate schemas/ --warnings
 
 # Test platform compatibility
 npx ai-context-schema check-compatibility my-schema.yaml
-```
+````
 
 ### Integration Testing
 
@@ -344,13 +353,13 @@ npx ai-context-schema check-compatibility schemas/ --verbose
 For React, Vue, Angular, etc.:
 
 ```yaml
-id: "technology-name-patterns"
-category: "technology"
-framework: "react"  # or vue, angular, etc.
-language: "typescript"
+id: 'technology-name-patterns'
+category: 'technology'
+framework: 'react' # or vue, angular, etc.
+language: 'typescript'
 platforms:
   cursor:
-    globs: ["**/*.tsx", "**/*.ts", "**/components/**/*"]
+    globs: ['**/*.tsx', '**/*.ts', '**/components/**/*']
   claude-code:
     memory: true
     command: true
@@ -361,14 +370,14 @@ platforms:
 For TypeScript, Python, etc.:
 
 ```yaml
-id: "language-name-conventions"
-category: "language"
-language: "typescript"
+id: 'language-name-conventions'
+category: 'language'
+language: 'typescript'
 platforms:
   cursor:
-    globs: ["**/*.ts", "**/*.tsx"]
+    globs: ['**/*.ts', '**/*.tsx']
   windsurf:
-    mode: "workspace"
+    mode: 'workspace'
 ```
 
 ### Project-Specific Schema
@@ -376,15 +385,15 @@ platforms:
 For your specific codebase:
 
 ```yaml
-id: "my-project-context"
-category: "project"
-scope: "project"
+id: 'my-project-context'
+category: 'project'
+scope: 'project'
 platforms:
   claude-code:
     memory: true
-    namespace: "project"
+    namespace: 'project'
   github-copilot:
-    scope: "repository"
+    scope: 'repository'
 ```
 
 ### Task-Specific Schema
@@ -392,14 +401,14 @@ platforms:
 For testing, deployment, etc.:
 
 ```yaml
-id: "testing-strategy"
-category: "task"
-scope: "project"
+id: 'testing-strategy'
+category: 'task'
+scope: 'project'
 platforms:
   cursor:
-    activation: "agent-requested"  # Only when explicitly requested
+    activation: 'agent-requested' # Only when explicitly requested
   claude-code:
-    command: true  # Available as slash command
+    command: true # Available as slash command
 ```
 
 ## Advanced Features
@@ -413,7 +422,7 @@ Build complex schemas from simpler ones:
 id: "typescript-base"
 requires: []
 
-# Extended schema  
+# Extended schema
 id: "react-typescript"
 requires: ["typescript-base"]
 suggests: ["react-testing"]
@@ -427,12 +436,15 @@ Use platform-specific content:
 ## Platform Notes
 
 ### Claude Code
+
 Use the `/component` command to generate new React components.
 
 ### Cursor
+
 This schema auto-activates for .tsx files in component directories.
 
 ### Windsurf
+
 Context optimized for workspace-level React projects.
 ```
 

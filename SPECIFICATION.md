@@ -37,10 +37,9 @@ Context schemas MUST be valid YAML documents with:
 ```yaml
 ---
 # Schema metadata (YAML frontmatter)
-id: "example-context"
+id: 'example-context'
 # ... metadata fields
 ---
-
 # AI Instructions (Markdown content)
 Context instructions for AI assistants...
 ```
@@ -90,11 +89,11 @@ platforms:
     command: true
   cursor:
     compatible: true
-    activation: "auto-attached"
-    globs: ["**/*.tsx"]
+    activation: 'auto-attached'
+    globs: ['**/*.tsx']
   windsurf:
     compatible: true
-    mode: "workspace"
+    mode: 'workspace'
   github-copilot:
     compatible: true
     priority: 8
@@ -116,7 +115,7 @@ Each platform object MUST include:
 - `allowedTools`: Tool permissions
 - `mcpIntegration`: MCP server integration
 
-#### Cursor Platform  
+#### Cursor Platform
 
 - `activation`: How schema is activated (auto-attached/agent-requested/manual/always)
 - `globs`: File patterns for auto-attachment
@@ -140,10 +139,10 @@ Each platform object MUST include:
 Context schemas can declare relationships with other schemas:
 
 ```yaml
-requires: ["typescript-base", "frontend-core"]
-suggests: ["testing-patterns", "accessibility-guidelines"]
-conflicts: ["vue-patterns", "angular-patterns"]
-supersedes: ["legacy-react-patterns"]
+requires: ['typescript-base', 'frontend-core']
+suggests: ['testing-patterns', 'accessibility-guidelines']
+conflicts: ['vue-patterns', 'angular-patterns']
+supersedes: ['legacy-react-patterns']
 ```
 
 ### 4.2 Relationship Types
@@ -182,18 +181,23 @@ Content SHOULD be organized with clear sections:
 # Context Title
 
 ## Purpose
+
 What this context is for...
 
-## Behavioral Guidelines  
+## Behavioral Guidelines
+
 How AI should behave...
 
 ## Code Patterns
+
 Preferred patterns with examples...
 
 ## Anti-Patterns
+
 What to avoid...
 
 ## Platform Notes
+
 Platform-specific considerations...
 ```
 

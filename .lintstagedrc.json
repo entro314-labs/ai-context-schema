@@ -1,0 +1,6 @@
+{
+  "*.js": ["prettier --write"],
+  "*.json": ["prettier --write"],
+  "*.md": ["prettier --write"],
+  "validation/**/*.js": ["node validation/schema-validator.js schemas/v2.1.0/examples"]
+}

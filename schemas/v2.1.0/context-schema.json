@@ -94,7 +94,7 @@
     },
     "requires": {
       "type": "array",
-      "items": { 
+      "items": {
         "type": "string",
         "pattern": "^[a-z0-9-]+$"
       },
@@ -103,7 +103,7 @@
     },
     "suggests": {
       "type": "array",
-      "items": { 
+      "items": {
         "type": "string",
         "pattern": "^[a-z0-9-]+$"
       },
@@ -112,7 +112,7 @@
     },
     "conflicts": {
       "type": "array",
-      "items": { 
+      "items": {
         "type": "string",
         "pattern": "^[a-z0-9-]+$"
       },
@@ -121,7 +121,7 @@
     },
     "supersedes": {
       "type": "array",
-      "items": { 
+      "items": {
         "type": "string",
         "pattern": "^[a-z0-9-]+$"
       },
@@ -140,7 +140,7 @@
     },
     "contributors": {
       "type": "array",
-      "items": { 
+      "items": {
         "type": "string",
         "maxLength": 100
       },
@@ -149,7 +149,7 @@
     },
     "tags": {
       "type": "array",
-      "items": { 
+      "items": {
         "type": "string",
         "pattern": "^[a-z0-9-]+$",
         "maxLength": 30

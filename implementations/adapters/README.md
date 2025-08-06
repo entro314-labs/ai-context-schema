@@ -15,7 +15,7 @@ See the main [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines on creating
 Each adapter should be in its own subdirectory with:
 
 - `README.md` - Adapter documentation
-- `adapter.js` - Main adapter implementation  
+- `adapter.js` - Main adapter implementation
 - `package.json` - Dependencies and metadata
 - `examples/` - Example transformations
 - `tests/` - Adapter tests

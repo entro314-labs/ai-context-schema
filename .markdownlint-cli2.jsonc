@@ -1,0 +1,23 @@
+{
+  // Configuration for markdownlint-cli2
+  "config": {
+    // Disable line length rule - schemas and docs can be long
+    "MD013": false,
+    // Allow duplicate headings for examples and sections
+    "MD024": false,
+    // Allow emphasis as headers for callouts and warnings
+    "MD036": false,
+    // Allow ordered lists to have non-sequential numbers
+    "MD029": false,
+    // Allow fenced code blocks without language specification
+    "MD040": false,
+    // Allow multiple top-level headings
+    "MD025": false,
+    // Allow heading levels to skip
+    "MD001": false,
+    // Allow first line to not be heading
+    "MD041": false
+  },
+  // Ignore certain files/patterns
+  "ignores": ["node_modules/**", "schemas/v2.1.0/examples/**", "docs/content-marketing/**"]
+}

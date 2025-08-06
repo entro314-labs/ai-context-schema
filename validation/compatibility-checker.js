@@ -9,7 +9,13 @@ const fs = require('fs');
 const path = require('path');
 const { SchemaValidator } = require('./schema-validator');
 
+/**
+ *
+ */
 class CompatibilityChecker {
+  /**
+   *
+   */
   constructor() {
     this.validator = new SchemaValidator();
     this.results = {
@@ -27,7 +33,7 @@ class CompatibilityChecker {
   /**
    * Check compatibility for all platforms and schemas
    * @param {string} schemasDir - Directory containing schema files
-   * @returns {Object} Compatibility results
+   * @returns {object} Compatibility results
    */
   async checkCompatibility(schemasDir) {
     const schemaFiles = this.findSchemaFiles(schemasDir);
@@ -62,10 +68,7 @@ class CompatibilityChecker {
     const platforms = this.extractPlatforms(schemas);
 
     for (const platform of platforms) {
-      this.results.platforms[platform] = await this.checkPlatformCompatibility(
-        platform,
-        schemas
-      );
+      this.results.platforms[platform] = await this.checkPlatformCompatibility(platform, schemas);
     }
 
     // Check individual schema compatibility
@@ -114,7 +117,7 @@ class CompatibilityChecker {
 
     for (const { schema } of schemas) {
       if (schema.platforms) {
-        Object.keys(schema.platforms).forEach(platform => platforms.add(platform));
+        Object.keys(schema.platforms).forEach((platform) => platforms.add(platform));
       }
     }
 
@@ -125,7 +128,7 @@ class CompatibilityChecker {
    * Check compatibility for a specific platform
    * @param {string} platform - Platform name
    * @param {Array} schemas - Array of schema objects
-   * @returns {Object} Platform compatibility results
+   * @returns {object} Platform compatibility results
    */
   async checkPlatformCompatibility(platform, schemas) {
     const result = {
@@ -141,8 +144,8 @@ class CompatibilityChecker {
       }
     };
 
-    const compatibleSchemas = schemas.filter(({ schema }) =>
-      schema.platforms?.[platform]?.compatible === true
+    const compatibleSchemas = schemas.filter(
+      ({ schema }) => schema.platforms?.[platform]?.compatible === true
     );
 
     result.total = schemas.length;
@@ -165,29 +168,29 @@ class CompatibilityChecker {
   /**
    * Validate platform-specific features
    * @param {string} platform - Platform name
-   * @param {Object} config - Platform configuration
-   * @param {Object} schema - Full schema object
+   * @param {object} config - Platform configuration
+   * @param {object} schema - Full schema object
    * @returns {Array} Array of issues
    */
   validatePlatformFeatures(platform, config, schema) {
     const issues = [];
 
     switch (platform) {
-    case 'claude-code':
-      issues.push(...this.validateClaudeFeatures(config, schema));
-      break;
-    case 'cursor':
-      issues.push(...this.validateCursorFeatures(config, schema));
-      break;
-    case 'windsurf':
-      issues.push(...this.validateWindsurfFeatures(config, schema));
-      break;
-    case 'github-copilot':
-      issues.push(...this.validateCopilotFeatures(config, schema));
-      break;
-    default:
-      // Generic platform validation
-      issues.push(...this.validateGenericFeatures(config, schema));
+      case 'claude-code':
+        issues.push(...this.validateClaudeFeatures(config, schema));
+        break;
+      case 'cursor':
+        issues.push(...this.validateCursorFeatures(config, schema));
+        break;
+      case 'windsurf':
+        issues.push(...this.validateWindsurfFeatures(config, schema));
+        break;
+      case 'github-copilot':
+        issues.push(...this.validateCopilotFeatures(config, schema));
+        break;
+      default:
+        // Generic platform validation
+        issues.push(...this.validateGenericFeatures(config, schema));
     }
 
     return issues;
@@ -195,8 +198,8 @@ class CompatibilityChecker {
 
   /**
    * Validate Claude Code specific features
-   * @param {Object} config - Platform configuration
-   * @param {Object} schema - Schema object
+   * @param {object} config - Platform configuration
+   * @param {object} schema - Schema object
    * @returns {Array} Issues array
    */
   validateClaudeFeatures(config, schema) {
@@ -237,8 +240,8 @@ class CompatibilityChecker {
 
   /**
    * Validate Cursor specific features
-   * @param {Object} config - Platform configuration
-   * @param {Object} schema - Schema object
+   * @param {object} config - Platform configuration
+   * @param {object} schema - Schema object
    * @returns {Array} Issues array
    */
   validateCursorFeatures(config, schema) {
@@ -283,8 +286,8 @@ class CompatibilityChecker {
 
   /**
    * Validate Windsurf specific features
-   * @param {Object} config - Platform configuration
-   * @param {Object} schema - Schema object
+   * @param {object} config - Platform configuration
+   * @param {object} schema - Schema object
    * @returns {Array} Issues array
    */
   validateWindsurfFeatures(config, schema) {
@@ -326,8 +329,8 @@ class CompatibilityChecker {
 
   /**
    * Validate GitHub Copilot specific features
-   * @param {Object} config - Platform configuration
-   * @param {Object} schema - Schema object
+   * @param {object} config - Platform configuration
+   * @param {object} schema - Schema object
    * @returns {Array} Issues array
    */
   validateCopilotFeatures(config, schema) {
@@ -369,8 +372,8 @@ class CompatibilityChecker {
 
   /**
    * Validate generic platform features
-   * @param {Object} config - Platform configuration
-   * @param {Object} schema - Schema object
+   * @param {object} config - Platform configuration
+   * @param {object} schema - Schema object
    * @returns {Array} Issues array
    */
   validateGenericFeatures(config, schema) {
@@ -393,7 +396,7 @@ class CompatibilityChecker {
    * Analyze platform feature usage
    * @param {string} platform - Platform name
    * @param {Array} schemas - Compatible schemas
-   * @returns {Object} Feature analysis
+   * @returns {object} Feature analysis
    */
   analyzePlatformFeatures(platform, schemas) {
     const features = {
@@ -405,26 +408,26 @@ class CompatibilityChecker {
     const configs = schemas.map(({ schema }) => schema.platforms[platform]);
 
     switch (platform) {
-    case 'claude-code':
-      features.supported = ['memory', 'commands', 'mcp-integration', 'namespaces'];
-      if (configs.some(c => c.memory)) features.used = [...(features.used || []), 'memory'];
-      if (configs.some(c => c.command)) features.used = [...(features.used || []), 'commands'];
-      break;
+      case 'claude-code':
+        features.supported = ['memory', 'commands', 'mcp-integration', 'namespaces'];
+        if (configs.some((c) => c.memory)) features.used = [...(features.used || []), 'memory'];
+        if (configs.some((c) => c.command)) features.used = [...(features.used || []), 'commands'];
+        break;
 
-    case 'cursor':
-      features.supported = ['auto-attachment', 'file-patterns', 'priority-system'];
-      features.limitations = ['vs-code-dependency'];
-      break;
+      case 'cursor':
+        features.supported = ['auto-attachment', 'file-patterns', 'priority-system'];
+        features.limitations = ['vs-code-dependency'];
+        break;
 
-    case 'windsurf':
-      features.supported = ['workspace-context', 'xml-formatting'];
-      features.limitations = ['6k-character-limit'];
-      break;
+      case 'windsurf':
+        features.supported = ['workspace-context', 'xml-formatting'];
+        features.limitations = ['6k-character-limit'];
+        break;
 
-    case 'github-copilot':
-      features.supported = ['review-integration', 'priority-system', 'repository-scope'];
-      features.limitations = ['github-dependency'];
-      break;
+      case 'github-copilot':
+        features.supported = ['review-integration', 'priority-system', 'repository-scope'];
+        features.limitations = ['github-dependency'];
+        break;
     }
 
     return features;
@@ -432,8 +435,8 @@ class CompatibilityChecker {
 
   /**
    * Check individual schema compatibility
-   * @param {Object} schema - Schema object
-   * @returns {Object} Schema compatibility results
+   * @param {object} schema - Schema object
+   * @returns {object} Schema compatibility results
    */
   checkSchemaCompatibility(schema) {
     const result = {
@@ -461,7 +464,8 @@ class CompatibilityChecker {
     }
 
     // Calculate compatibility score (0-100)
-    result.score = totalPlatforms > 0 ? Math.round((compatiblePlatforms / totalPlatforms) * 100) : 0;
+    result.score =
+      totalPlatforms > 0 ? Math.round((compatiblePlatforms / totalPlatforms) * 100) : 0;
 
     // Check for cross-platform compatibility issues
     const crossPlatformIssues = this.checkCrossPlatformIssues(schema);
@@ -472,7 +476,7 @@ class CompatibilityChecker {
 
   /**
    * Check for cross-platform compatibility issues
-   * @param {Object} schema - Schema object
+   * @param {object} schema - Schema object
    * @returns {Array} Cross-platform issues
    */
   checkCrossPlatformIssues(schema) {
@@ -504,15 +508,15 @@ class CompatibilityChecker {
 
   /**
    * Estimate content size for character limit checks
-   * @param {Object} schema - Schema object
+   * @param {object} schema - Schema object
    * @returns {number} Estimated character count
    */
   estimateContentSize(schema) {
     let size = 0;
 
-    size += (schema.title?.length || 0);
-    size += (schema.description?.length || 0);
-    size += (schema._content?.length || 0);
+    size += schema.title?.length || 0;
+    size += schema.description?.length || 0;
+    size += schema._content?.length || 0;
     size += 200; // Overhead for formatting, metadata, etc.
 
     return size;
@@ -527,9 +531,10 @@ class CompatibilityChecker {
     this.results.summary = {
       schemas: {
         total: Object.keys(schemas).length,
-        highCompatibility: Object.values(schemas).filter(s => s.score >= 80).length,
-        mediumCompatibility: Object.values(schemas).filter(s => s.score >= 50 && s.score < 80).length,
-        lowCompatibility: Object.values(schemas).filter(s => s.score < 50).length
+        highCompatibility: Object.values(schemas).filter((s) => s.score >= 80).length,
+        mediumCompatibility: Object.values(schemas).filter((s) => s.score >= 50 && s.score < 80)
+          .length,
+        lowCompatibility: Object.values(schemas).filter((s) => s.score < 50).length
       },
       platforms: {
         total: Object.keys(platforms).length,
@@ -582,7 +587,7 @@ async function main() {
   const options = {
     json: args.includes('--json'),
     verbose: args.includes('--verbose'),
-    platform: args.find(arg => arg.startsWith('--platform='))?.split('=')[1]
+    platform: args.find((arg) => arg.startsWith('--platform='))?.split('=')[1]
   };
 
   if (!fs.existsSync(schemasDir)) {
@@ -608,8 +613,8 @@ async function main() {
 
 /**
  * Print compatibility results to console
- * @param {Object} results - Compatibility results
- * @param {Object} options - Output options
+ * @param {object} results - Compatibility results
+ * @param {object} options - Output options
  */
 function printCompatibilityResults(results, options) {
   const { summary, platforms, schemas } = results;
@@ -626,7 +631,9 @@ function printCompatibilityResults(results, options) {
 
   console.log('\n=== Platform Compatibility ===');
   for (const [platform, stats] of Object.entries(summary.platforms.details)) {
-    console.log(`${platform}: ${stats.compatible}/${platforms[platform].total} (${stats.compatibility_rate}%) - ${stats.issues} issues`);
+    console.log(
+      `${platform}: ${stats.compatible}/${platforms[platform].total} (${stats.compatibility_rate}%) - ${stats.issues} issues`
+    );
   }
 
   if (options.verbose) {
@@ -646,8 +653,8 @@ function printCompatibilityResults(results, options) {
       if (data.issues.length > 0) {
         console.log('Issues:');
         for (const issue of data.issues) {
-          const icon = issue.severity === 'error' ? '❌' :
-            issue.severity === 'warning' ? '⚠️' : 'ℹ️';
+          const icon =
+            issue.severity === 'error' ? '❌' : issue.severity === 'warning' ? '⚠️' : 'ℹ️';
           console.log(`  ${icon} ${issue.type}: ${issue.message} (${issue.schema})`);
         }
       }
@@ -669,7 +676,7 @@ function printCompatibilityResults(results, options) {
 
 // Run CLI if this file is executed directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('Compatibility check failed:', error.message);
     process.exit(1);
   });

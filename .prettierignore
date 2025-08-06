@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+coverage/
+.next/
+.nuxt/
+.output/
+test-results/
+test-output/
+generated/
+pnpm-lock.yaml
+schemas/v2.1.0/examples/*.yaml
+schemas/v2.1.0/examples/*.yml
