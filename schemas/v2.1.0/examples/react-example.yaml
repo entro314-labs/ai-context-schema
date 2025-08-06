@@ -1,0 +1,284 @@
+---
+id: "react-component-patterns"
+title: "React Component Development"
+description: "Modern React component development patterns with TypeScript, hooks, and performance optimization"
+version: "1.2.0"
+lastUpdated: "2024-01-15"
+category: "technology"
+subcategory: "frontend-framework"
+framework: "react"
+language: "typescript"
+complexity: "medium"
+scope: "component"
+audience: "developer"
+maturity: "stable"
+platforms:
+  claude-code:
+    compatible: true
+    memory: true
+    command: true
+    namespace: "project"
+    priority: 8
+  cursor:
+    compatible: true
+    activation: "auto-attached"
+    globs: ["**/*.tsx", "**/*.jsx", "**/components/**/*.ts"]
+    priority: "high"
+  windsurf:
+    compatible: true
+    mode: "workspace"
+    xmlTag: "react-context"
+    characterLimit: 4500
+  github-copilot:
+    compatible: true
+    priority: 9
+    reviewType: "code-quality"
+requires: ["typescript-base", "frontend-core"]
+suggests: ["react-testing", "accessibility-patterns", "react-performance"]
+conflicts: ["vue-patterns", "angular-patterns"]
+tags: ["react", "typescript", "components", "hooks", "frontend"]
+author: "ai-context-schema"
+contributors: ["community"]
+---
+
+# React Component Development Context
+
+## Purpose
+
+This context provides guidance for developing React components using modern patterns, TypeScript integration, and performance best practices.
+
+## Component Architecture
+
+### Functional Components with Hooks
+Always prefer functional components with hooks over class components:
+
+```tsx
+// ✅ Good - Functional component with hooks
+interface UserProfileProps {
+  userId: string;
+  onUpdate?: (user: User) => void;
+}
+
+export const UserProfile: React.FC<UserProfileProps> = ({ userId, onUpdate }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    fetchUser(userId).then(setUser).finally(() => setLoading(false));
+  }, [userId]);
+  
+  return loading ? <Spinner /> : <UserDetails user={user} onUpdate={onUpdate} />;
+};
+
+// ❌ Avoid - Class components
+class UserProfile extends React.Component {
+  // Avoid this pattern
+}
+```
+
+### Component Composition
+Favor composition over complex prop interfaces:
+
+```tsx
+// ✅ Good - Composition pattern
+interface CardProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'elevated' | 'outlined';
+}
+
+export const Card: React.FC<CardProps> = ({ children, variant = 'default' }) => (
+  <div className={`card card--${variant}`}>
+    {children}
+  </div>
+);
+
+// Usage
+<Card variant="elevated">
+  <Card.Header>
+    <h2>Title</h2>
+  </Card.Header>
+  <Card.Content>
+    <p>Content here</p>
+  </Card.Content>
+</Card>
+```
+
+## TypeScript Integration
+
+### Props Interfaces
+Define clear, specific interfaces for component props:
+
+```tsx
+interface ButtonProps {
+  variant: 'primary' | 'secondary' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
+  children: React.ReactNode;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+```
+
+### Generic Components
+Use generics for reusable components:
+
+```tsx
+interface SelectProps<T> {
+  options: T[];
+  value?: T;
+  onChange: (value: T) => void;
+  getLabel: (option: T) => string;
+  getValue: (option: T) => string;
+}
+
+export function Select<T>({ options, value, onChange, getLabel, getValue }: SelectProps<T>) {
+  // Implementation
+}
+```
+
+## Performance Optimization
+
+### Memoization
+Use React.memo, useMemo, and useCallback appropriately:
+
+```tsx
+// Memoize expensive computations
+const expensiveValue = useMemo(() => {
+  return heavyComputation(data);
+}, [data]);
+
+// Memoize callbacks passed to child components
+const handleClick = useCallback((id: string) => {
+  onItemClick(id);
+}, [onItemClick]);
+
+// Memoize components that receive stable props
+const OptimizedComponent = React.memo<Props>(({ data, onAction }) => {
+  return <div>{/* component content */}</div>;
+});
+```
+
+### Avoid Inline Objects and Functions
+Prevent unnecessary re-renders:
+
+```tsx
+// ❌ Avoid - Creates new objects on every render
+<Component style={{ marginTop: 10 }} onClick={() => handleClick()} />
+
+// ✅ Good - Stable references
+const styles = { marginTop: 10 };
+const handleClickMemo = useCallback(() => handleClick(), []);
+
+<Component style={styles} onClick={handleClickMemo} />
+```
+
+## Error Handling
+
+### Error Boundaries
+Implement error boundaries for component isolation:
+
+```tsx
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+export class ErrorBoundary extends React.Component<
+  React.PropsWithChildren<{}>,
+  ErrorBoundaryState
+> {
+  constructor(props: React.PropsWithChildren<{}>) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Component error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback error={this.state.error} />;
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+## Accessibility
+
+### ARIA Attributes
+Include proper ARIA attributes for screen readers:
+
+```tsx
+<button
+  aria-label="Close dialog"
+  aria-expanded={isOpen}
+  aria-controls="dialog-content"
+  onClick={onClose}
+>
+  <CloseIcon aria-hidden="true" />
+</button>
+```
+
+### Keyboard Navigation
+Ensure components work with keyboard navigation:
+
+```tsx
+const handleKeyDown = (event: React.KeyboardEvent) => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    onClick();
+  }
+};
+
+<div
+  role="button"
+  tabIndex={0}
+  onKeyDown={handleKeyDown}
+  onClick={onClick}
+>
+  Clickable content
+</div>
+```
+
+## Anti-Patterns
+
+### Avoid These Patterns
+- Using `any` types instead of proper TypeScript interfaces
+- Mutating props directly
+- Using array indices as keys in lists
+- Excessive prop drilling - use context or state management
+- Putting all state in the top-level component
+- Using `useEffect` for synchronous derived state
+
+### State Management
+Prefer local state and lift state up as needed:
+
+```tsx
+// ✅ Good - Local state when possible
+const [count, setCount] = useState(0);
+
+// ✅ Good - Lift state up when needed
+const Parent = () => {
+  const [sharedState, setSharedState] = useState();
+  return (
+    <>
+      <Child1 state={sharedState} onChange={setSharedState} />
+      <Child2 state={sharedState} />
+    </>
+  );
+};
+```
+
+## Platform Notes
+
+- **Claude Code**: Use `/react-component` command for quick component scaffolding
+- **Cursor**: Auto-attachment works with TSX files and component directories
+- **Windsurf**: Context optimized for workspace-level React projects
+- **GitHub Copilot**: Integrated with repository-level React patterns and PR reviews

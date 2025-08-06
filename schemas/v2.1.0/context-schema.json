@@ -1,0 +1,363 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AI Context Schema",
+  "description": "Schema for validating AI Context Schema frontmatter and structure",
+  "type": "object",
+  "required": ["id", "title", "description", "version", "category", "platforms"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Unique identifier in kebab-case"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Human-readable title"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Detailed description of the context schema"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9-]+)?(\\+[a-zA-Z0-9-]+)?$",
+      "description": "Semantic version number"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO date format (YYYY-MM-DD)"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["core", "language", "technology", "stack", "task", "assistant", "tool", "project"],
+      "description": "Primary categorization"
+    },
+    "subcategory": {
+      "type": "string",
+      "maxLength": 50,
+      "description": "Optional fine-grained grouping"
+    },
+    "framework": {
+      "type": "string",
+      "maxLength": 50,
+      "description": "Specific technology framework"
+    },
+    "language": {
+      "type": "string",
+      "maxLength": 30,
+      "description": "Programming language"
+    },
+    "stack": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Technology stack description"
+    },
+    "complexity": {
+      "type": "string",
+      "enum": ["simple", "medium", "complex"],
+      "description": "Context schema complexity level"
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["file", "component", "feature", "project", "system"],
+      "description": "Scope of impact"
+    },
+    "audience": {
+      "type": "string",
+      "enum": ["developer", "architect", "team-lead", "junior", "senior", "any"],
+      "description": "Target audience"
+    },
+    "maturity": {
+      "type": "string",
+      "enum": ["experimental", "beta", "stable", "deprecated"],
+      "description": "Context schema maturity level"
+    },
+    "platforms": {
+      "type": "object",
+      "properties": {
+        "claude-code": { "$ref": "#/definitions/claudePlatform" },
+        "cursor": { "$ref": "#/definitions/cursorPlatform" },
+        "windsurf": { "$ref": "#/definitions/windsurfPlatform" },
+        "github-copilot": { "$ref": "#/definitions/copilotPlatform" },
+        "vscode": { "$ref": "#/definitions/vscodePlatform" },
+        "intellij": { "$ref": "#/definitions/intellijPlatform" }
+      },
+      "additionalProperties": { "$ref": "#/definitions/genericPlatform" },
+      "minProperties": 1
+    },
+    "requires": {
+      "type": "array",
+      "items": { 
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Hard dependencies on other context schemas"
+    },
+    "suggests": {
+      "type": "array",
+      "items": { 
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Soft dependencies/recommendations"
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { 
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Incompatible context schemas"
+    },
+    "supersedes": {
+      "type": "array",
+      "items": { 
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Context schemas this replaces"
+    },
+    "contentSections": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Expected content organization sections"
+    },
+    "author": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Author identifier"
+    },
+    "contributors": {
+      "type": "array",
+      "items": { 
+        "type": "string",
+        "maxLength": 100
+      },
+      "uniqueItems": true,
+      "description": "List of contributors"
+    },
+    "tags": {
+      "type": "array",
+      "items": { 
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$",
+        "maxLength": 30
+      },
+      "uniqueItems": true,
+      "maxItems": 20,
+      "description": "Searchable tags"
+    },
+    "discussionUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Community discussion URL"
+    },
+    "repositoryUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Source repository URL"
+    },
+    "license": {
+      "type": "string",
+      "description": "License identifier (SPDX format preferred)"
+    }
+  },
+  "definitions": {
+    "genericPlatform": {
+      "type": "object",
+      "required": ["compatible"],
+      "properties": {
+        "compatible": {
+          "type": "boolean",
+          "description": "Can this context schema work with this platform?"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Platform-specific notes or limitations"
+        }
+      }
+    },
+    "claudePlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "memory": {
+              "type": "boolean",
+              "description": "Should be included in memory files?"
+            },
+            "command": {
+              "type": "boolean",
+              "description": "Can become a slash command?"
+            },
+            "namespace": {
+              "type": "string",
+              "enum": ["project", "user"],
+              "description": "Command namespace"
+            },
+            "allowedTools": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Claude-specific tool permissions"
+            },
+            "mcpIntegration": {
+              "type": "boolean",
+              "description": "Uses MCP servers?"
+            },
+            "priority": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Memory priority"
+            }
+          }
+        }
+      ]
+    },
+    "cursorPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "activation": {
+              "type": "string",
+              "enum": ["auto-attached", "agent-requested", "manual", "always"],
+              "description": "How the context schema is activated"
+            },
+            "globs": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "File patterns for auto-attachment"
+            },
+            "priority": {
+              "type": "string",
+              "enum": ["high", "medium", "low"],
+              "description": "Context schema priority"
+            },
+            "fileTypes": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Supported file types"
+            }
+          }
+        }
+      ]
+    },
+    "windsurfPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": ["global", "workspace"],
+              "description": "Context schema application mode"
+            },
+            "xmlTag": {
+              "type": "string",
+              "description": "XML tag for Windsurf formatting"
+            },
+            "characterLimit": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10000,
+              "description": "Estimated character usage"
+            },
+            "priority": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Context priority"
+            }
+          }
+        }
+      ]
+    },
+    "copilotPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "priority": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Priority for guideline selection"
+            },
+            "reviewType": {
+              "type": "string",
+              "enum": ["security", "performance", "code-quality", "style", "general"],
+              "description": "Type of review focus"
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["repository", "organization"],
+              "description": "Configuration scope"
+            }
+          }
+        }
+      ]
+    },
+    "vscodePlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "extension": {
+              "type": "string",
+              "description": "Required VS Code extension"
+            },
+            "settings": {
+              "type": "object",
+              "description": "VS Code settings integration"
+            },
+            "commands": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Available commands"
+            }
+          }
+        }
+      ]
+    },
+    "intellijPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "plugin": {
+              "type": "string",
+              "description": "Required IntelliJ plugin"
+            },
+            "fileTemplates": {
+              "type": "boolean",
+              "description": "Uses file templates?"
+            },
+            "inspections": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Code inspections to enable"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

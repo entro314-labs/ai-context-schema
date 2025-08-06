@@ -1,0 +1,841 @@
+---
+id: "security-practices"
+title: "Security Best Practices"
+description: "Comprehensive security guidelines for secure application development and deployment"
+version: "1.1.0"
+lastUpdated: "2024-01-20"
+category: "core"
+subcategory: "security"
+complexity: "complex"
+scope: "system"
+audience: "developer"
+maturity: "stable"
+platforms:
+  claude-code:
+    compatible: true
+    memory: true
+    command: true
+    namespace: "project"
+    priority: 10
+    allowedTools: ["web_search", "web_fetch"]
+  cursor:
+    compatible: true
+    activation: "always"
+    priority: "high"
+  windsurf:
+    compatible: true
+    mode: "workspace"
+    xmlTag: "security-context"
+    characterLimit: 6000
+    priority: 10
+  github-copilot:
+    compatible: true
+    priority: 10
+    reviewType: "security"
+    scope: "repository"
+requires: ["backend-core"]
+suggests: ["api-development-patterns", "testing-strategy-patterns"]
+tags: ["security", "authentication", "authorization", "encryption", "owasp"]
+author: "ai-context-schema"
+contributors: ["security-team"]
+---
+
+# Security Best Practices
+
+## Purpose
+
+This context provides comprehensive security guidelines to prevent common vulnerabilities and implement defense-in-depth security measures across all application layers.
+
+## OWASP Top 10 Prevention
+
+### 1. Injection Prevention
+
+**SQL Injection Prevention**
+```typescript
+// ❌ Vulnerable - SQL Injection
+const getUserById = (id: string) => {
+  const query = `SELECT * FROM users WHERE id = ${id}`;
+  return database.query(query);
+};
+
+// ✅ Secure - Parameterized Queries
+const getUserById = (id: string) => {
+  const query = 'SELECT * FROM users WHERE id = ?';
+  return database.query(query, [id]);
+};
+
+// ✅ Secure - ORM with Parameter Binding
+const getUserById = (id: string) => {
+  return userRepository.findOne({ where: { id } });
+};
+```
+
+**NoSQL Injection Prevention**
+```typescript
+// ❌ Vulnerable - NoSQL Injection
+const findUser = (filter: any) => {
+  return db.collection('users').findOne(filter);
+};
+
+// ✅ Secure - Input Validation
+const findUser = (userId: string) => {
+  if (!userId || typeof userId !== 'string') {
+    throw new Error('Invalid user ID');
+  }
+  return db.collection('users').findOne({ _id: ObjectId(userId) });
+};
+```
+
+**Command Injection Prevention**
+```typescript
+// ❌ Vulnerable - Command Injection
+const processFile = (filename: string) => {
+  const command = `convert ${filename} output.jpg`;
+  exec(command);
+};
+
+// ✅ Secure - Input Validation and Sanitization
+const processFile = (filename: string) => {
+  // Validate filename
+  if (!/^[a-zA-Z0-9._-]+$/.test(filename)) {
+    throw new Error('Invalid filename');
+  }
+  
+  // Use parameterized execution
+  execFile('convert', [filename, 'output.jpg']);
+};
+```
+
+### 2. Authentication & Session Management
+
+**Secure Password Handling**
+```typescript
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+
+class AuthService {
+  private readonly SALT_ROUNDS = 12;
+  private readonly MIN_PASSWORD_LENGTH = 12;
+
+  async hashPassword(password: string): Promise<string> {
+    // Validate password strength
+    this.validatePasswordStrength(password);
+    
+    // Hash with secure salt rounds
+    return bcrypt.hash(password, this.SALT_ROUNDS);
+  }
+
+  async verifyPassword(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
+  }
+
+  private validatePasswordStrength(password: string): void {
+    if (password.length < this.MIN_PASSWORD_LENGTH) {
+      throw new Error('Password must be at least 12 characters');
+    }
+    
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    if (!hasUppercase || !hasLowercase || !hasNumbers || !hasSpecialChar) {
+      throw new Error('Password must contain uppercase, lowercase, numbers, and special characters');
+    }
+  }
+
+  generateSecureToken(): string {
+    return crypto.randomBytes(32).toString('hex');
+  }
+}
+```
+
+**JWT Security**
+```typescript
+import jwt from 'jsonwebtoken';
+
+class JWTService {
+  private readonly ACCESS_TOKEN_EXPIRY = '15m';
+  private readonly REFRESH_TOKEN_EXPIRY = '7d';
+
+  generateTokens(payload: any) {
+    const accessToken = jwt.sign(
+      payload,
+      process.env.JWT_ACCESS_SECRET!,
+      { 
+        expiresIn: this.ACCESS_TOKEN_EXPIRY,
+        issuer: 'your-app',
+        audience: 'your-app-users'
+      }
+    );
+
+    const refreshToken = jwt.sign(
+      { userId: payload.userId },
+      process.env.JWT_REFRESH_SECRET!,
+      { 
+        expiresIn: this.REFRESH_TOKEN_EXPIRY,
+        issuer: 'your-app'
+      }
+    );
+
+    return { accessToken, refreshToken };
+  }
+
+  verifyAccessToken(token: string) {
+    try {
+      return jwt.verify(token, process.env.JWT_ACCESS_SECRET!, {
+        issuer: 'your-app',
+        audience: 'your-app-users'
+      });
+    } catch (error) {
+      throw new Error('Invalid access token');
+    }
+  }
+}
+```
+
+### 3. Cross-Site Scripting (XSS) Prevention
+
+**Input Sanitization**
+```typescript
+import DOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
+
+const window = new JSDOM('').window;
+const purify = DOMPurify(window);
+
+class InputSanitizer {
+  static sanitizeHTML(input: string): string {
+    return purify.sanitize(input, {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
+      ALLOWED_ATTR: []
+    });
+  }
+
+  static escapeHTML(input: string): string {
+    return input
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
+  }
+
+  static validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) && email.length <= 254;
+  }
+}
+```
+
+**Content Security Policy**
+```typescript
+// Express.js CSP Configuration
+import helmet from 'helmet';
+
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://trusted-cdn.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  },
+}));
+```
+
+### 4. Access Control
+
+**Role-Based Access Control (RBAC)**
+```typescript
+enum Permission {
+  READ_USERS = 'read:users',
+  WRITE_USERS = 'write:users',
+  DELETE_USERS = 'delete:users',
+  ADMIN_ACCESS = 'admin:access'
+}
+
+enum Role {
+  USER = 'user',
+  MODERATOR = 'moderator',
+  ADMIN = 'admin'
+}
+
+const rolePermissions: Record<Role, Permission[]> = {
+  [Role.USER]: [Permission.READ_USERS],
+  [Role.MODERATOR]: [Permission.READ_USERS, Permission.WRITE_USERS],
+  [Role.ADMIN]: [Permission.READ_USERS, Permission.WRITE_USERS, Permission.DELETE_USERS, Permission.ADMIN_ACCESS]
+};
+
+class AuthorizationService {
+  hasPermission(userRole: Role, requiredPermission: Permission): boolean {
+    const permissions = rolePermissions[userRole] || [];
+    return permissions.includes(requiredPermission);
+  }
+
+  requirePermission(permission: Permission) {
+    return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+      if (!req.user) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      if (!this.hasPermission(req.user.role, permission)) {
+        return res.status(403).json({ error: 'Insufficient permissions' });
+      }
+
+      next();
+    };
+  }
+}
+```
+
+**Resource-Level Authorization**
+```typescript
+class ResourceAuthService {
+  async canAccessResource(userId: string, resourceId: string, action: string): Promise<boolean> {
+    // Check if user owns the resource
+    const resource = await this.getResource(resourceId);
+    if (resource.ownerId === userId) {
+      return true;
+    }
+
+    // Check if user has shared access
+    const sharedAccess = await this.getSharedAccess(userId, resourceId);
+    if (sharedAccess) {
+      return sharedAccess.permissions.includes(action);
+    }
+
+    return false;
+  }
+
+  requireResourceAccess(action: string) {
+    return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+      const resourceId = req.params.resourceId;
+      const userId = req.user.id;
+
+      const hasAccess = await this.canAccessResource(userId, resourceId, action);
+      if (!hasAccess) {
+        return res.status(403).json({ error: 'Access denied to resource' });
+      }
+
+      next();
+    };
+  }
+}
+```
+
+## Data Protection
+
+### Encryption at Rest
+```typescript
+import crypto from 'crypto';
+
+class EncryptionService {
+  private readonly algorithm = 'aes-256-gcm';
+  private readonly keyLength = 32;
+
+  encrypt(text: string, key: Buffer): { encrypted: string; iv: string; tag: string } {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipher(this.algorithm, key, iv);
+    
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    const tag = cipher.getAuthTag();
+    
+    return {
+      encrypted,
+      iv: iv.toString('hex'),
+      tag: tag.toString('hex')
+    };
+  }
+
+  decrypt(encryptedData: { encrypted: string; iv: string; tag: string }, key: Buffer): string {
+    const decipher = crypto.createDecipher(this.algorithm, key, Buffer.from(encryptedData.iv, 'hex'));
+    decipher.setAuthTag(Buffer.from(encryptedData.tag, 'hex'));
+    
+    let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
+  }
+
+  generateKey(): Buffer {
+    return crypto.randomBytes(this.keyLength);
+  }
+}
+```
+
+### Encryption in Transit
+```typescript
+// HTTPS Configuration
+import https from 'https';
+import fs from 'fs';
+
+const options = {
+  key: fs.readFileSync('path/to/private-key.pem'),
+  cert: fs.readFileSync('path/to/certificate.pem'),
+  // Require modern TLS versions
+  secureProtocol: 'TLSv1_2_method',
+  // Disable weak ciphers
+  ciphers: [
+    'ECDHE-RSA-AES128-GCM-SHA256',
+    'ECDHE-RSA-AES256-GCM-SHA384',
+    'ECDHE-RSA-AES128-SHA256',
+    'ECDHE-RSA-AES256-SHA384'
+  ].join(':'),
+  honorCipherOrder: true
+};
+
+https.createServer(options, app).listen(443);
+
+// Force HTTPS redirect
+app.use((req, res, next) => {
+  if (req.header('x-forwarded-proto') !== 'https') {
+    res.redirect(`https://${req.header('host')}${req.url}`);
+  } else {
+    next();
+  }
+});
+```
+
+## Input Validation
+
+### Comprehensive Validation
+```typescript
+import Joi from 'joi';
+
+const schemas = {
+  user: Joi.object({
+    email: Joi.string().email().max(254).required(),
+    password: Joi.string().min(12).max(128).required(),
+    name: Joi.string().min(1).max(100).pattern(/^[a-zA-Z\s]+$/).required(),
+    age: Joi.number().integer().min(13).max(120).optional(),
+    phone: Joi.string().pattern(/^\+?[1-9]\d{1,14}$/).optional()
+  }),
+
+  apiKey: Joi.object({
+    name: Joi.string().min(1).max(50).pattern(/^[a-zA-Z0-9\s-]+$/).required(),
+    permissions: Joi.array().items(Joi.string().valid(...Object.values(Permission))).required(),
+    expiresAt: Joi.date().greater('now').optional()
+  })
+};
+
+const validateRequest = (schema: Joi.ObjectSchema) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const { error, value } = schema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true
+    });
+
+    if (error) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: error.details.map(detail => ({
+          field: detail.path.join('.'),
+          message: detail.message
+        }))
+      });
+    }
+
+    req.body = value;
+    next();
+  };
+};
+```
+
+### File Upload Security
+```typescript
+import multer from 'multer';
+import path from 'path';
+
+const fileFilter = (req: Request, file: Express.Multer.File, cb: Function) => {
+  // Allowed file types
+  const allowedTypes = /jpeg|jpg|png|pdf|docx/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = allowedTypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error('File type not allowed'));
+  }
+};
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+      // Generate secure filename
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 1
+  },
+  fileFilter
+});
+
+// Virus scanning
+import ClamScan from 'clamscan';
+
+const clamscan = await new ClamScan().init({
+  removeInfected: true,
+  quarantineInfected: './quarantine/',
+  scanLog: './scan.log'
+});
+
+const scanFile = async (filePath: string): Promise<boolean> => {
+  const result = await clamscan.scanFile(filePath);
+  return result.isInfected === false;
+};
+```
+
+## Security Headers
+
+### Essential Security Headers
+```typescript
+import helmet from 'helmet';
+
+app.use(helmet({
+  // Content Security Policy
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'nonce-{{nonce}}'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  },
+  
+  // HTTP Strict Transport Security
+  hsts: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true
+  },
+  
+  // X-Frame-Options
+  frameguard: { action: 'deny' },
+  
+  // X-Content-Type-Options
+  noSniff: true,
+  
+  // X-XSS-Protection (legacy browsers)
+  xssFilter: true,
+  
+  // Referrer Policy
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+}));
+
+// Additional custom headers
+app.use((req, res, next) => {
+  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  res.setHeader('X-Download-Options', 'noopen');
+  res.setHeader('X-DNS-Prefetch-Control', 'off');
+  next();
+});
+```
+
+## Rate Limiting & DDoS Protection
+
+### API Rate Limiting
+```typescript
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+import Redis from 'redis';
+
+const redisClient = Redis.createClient();
+
+// General API rate limiting
+const apiLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redisClient.sendCommand(args),
+  }),
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests, please try again later',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Strict rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // 5 attempts per 15 minutes
+  skipSuccessfulRequests: true,
+  message: {
+    error: 'Too many authentication attempts, please try again later'
+  }
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/auth/', authLimiter);
+```
+
+### Account Lockout
+```typescript
+class AccountSecurityService {
+  private readonly MAX_FAILED_ATTEMPTS = 5;
+  private readonly LOCKOUT_DURATION = 30 * 60 * 1000; // 30 minutes
+
+  async recordFailedAttempt(email: string): Promise<void> {
+    const key = `failed_attempts:${email}`;
+    const attempts = await redis.incr(key);
+    
+    if (attempts === 1) {
+      await redis.expire(key, 900); // 15 minutes
+    }
+    
+    if (attempts >= this.MAX_FAILED_ATTEMPTS) {
+      await this.lockAccount(email);
+    }
+  }
+
+  async isAccountLocked(email: string): Promise<boolean> {
+    const lockKey = `locked:${email}`;
+    const isLocked = await redis.get(lockKey);
+    return isLocked === 'true';
+  }
+
+  private async lockAccount(email: string): Promise<void> {
+    const lockKey = `locked:${email}`;
+    await redis.setex(lockKey, this.LOCKOUT_DURATION / 1000, 'true');
+    
+    // Send security notification
+    await this.sendSecurityAlert(email);
+  }
+
+  async clearFailedAttempts(email: string): Promise<void> {
+    await redis.del(`failed_attempts:${email}`);
+  }
+}
+```
+
+## Logging & Monitoring
+
+### Security Event Logging
+```typescript
+import winston from 'winston';
+
+const securityLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: 'security.log' }),
+    new winston.transports.Console()
+  ]
+});
+
+class SecurityAudit {
+  static logAuthAttempt(email: string, success: boolean, ip: string, userAgent: string) {
+    securityLogger.info('Authentication attempt', {
+      event: 'auth_attempt',
+      email,
+      success,
+      ip,
+      userAgent,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  static logSuspiciousActivity(userId: string, activity: string, details: any) {
+    securityLogger.warn('Suspicious activity detected', {
+      event: 'suspicious_activity',
+      userId,
+      activity,
+      details,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  static logSecurityViolation(violation: string, details: any) {
+    securityLogger.error('Security violation', {
+      event: 'security_violation',
+      violation,
+      details,
+      timestamp: new Date().toISOString()
+    });
+  }
+}
+```
+
+## API Security
+
+### API Authentication
+```typescript
+class APIKeyService {
+  async generateAPIKey(userId: string, permissions: Permission[]): Promise<string> {
+    const apiKey = crypto.randomBytes(32).toString('hex');
+    const hashedKey = await bcrypt.hash(apiKey, 10);
+    
+    await this.storeAPIKey({
+      hashedKey,
+      userId,
+      permissions,
+      createdAt: new Date(),
+      lastUsed: null,
+      isActive: true
+    });
+    
+    return apiKey;
+  }
+
+  async validateAPIKey(apiKey: string): Promise<{ userId: string; permissions: Permission[] } | null> {
+    const storedKeys = await this.getActiveAPIKeys();
+    
+    for (const key of storedKeys) {
+      const isValid = await bcrypt.compare(apiKey, key.hashedKey);
+      if (isValid) {
+        await this.updateLastUsed(key.id);
+        return {
+          userId: key.userId,
+          permissions: key.permissions
+        };
+      }
+    }
+    
+    return null;
+  }
+}
+
+// API Key middleware
+const authenticateAPIKey = async (req: Request, res: Response, next: NextFunction) => {
+  const apiKey = req.header('X-API-Key');
+  
+  if (!apiKey) {
+    return res.status(401).json({ error: 'API key required' });
+  }
+  
+  const keyData = await apiKeyService.validateAPIKey(apiKey);
+  if (!keyData) {
+    return res.status(401).json({ error: 'Invalid API key' });
+  }
+  
+  req.user = { id: keyData.userId, permissions: keyData.permissions };
+  next();
+};
+```
+
+## Environment Security
+
+### Secure Configuration
+```typescript
+import dotenv from 'dotenv';
+import Joi from 'joi';
+
+dotenv.config();
+
+const envSchema = Joi.object({
+  NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
+  PORT: Joi.number().port().default(3000),
+  
+  // Database
+  DATABASE_URL: Joi.string().uri().required(),
+  DATABASE_SSL: Joi.boolean().default(true),
+  
+  // JWT
+  JWT_ACCESS_SECRET: Joi.string().min(32).required(),
+  JWT_REFRESH_SECRET: Joi.string().min(32).required(),
+  
+  // Encryption
+  ENCRYPTION_KEY: Joi.string().base64().required(),
+  
+  // External Services
+  REDIS_URL: Joi.string().uri().required(),
+  EMAIL_SERVICE_API_KEY: Joi.string().required(),
+  
+  // Security
+  ALLOWED_ORIGINS: Joi.string().required(),
+  RATE_LIMIT_WINDOW: Joi.number().positive().default(900000), // 15 minutes
+  RATE_LIMIT_MAX: Joi.number().positive().default(100),
+});
+
+const { error, value: env } = envSchema.validate(process.env, {
+  allowUnknown: true,
+  stripUnknown: false
+});
+
+if (error) {
+  throw new Error(`Environment validation error: ${error.message}`);
+}
+
+export const config = env;
+```
+
+## Anti-Patterns
+
+### Security Anti-Patterns to Avoid
+
+**Storing Passwords in Plain Text**
+```typescript
+// ❌ Never do this
+const user = {
+  email: 'user@example.com',
+  password: 'plaintext123', // Extremely dangerous
+};
+
+// ✅ Always hash passwords
+const user = {
+  email: 'user@example.com',
+  passwordHash: await bcrypt.hash(password, 12),
+};
+```
+
+**Trusting Client Input**
+```typescript
+// ❌ Dangerous - Trusting client data
+app.post('/admin', (req, res) => {
+  if (req.body.isAdmin) { // Client can set this to true!
+    // Grant admin access
+  }
+});
+
+// ✅ Secure - Server-side validation
+app.post('/admin', authenticateUser, (req, res) => {
+  if (req.user.role === 'admin') { // Server-controlled value
+    // Grant admin access
+  }
+});
+```
+
+**Exposing Sensitive Information**
+```typescript
+// ❌ Dangerous - Exposing internal errors
+app.use((error, req, res, next) => {
+  res.status(500).json({ error: error.stack }); // Reveals internal structure
+});
+
+// ✅ Secure - Generic error messages
+app.use((error, req, res, next) => {
+  logger.error('Server error', { error: error.stack, path: req.path });
+  res.status(500).json({ error: 'Internal server error' });
+});
+```
+
+## Platform Notes
+
+- **Claude Code**: Use `/security-audit` command for security review
+- **Cursor**: Auto-activation for all files to ensure security awareness
+- **Windsurf**: High priority context for workspace-level security
+- **GitHub Copilot**: Enhanced security-focused code review and suggestions

@@ -1,0 +1,481 @@
+---
+id: "api-development-patterns"
+title: "REST API Development"
+description: "RESTful API development patterns with Express.js, TypeScript, and OpenAPI documentation"
+version: "1.1.0"
+lastUpdated: "2024-01-10"
+category: "technology"
+subcategory: "backend-framework"
+framework: "express"
+language: "typescript"
+complexity: "medium"
+scope: "project"
+audience: "developer"
+maturity: "stable"
+platforms:
+  claude-code:
+    compatible: true
+    memory: true
+    command: true
+    namespace: "project"
+    allowedTools: ["web_search", "web_fetch"]
+  cursor:
+    compatible: true
+    activation: "auto-attached"
+    globs: ["**/routes/**/*.ts", "**/controllers/**/*.ts", "**/api/**/*.ts"]
+    priority: "high"
+  windsurf:
+    compatible: true
+    mode: "workspace"
+    xmlTag: "api-context"
+    characterLimit: 5000
+  github-copilot:
+    compatible: true
+    priority: 8
+    reviewType: "security"
+    scope: "repository"
+requires: ["typescript-base", "backend-core"]
+suggests: ["api-testing", "security-patterns", "database-patterns"]
+conflicts: ["graphql-patterns"]
+tags: ["api", "rest", "express", "typescript", "backend", "openapi"]
+author: "ai-context-schema"
+---
+
+# REST API Development Context
+
+## Purpose
+
+This context provides guidance for developing RESTful APIs using Express.js with TypeScript, focusing on proper HTTP semantics, error handling, validation, and documentation.
+
+## API Design Principles
+
+### Resource-Based URLs
+Design URLs around resources, not actions:
+
+```typescript
+// ✅ Good - Resource-based
+GET    /api/v1/users           // Get all users
+GET    /api/v1/users/{id}      // Get specific user
+POST   /api/v1/users           // Create new user
+PUT    /api/v1/users/{id}      // Update user (full)
+PATCH  /api/v1/users/{id}      // Update user (partial)
+DELETE /api/v1/users/{id}      // Delete user
+
+// ❌ Avoid - Action-based
+GET    /api/v1/getUserById
+POST   /api/v1/createUser
+POST   /api/v1/deleteUser
+```
+
+### HTTP Status Codes
+Use appropriate HTTP status codes:
+
+```typescript
+// Success responses
+200 OK           // Successful GET, PUT, PATCH
+201 Created      // Successful POST
+204 No Content   // Successful DELETE
+
+// Client error responses
+400 Bad Request      // Invalid request data
+401 Unauthorized     // Authentication required
+403 Forbidden        // Authentication insufficient
+404 Not Found        // Resource doesn't exist
+409 Conflict         // Resource conflict (duplicate)
+422 Unprocessable    // Validation errors
+
+// Server error responses
+500 Internal Server Error  // Unexpected server error
+503 Service Unavailable   // Temporary unavailability
+```
+
+## Controller Pattern
+
+### Structured Controllers
+Organize controllers with clear separation of concerns:
+
+```typescript
+interface UserController {
+  getUsers: RequestHandler;
+  getUserById: RequestHandler;
+  createUser: RequestHandler;
+  updateUser: RequestHandler;
+  deleteUser: RequestHandler;
+}
+
+export class UserController implements UserController {
+  constructor(
+    private userService: UserService,
+    private logger: Logger
+  ) {}
+
+  getUsers: RequestHandler = async (req, res, next) => {
+    try {
+      const { page = 1, limit = 10, search } = req.query;
+      const pagination = { page: Number(page), limit: Number(limit) };
+      
+      const result = await this.userService.getUsers({
+        pagination,
+        search: search as string
+      });
+      
+      res.status(200).json({
+        data: result.users,
+        pagination: result.pagination,
+        meta: { total: result.total }
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  createUser: RequestHandler = async (req, res, next) => {
+    try {
+      const userData = req.body;
+      const user = await this.userService.createUser(userData);
+      
+      res.status(201).json({
+        data: user,
+        message: 'User created successfully'
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+```
+
+## Request Validation
+
+### Schema-Based Validation
+Use validation schemas for request validation:
+
+```typescript
+import { z } from 'zod';
+
+const CreateUserSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    name: z.string().min(2).max(100),
+    age: z.number().int().min(13).optional(),
+    role: z.enum(['user', 'admin']).default('user')
+  }),
+  query: z.object({
+    welcome_email: z.boolean().optional()
+  }).optional()
+});
+
+type CreateUserRequest = z.infer<typeof CreateUserSchema>;
+
+// Validation middleware
+export const validateRequest = <T extends z.ZodType>(schema: T) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = schema.parse({
+        body: req.body,
+        query: req.query,
+        params: req.params
+      });
+      
+      req.validated = validation;
+      next();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(422).json({
+          error: 'Validation failed',
+          details: error.errors
+        });
+      } else {
+        next(error);
+      }
+    }
+  };
+};
+
+// Usage
+router.post('/users', 
+  validateRequest(CreateUserSchema),
+  userController.createUser
+);
+```
+
+## Error Handling
+
+### Centralized Error Handler
+Implement consistent error handling:
+
+```typescript
+export class ApiError extends Error {
+  constructor(
+    public statusCode: number,
+    public message: string,
+    public code?: string,
+    public details?: any
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+export const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
+  let statusCode = 500;
+  let message = 'Internal server error';
+  let code = 'INTERNAL_ERROR';
+  let details = undefined;
+
+  if (error instanceof ApiError) {
+    statusCode = error.statusCode;
+    message = error.message;
+    code = error.code;
+    details = error.details;
+  } else if (error.name === 'ValidationError') {
+    statusCode = 422;
+    message = 'Validation failed';
+    code = 'VALIDATION_ERROR';
+    details = error.details;
+  }
+
+  // Log error for debugging
+  console.error('API Error:', {
+    statusCode,
+    message,
+    code,
+    stack: error.stack,
+    path: req.path,
+    method: req.method
+  });
+
+  res.status(statusCode).json({
+    error: {
+      message,
+      code,
+      ...(details && { details }),
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    }
+  });
+};
+```
+
+## Response Formatting
+
+### Consistent Response Structure
+Standardize API response format:
+
+```typescript
+interface ApiResponse<T = any> {
+  data?: T;
+  message?: string;
+  error?: {
+    message: string;
+    code: string;
+    details?: any;
+  };
+  meta?: {
+    total?: number;
+    page?: number;
+    limit?: number;
+    timestamp: string;
+  };
+}
+
+export const formatResponse = <T>(data: T, message?: string): ApiResponse<T> => ({
+  data,
+  ...(message && { message }),
+  meta: {
+    timestamp: new Date().toISOString()
+  }
+});
+
+// Usage in controllers
+res.status(200).json(formatResponse(users, 'Users retrieved successfully'));
+```
+
+## Authentication & Authorization
+
+### JWT Middleware
+Implement JWT authentication:
+
+```typescript
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    role: string;
+  };
+}
+
+export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({
+      error: {
+        message: 'Access token required',
+        code: 'TOKEN_REQUIRED'
+      }
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      error: {
+        message: 'Invalid access token',
+        code: 'INVALID_TOKEN'
+      }
+    });
+  }
+};
+
+// Role-based authorization
+export const requireRole = (...roles: string[]) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        error: {
+          message: 'Insufficient permissions',
+          code: 'INSUFFICIENT_PERMISSIONS'
+        }
+      });
+    }
+    next();
+  };
+};
+```
+
+## API Documentation
+
+### OpenAPI Integration
+Document APIs with OpenAPI/Swagger:
+
+```typescript
+/**
+ * @swagger
+ * /api/v1/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *         description: Number of users per page
+ *     responses:
+ *       200:
+ *         description: Users retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ */
+```
+
+## Testing Patterns
+
+### API Testing Structure
+Structure API tests clearly:
+
+```typescript
+describe('User API', () => {
+  describe('GET /api/v1/users', () => {
+    it('should return paginated users', async () => {
+      const response = await request(app)
+        .get('/api/v1/users')
+        .query({ page: 1, limit: 10 })
+        .expect(200);
+
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toBeInstanceOf(Array);
+      expect(response.body).toHaveProperty('meta.total');
+    });
+
+    it('should filter users by search term', async () => {
+      const response = await request(app)
+        .get('/api/v1/users')
+        .query({ search: 'john' })
+        .expect(200);
+
+      expect(response.body.data.every((user: any) => 
+        user.name.toLowerCase().includes('john') || 
+        user.email.toLowerCase().includes('john')
+      )).toBe(true);
+    });
+  });
+});
+```
+
+## Anti-Patterns
+
+### Avoid These Patterns
+- Exposing internal implementation details in URLs
+- Using HTTP GET for operations with side effects
+- Returning HTML from REST endpoints
+- Inconsistent error response formats
+- Ignoring HTTP status codes (always returning 200)
+- Missing input validation and sanitization
+- Synchronous operations in request handlers
+- Exposing sensitive data in responses
+
+## Security Considerations
+
+### Request Rate Limiting
+```typescript
+import rateLimit from 'express-rate-limit';
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: {
+      message: 'Too many requests, please try again later',
+      code: 'RATE_LIMIT_EXCEEDED'
+    }
+  }
+});
+
+app.use('/api/', apiLimiter);
+```
+
+### Input Sanitization
+```typescript
+import helmet from 'helmet';
+import xss from 'xss';
+
+app.use(helmet());
+
+const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
+  if (req.body) {
+    for (const key in req.body) {
+      if (typeof req.body[key] === 'string') {
+        req.body[key] = xss(req.body[key]);
+      }
+    }
+  }
+  next();
+};
+```
+
+## Platform Notes
+
+- **Claude Code**: Use `/api-route` command for route scaffolding
+- **Cursor**: Auto-activation for API-related files in routes and controllers
+- **Windsurf**: Workspace-level context for full API project understanding
+- **GitHub Copilot**: Enhanced security review integration for API endpoints

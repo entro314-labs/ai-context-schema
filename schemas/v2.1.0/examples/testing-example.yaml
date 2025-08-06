@@ -1,0 +1,635 @@
+---
+id: "testing-strategy-patterns"
+title: "Testing Strategy and Best Practices"
+description: "Comprehensive testing patterns for unit, integration, and end-to-end testing"
+version: "1.0.0"
+lastUpdated: "2024-01-15"
+category: "task"
+subcategory: "quality-assurance"
+complexity: "medium"
+scope: "project"
+audience: "developer"
+maturity: "stable"
+platforms:
+  claude-code:
+    compatible: true
+    memory: true
+    command: true
+    namespace: "project"
+    priority: 7
+  cursor:
+    compatible: true
+    activation: "auto-attached"
+    globs: ["**/{test,spec,__tests__}/**/*.{ts,js,tsx,jsx}", "**/*.{test,spec}.{ts,js,tsx,jsx}"]
+    priority: "high"
+  windsurf:
+    compatible: true
+    mode: "workspace"
+    xmlTag: "testing-context"
+    characterLimit: 5500
+  github-copilot:
+    compatible: true
+    priority: 9
+    reviewType: "code-quality"
+    scope: "repository"
+requires: ["typescript-base"]
+suggests: ["api-development-patterns", "react-component-patterns"]
+tags: ["testing", "jest", "cypress", "playwright", "quality-assurance"]
+author: "ai-context-schema"
+---
+
+# Testing Strategy and Best Practices
+
+## Purpose
+
+This context provides comprehensive guidance for implementing effective testing strategies across unit, integration, and end-to-end testing layers.
+
+## Testing Pyramid
+
+Follow the testing pyramid principle:
+
+```
+    /\     E2E Tests (Few)
+   /  \    
+  /____\   Integration Tests (Some)
+ /______\  Unit Tests (Many)
+```
+
+### Unit Tests (70%)
+- Test individual functions and components in isolation
+- Fast execution, focused scope
+- Mock external dependencies
+
+### Integration Tests (20%)
+- Test interaction between components/modules
+- Verify data flow and API integration
+- Test critical user workflows
+
+### End-to-End Tests (10%)
+- Test complete user journeys
+- Verify system behavior in production-like environment
+- Slow but high confidence
+
+## Unit Testing Patterns
+
+### Test Structure
+Follow the Arrange-Act-Assert (AAA) pattern:
+
+```typescript
+describe('UserService', () => {
+  describe('getUserById', () => {
+    it('should return user when valid ID provided', async () => {
+      // Arrange
+      const userId = '123';
+      const expectedUser = { id: userId, name: 'John Doe' };
+      const mockRepository = {
+        findById: jest.fn().mockResolvedValue(expectedUser)
+      };
+      const userService = new UserService(mockRepository);
+
+      // Act
+      const result = await userService.getUserById(userId);
+
+      // Assert
+      expect(result).toEqual(expectedUser);
+      expect(mockRepository.findById).toHaveBeenCalledWith(userId);
+    });
+
+    it('should throw error when user not found', async () => {
+      // Arrange
+      const userId = 'nonexistent';
+      const mockRepository = {
+        findById: jest.fn().mockResolvedValue(null)
+      };
+      const userService = new UserService(mockRepository);
+
+      // Act & Assert
+      await expect(userService.getUserById(userId))
+        .rejects
+        .toThrow('User not found');
+    });
+  });
+});
+```
+
+### React Component Testing
+Test components with React Testing Library:
+
+```typescript
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserProfile } from './UserProfile';
+
+describe('UserProfile', () => {
+  const mockUser = {
+    id: '1',
+    name: 'John Doe',
+    email: 'john@example.com'
+  };
+
+  it('should display user information', () => {
+    render(<UserProfile user={mockUser} />);
+    
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('john@example.com')).toBeInTheDocument();
+  });
+
+  it('should call onEdit when edit button clicked', async () => {
+    const mockOnEdit = jest.fn();
+    const user = userEvent.setup();
+    
+    render(<UserProfile user={mockUser} onEdit={mockOnEdit} />);
+    
+    const editButton = screen.getByRole('button', { name: /edit/i });
+    await user.click(editButton);
+    
+    expect(mockOnEdit).toHaveBeenCalledWith(mockUser.id);
+  });
+
+  it('should show loading state', () => {
+    render(<UserProfile user={mockUser} loading={true} />);
+    
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+    expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
+  });
+});
+```
+
+### API Testing
+Test API endpoints with request/response mocking:
+
+```typescript
+import request from 'supertest';
+import { app } from '../app';
+import { userRepository } from '../repositories/userRepository';
+
+// Mock the repository
+jest.mock('../repositories/userRepository');
+const mockUserRepository = userRepository as jest.Mocked<typeof userRepository>;
+
+describe('Users API', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('GET /api/users/:id', () => {
+    it('should return user when found', async () => {
+      const user = { id: '1', name: 'John Doe', email: 'john@example.com' };
+      mockUserRepository.findById.mockResolvedValue(user);
+
+      const response = await request(app)
+        .get('/api/users/1')
+        .expect(200);
+
+      expect(response.body).toEqual({
+        data: user,
+        message: 'User retrieved successfully'
+      });
+    });
+
+    it('should return 404 when user not found', async () => {
+      mockUserRepository.findById.mockResolvedValue(null);
+
+      const response = await request(app)
+        .get('/api/users/999')
+        .expect(404);
+
+      expect(response.body).toEqual({
+        error: {
+          message: 'User not found',
+          code: 'USER_NOT_FOUND'
+        }
+      });
+    });
+  });
+});
+```
+
+## Integration Testing
+
+### Database Integration
+Test with real database using test containers:
+
+```typescript
+import { DataSource } from 'typeorm';
+import { PostgreSqlContainer } from '@testcontainers/postgresql';
+import { UserRepository } from './UserRepository';
+
+describe('UserRepository Integration', () => {
+  let container: PostgreSqlContainer;
+  let dataSource: DataSource;
+  let userRepository: UserRepository;
+
+  beforeAll(async () => {
+    container = await new PostgreSqlContainer()
+      .withDatabase('testdb')
+      .withUsername('testuser')
+      .withPassword('testpass')
+      .start();
+
+    dataSource = new DataSource({
+      type: 'postgres',
+      host: container.getHost(),
+      port: container.getMappedPort(5432),
+      username: 'testuser',
+      password: 'testpass',
+      database: 'testdb',
+      entities: [User],
+      synchronize: true
+    });
+
+    await dataSource.initialize();
+    userRepository = new UserRepository(dataSource);
+  });
+
+  afterAll(async () => {
+    await dataSource.destroy();
+    await container.stop();
+  });
+
+  beforeEach(async () => {
+    await dataSource.query('DELETE FROM users');
+  });
+
+  it('should save and retrieve user', async () => {
+    const userData = {
+      name: 'John Doe',
+      email: 'john@example.com'
+    };
+
+    const savedUser = await userRepository.create(userData);
+    expect(savedUser.id).toBeDefined();
+
+    const retrievedUser = await userRepository.findById(savedUser.id);
+    expect(retrievedUser).toEqual(savedUser);
+  });
+});
+```
+
+### API Integration Testing
+Test complete API workflows:
+
+```typescript
+import request from 'supertest';
+import { app } from '../app';
+import { setupTestDb, cleanupTestDb } from '../test-utils/database';
+
+describe('User Management Flow', () => {
+  beforeAll(async () => {
+    await setupTestDb();
+  });
+
+  afterAll(async () => {
+    await cleanupTestDb();
+  });
+
+  it('should complete user lifecycle', async () => {
+    // Create user
+    const createResponse = await request(app)
+      .post('/api/users')
+      .send({
+        name: 'John Doe',
+        email: 'john@example.com'
+      })
+      .expect(201);
+
+    const userId = createResponse.body.data.id;
+
+    // Get user
+    await request(app)
+      .get(`/api/users/${userId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.data.name).toBe('John Doe');
+      });
+
+    // Update user
+    await request(app)
+      .put(`/api/users/${userId}`)
+      .send({
+        name: 'Jane Doe',
+        email: 'jane@example.com'
+      })
+      .expect(200);
+
+    // Verify update
+    await request(app)
+      .get(`/api/users/${userId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.data.name).toBe('Jane Doe');
+      });
+
+    // Delete user
+    await request(app)
+      .delete(`/api/users/${userId}`)
+      .expect(204);
+
+    // Verify deletion
+    await request(app)
+      .get(`/api/users/${userId}`)
+      .expect(404);
+  });
+});
+```
+
+## End-to-End Testing
+
+### Playwright E2E Tests
+Test complete user workflows:
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('User Management', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/login');
+    await page.fill('[data-testid="email"]', 'admin@example.com');
+    await page.fill('[data-testid="password"]', 'password123');
+    await page.click('[data-testid="login-button"]');
+    await page.waitForURL('/dashboard');
+  });
+
+  test('should create new user', async ({ page }) => {
+    // Navigate to users page
+    await page.click('[data-testid="users-nav"]');
+    await page.waitForURL('/users');
+
+    // Click create user button
+    await page.click('[data-testid="create-user-button"]');
+    await page.waitForSelector('[data-testid="user-form"]');
+
+    // Fill form
+    await page.fill('[data-testid="name-input"]', 'John Doe');
+    await page.fill('[data-testid="email-input"]', 'john@example.com');
+    await page.selectOption('[data-testid="role-select"]', 'user');
+
+    // Submit form
+    await page.click('[data-testid="submit-button"]');
+
+    // Verify success
+    await expect(page.locator('[data-testid="success-message"]'))
+      .toHaveText('User created successfully');
+
+    // Verify user appears in list
+    await expect(page.locator('[data-testid="user-list"]'))
+      .toContainText('John Doe');
+  });
+
+  test('should edit existing user', async ({ page }) => {
+    await page.goto('/users');
+    
+    // Click edit button for first user
+    await page.click('[data-testid="user-row"]:first-child [data-testid="edit-button"]');
+    
+    // Update name
+    await page.fill('[data-testid="name-input"]', 'Jane Smith');
+    await page.click('[data-testid="submit-button"]');
+    
+    // Verify update
+    await expect(page.locator('[data-testid="user-list"]'))
+      .toContainText('Jane Smith');
+  });
+});
+```
+
+### Cypress E2E Tests (Alternative)
+```typescript
+describe('User Management', () => {
+  beforeEach(() => {
+    cy.login('admin@example.com', 'password123');
+    cy.visit('/users');
+  });
+
+  it('should create new user', () => {
+    cy.get('[data-testid="create-user-button"]').click();
+    
+    cy.get('[data-testid="name-input"]').type('John Doe');
+    cy.get('[data-testid="email-input"]').type('john@example.com');
+    cy.get('[data-testid="role-select"]').select('user');
+    
+    cy.get('[data-testid="submit-button"]').click();
+    
+    cy.get('[data-testid="success-message"]')
+      .should('contain', 'User created successfully');
+    
+    cy.get('[data-testid="user-list"]')
+      .should('contain', 'John Doe');
+  });
+});
+```
+
+## Test Data Management
+
+### Test Fixtures
+Create reusable test data:
+
+```typescript
+// fixtures/userFixtures.ts
+export const userFixtures = {
+  validUser: {
+    name: 'John Doe',
+    email: 'john@example.com',
+    role: 'user'
+  },
+  
+  adminUser: {
+    name: 'Admin User',
+    email: 'admin@example.com',
+    role: 'admin'
+  },
+  
+  invalidUser: {
+    name: '',
+    email: 'invalid-email',
+    role: 'unknown'
+  }
+};
+
+// Usage in tests
+import { userFixtures } from '../fixtures/userFixtures';
+
+test('should create user with valid data', async () => {
+  const response = await request(app)
+    .post('/api/users')
+    .send(userFixtures.validUser)
+    .expect(201);
+});
+```
+
+### Factory Pattern
+Generate test data dynamically:
+
+```typescript
+// factories/userFactory.ts
+import { faker } from '@faker-js/faker';
+
+export const userFactory = {
+  build: (overrides = {}) => ({
+    id: faker.string.uuid(),
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    role: 'user',
+    createdAt: new Date(),
+    ...overrides
+  }),
+
+  buildMany: (count: number, overrides = {}) => 
+    Array.from({ length: count }, () => userFactory.build(overrides))
+};
+
+// Usage
+const users = userFactory.buildMany(5);
+const adminUser = userFactory.build({ role: 'admin' });
+```
+
+## Mocking Strategies
+
+### Service Mocking
+Mock external dependencies:
+
+```typescript
+// Mock external API
+jest.mock('../services/emailService', () => ({
+  sendWelcomeEmail: jest.fn().mockResolvedValue(true),
+  sendNotification: jest.fn().mockResolvedValue(true)
+}));
+
+// Mock with different behaviors per test
+const mockEmailService = require('../services/emailService');
+
+beforeEach(() => {
+  mockEmailService.sendWelcomeEmail.mockClear();
+});
+
+test('should handle email service failure', async () => {
+  mockEmailService.sendWelcomeEmail.mockRejectedValue(new Error('Email service down'));
+  
+  const result = await userService.createUser(userData);
+  
+  expect(result.emailSent).toBe(false);
+});
+```
+
+### Database Mocking
+Mock database queries:
+
+```typescript
+// Mock TypeORM repository
+const mockUserRepository = {
+  find: jest.fn(),
+  findOne: jest.fn(),
+  save: jest.fn(),
+  delete: jest.fn()
+};
+
+beforeEach(() => {
+  Object.values(mockUserRepository).forEach(mock => mock.mockClear());
+});
+
+test('should return users from repository', async () => {
+  const users = [userFactory.build(), userFactory.build()];
+  mockUserRepository.find.mockResolvedValue(users);
+  
+  const result = await userService.getAllUsers();
+  
+  expect(result).toEqual(users);
+});
+```
+
+## Performance Testing
+
+### Load Testing with Artillery
+```yaml
+# artillery-config.yml
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 10
+scenarios:
+  - name: 'Get users'
+    weight: 70
+    flow:
+      - get:
+          url: '/api/users'
+  - name: 'Create user'
+    weight: 30
+    flow:
+      - post:
+          url: '/api/users'
+          json:
+            name: 'Test User'
+            email: 'test@example.com'
+```
+
+### Benchmark Testing
+```typescript
+import { performance } from 'perf_hooks';
+
+describe('Performance Tests', () => {
+  test('should process large dataset efficiently', () => {
+    const largeDataset = userFactory.buildMany(10000);
+    
+    const startTime = performance.now();
+    const result = processUsers(largeDataset);
+    const endTime = performance.now();
+    
+    const executionTime = endTime - startTime;
+    expect(executionTime).toBeLessThan(1000); // Should complete within 1 second
+    expect(result).toHaveLength(10000);
+  });
+});
+```
+
+## Anti-Patterns
+
+### Testing Anti-Patterns to Avoid
+
+**Testing Implementation Details**
+```typescript
+// ❌ Bad - Testing internal state
+expect(component.state.isLoading).toBe(true);
+
+// ✅ Good - Testing behavior
+expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+```
+
+**Overly Complex Test Setup**
+```typescript
+// ❌ Bad - Complex setup in every test
+beforeEach(async () => {
+  await setupDatabase();
+  await seedTestData();
+  await setupAuth();
+  await configureServices();
+  // ... 20 more setup steps
+});
+
+// ✅ Good - Simple, focused setup
+beforeEach(() => {
+  mockUserRepository.clear();
+});
+```
+
+**Testing Everything**
+```typescript
+// ❌ Bad - Testing trivial getters/setters
+test('should set and get name', () => {
+  user.setName('John');
+  expect(user.getName()).toBe('John');
+});
+
+// ✅ Good - Testing business logic
+test('should calculate user discount based on membership level', () => {
+  const user = new User({ membershipLevel: 'premium' });
+  expect(user.calculateDiscount(100)).toBe(20);
+});
+```
+
+## Platform Notes
+
+- **Claude Code**: Use `/test` command for generating test scaffolding
+- **Cursor**: Auto-activation works with test files in standard locations
+- **Windsurf**: Context optimized for workspace-level testing strategy
+- **GitHub Copilot**: Enhanced code review for test coverage and quality
