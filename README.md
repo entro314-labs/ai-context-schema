@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
-**A new Context Paradigm for defining AI assistant behavior across development platforms**
+**Universal AI Context Schema: A New Interoperability Standard for AI Development Tools**
 
 ## The Problem
 
@@ -102,6 +102,7 @@ ai-context-schema check-compatibility schemas/
 Each platform has specific configuration options:
 
 #### Claude Code
+
 ```yaml
 claude-code:
   compatible: true
@@ -112,6 +113,7 @@ claude-code:
 ```
 
 #### Cursor
+
 ```yaml
 cursor:
   compatible: true
@@ -121,6 +123,7 @@ cursor:
 ```
 
 #### Windsurf
+
 ```yaml
 windsurf:
   compatible: true
@@ -130,6 +133,7 @@ windsurf:
 ```
 
 #### GitHub Copilot
+
 ```yaml
 github-copilot:
   compatible: true
@@ -162,12 +166,14 @@ interface PlatformAdapter {
 ### Output Examples
 
 **Claude Code**: `.claude/CLAUDE.md` (memory file)
+
 ```markdown
 # React Development Guidelines
 [Schema content optimized for Claude Code...]
 ```
 
 **Cursor**: `.cursor/rules/react-patterns.mdc` (rule file)
+
 ```yaml
 ---
 title: "React Development Guidelines"
@@ -178,6 +184,7 @@ globs: ["**/*.tsx"]
 ```
 
 **Windsurf**: `.windsurf/rules/react-patterns.xml` (XML memory)
+
 ```xml
 <context priority="8">
   <purpose>React development patterns</purpose>
@@ -186,6 +193,7 @@ globs: ["**/*.tsx"]
 ```
 
 **GitHub Copilot**: `.github/copilot/guidelines.json` (configuration)
+
 ```json
 {
   "name": "React Development Guidelines",
@@ -292,6 +300,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 ## Versioning
 
 The specification follows semantic versioning:
+
 - **Major**: Breaking schema structure changes
 - **Minor**: Backward-compatible feature additions
 - **Patch**: Bug fixes and clarifications
