@@ -12,7 +12,7 @@ This guide helps you create your first AI Context Schema and deploy it across AI
 ## Prerequisites
 
 - Basic understanding of YAML and Markdown
-- Familiarity with at least one AI coding assistant (Claude Code, Cursor, Windsurf, or GitHub Copilot)
+- Familiarity with at least one AI coding assistant (Claude Code, Claude Desktop, Cursor, Windsurf, VS Code, JetBrains IDEs, Zed, or GitHub Copilot)
 - Node.js 18+ (for validation tools)
 
 ## Quick Start
@@ -45,6 +45,10 @@ platforms:
     compatible: true
     memory: true
     command: true
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
   cursor:
     compatible: true
     activation: "auto-attached"
@@ -52,9 +56,26 @@ platforms:
   windsurf:
     compatible: true
     mode: "workspace"
+    characterLimit: 4500
+  zed:
+    compatible: true
+    aiFeatures: true
+    performance: "high"
+  jetbrains:
+    compatible: true
+    ide: "webstorm"
+    mcpIntegration: true
+  vscode:
+    compatible: true
+    extension: "ai-context-schema"
+    mcpIntegration: true
   github-copilot:
     compatible: true
     priority: 8
+    reviewType: "code-quality"
+  generic-ai:
+    compatible: true
+    priority: 7
 tags: ["react", "typescript", "personal"]
 author: "your-username"
 ---
@@ -128,10 +149,25 @@ vdk generate cursor --schema my-first-schema.yaml
 
 Each platform has specific file locations and formats:
 
-**Claude Code**: Place in `.claude/` directory
-**Cursor**: Place in `.cursor/rules/` directory  
-**Windsurf**: Place in `.windsurf/rules/` directory
-**GitHub Copilot**: Place in `.github/copilot/` directory
+**AI Assistants:**
+- **Claude Code**: Place in `.claude/` directory
+- **Claude Desktop**: Place in `.claude-desktop/rules/` directory
+- **Generic AI**: Place in `.ai/rules/` directory
+
+**AI-First Editors:**
+- **Cursor**: Place in `.cursor/rules/` or `.ai/rules/` directory
+- **Windsurf**: Place in `.windsurf/rules/` directory
+- **Windsurf Next**: Place in `.windsurf-next/rules/` directory
+
+**Code Editors & IDEs:**
+- **VS Code**: Place in `.vscode/ai-rules/` directory
+- **VS Code Insiders**: Place in `.vscode-insiders/ai-rules/` directory
+- **VSCodium**: Place in `.vscode-oss/ai-rules/` directory
+- **Zed**: Place in `.zed/ai-rules/` directory
+- **JetBrains IDEs**: Place in `.idea/ai-rules/` directory
+
+**GitHub Services:**
+- **GitHub Copilot**: Place in `.github/copilot/` directory
 
 ## Understanding Schema Structure
 
@@ -155,8 +191,9 @@ platforms:
 
 Each platform has specific configuration options:
 
-#### Claude Code
+#### AI Assistants
 
+**Claude Code**
 ```yaml
 claude-code:
   compatible: true
@@ -164,10 +201,30 @@ claude-code:
   command: true # Create slash command
   namespace: 'project' # project or user
   priority: 8 # 1-10, higher = more important
+  mcpIntegration: true # Uses MCP servers
 ```
 
-#### Cursor
+**Claude Desktop**
+```yaml
+claude-desktop:
+  compatible: true
+  mcpIntegration: true # MCP support
+  rules: true # Include in rules folder
+  priority: 8 # Context priority (1-10)
+```
 
+**Generic AI**
+```yaml
+generic-ai:
+  compatible: true
+  configPath: ".ai/"
+  rulesPath: ".ai/rules/"
+  priority: 7 # Context priority (1-10)
+```
+
+#### AI-First Editors
+
+**Cursor**
 ```yaml
 cursor:
   compatible: true
@@ -176,18 +233,48 @@ cursor:
   priority: 'high' # high, medium, low
 ```
 
-#### Windsurf
-
+**Windsurf**
 ```yaml
 windsurf:
   compatible: true
   mode: 'workspace' # workspace or global
   xmlTag: 'react-context' # XML wrapper tag
-  characterLimit: 4000 # Estimated content size
+  characterLimit: 4000 # Estimated content size (max 6000)
 ```
 
-#### GitHub Copilot
+**Zed**
+```yaml
+zed:
+  compatible: true
+  mode: 'project' # global or project
+  aiFeatures: true # Uses Zed AI features
+  performance: 'high' # high, medium, low
+```
 
+#### Code Editors & IDEs
+
+**VS Code**
+```yaml
+vscode:
+  compatible: true
+  extension: 'ai-context-schema' # Required extension
+  settings: { 'aiContext.autoActivate': true }
+  mcpIntegration: true # Uses MCP servers
+```
+
+**JetBrains IDEs**
+```yaml
+jetbrains:
+  compatible: true
+  ide: 'webstorm' # intellij, webstorm, pycharm, etc.
+  mcpIntegration: true # 2025.1+ versions
+  fileTemplates: true
+  inspections: ['ContextSchemaValidation']
+```
+
+#### GitHub Services
+
+**GitHub Copilot**
 ```yaml
 github-copilot:
   compatible: true

@@ -58,12 +58,33 @@ platforms:
     compatible: true
     memory: true
     command: true
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
   windsurf:
     compatible: true
     mode: 'workspace'
+    characterLimit: 4500
+  zed:
+    compatible: true
+    aiFeatures: true
+    performance: 'high'
+  jetbrains:
+    compatible: true
+    ide: 'webstorm'
+    mcpIntegration: true
+  vscode:
+    compatible: true
+    extension: 'ai-context-schema'
+    mcpIntegration: true
   github-copilot:
     compatible: true
     priority: 8
+    reviewType: 'code-quality'
+  generic-ai:
+    compatible: true
+    priority: 7
 tags: ['react', 'typescript', 'frontend']
 author: 'your-username'
 ---
@@ -109,8 +130,13 @@ node scripts/migrate-cursor.js .cursor/rules/ schemas/
    ```yaml
    platforms:
      claude-code: { compatible: true, memory: true }
-     windsurf: { compatible: true, mode: 'workspace' }
-     github-copilot: { compatible: true, priority: 8 }
+     claude-desktop: { compatible: true, mcpIntegration: true, rules: true }
+     windsurf: { compatible: true, mode: 'workspace', characterLimit: 4500 }
+     zed: { compatible: true, aiFeatures: true, performance: 'high' }
+     jetbrains: { compatible: true, ide: 'webstorm', mcpIntegration: true }
+     vscode: { compatible: true, extension: 'ai-context-schema', mcpIntegration: true }
+     github-copilot: { compatible: true, priority: 8, reviewType: 'code-quality' }
+     generic-ai: { compatible: true, priority: 7 }
    ```
 
 5. **Preserve content**: Copy markdown content as-is
@@ -304,6 +330,231 @@ tags: ['typescript', 'types', 'language']
 # TypeScript Development Guidelines
 
 Use strict type checking for all TypeScript projects...
+
+## Migrating from VS Code Settings
+
+### Current VS Code Format
+
+```json
+{
+  "aiContext.rules": [
+    {
+      "name": "TypeScript Guidelines",
+      "filePatterns": ["**/*.ts", "**/*.tsx"],
+      "guidelines": ["Use strict types", "Implement proper interfaces"]
+    }
+  ]
+}
+```
+
+### AI Context Schema Equivalent
+
+```yaml
+---
+id: 'typescript-vscode-guidelines'
+title: 'TypeScript Guidelines'
+description: 'TypeScript development guidelines for VS Code projects'
+version: '1.0.0'
+category: 'language'
+language: 'typescript'
+platforms:
+  vscode:
+    compatible: true
+    extension: 'ai-context-schema'
+    settings: { 'aiContext.autoActivate': true }
+    mcpIntegration: true
+  vscode-insiders:
+    compatible: true
+    extension: 'ai-context-schema-insiders'
+    mcpIntegration: true
+  vscodium:
+    compatible: true
+    extension: 'ai-context-schema-oss'
+    configPath: ".vscode-oss/"
+  claude-code:
+    compatible: true
+    memory: true
+  cursor:
+    compatible: true
+    activation: 'auto-attached'
+    globs: ['**/*.ts', '**/*.tsx']
+tags: ['typescript', 'vscode', 'language']
+---
+# TypeScript Guidelines
+
+Use strict types and implement proper interfaces...
+```
+
+## Migrating from JetBrains IDEs
+
+### Current JetBrains Format
+
+JetBrains IDEs typically use file templates and inspection profiles:
+
+```xml
+<!-- File Template -->
+<template>
+  <name>React Component</name>
+  <extension>tsx</extension>
+  <content>
+    import React from 'react';
+    
+    interface ${NAME}Props {
+      // Define props here
+    }
+    
+    export const ${NAME}: React.FC<${NAME}Props> = (props) => {
+      return <div>Hello World</div>;
+    };
+  </content>
+</template>
+```
+
+### AI Context Schema Equivalent
+
+```yaml
+---
+id: 'react-jetbrains-patterns'
+title: 'React Component Patterns for JetBrains'
+description: 'React component development patterns optimized for JetBrains IDEs'
+version: '1.0.0'
+category: 'technology'
+framework: 'react'
+language: 'typescript'
+platforms:
+  jetbrains:
+    compatible: true
+    ide: 'webstorm'
+    mcpIntegration: true
+    fileTemplates: true
+    inspections: ['ReactHooksUsage', 'TypeScriptValidateTypes']
+  webstorm:
+    compatible: true
+    nodeIntegration: true
+    typescript: true
+    inspections: ['JavaScriptPatterns', 'TypeScriptPatterns']
+  intellij:
+    compatible: true
+    plugin: 'JavaScript'
+    fileTemplates: true
+  claude-code:
+    compatible: true
+    memory: true
+    command: true
+  cursor:
+    compatible: true
+    activation: 'auto-attached'
+    globs: ['**/*.tsx', '**/*.jsx']
+tags: ['react', 'typescript', 'jetbrains', 'webstorm']
+---
+# React Component Patterns for JetBrains
+
+## Component Structure
+
+Always define proper interfaces for component props:
+
+```tsx
+interface ComponentNameProps {
+  // Define props with proper types
+  title: string;
+  children: React.ReactNode;
+  onClick?: () => void;
+}
+
+export const ComponentName: React.FC<ComponentNameProps> = ({ 
+  title, 
+  children, 
+  onClick 
+}) => {
+  return (
+    <div onClick={onClick}>
+      <h1>{title}</h1>
+      {children}
+    </div>
+  );
+};
+```
+
+## Platform Notes
+
+### WebStorm
+- Use built-in React component templates
+- Enable TypeScript inspections for better type checking
+- Configure Node.js integration for proper module resolution
+
+### IntelliJ IDEA
+- Install JavaScript/TypeScript plugins
+- Configure file templates for consistent component structure
+```
+
+## Migrating from Zed Configuration
+
+### Current Zed Format
+
+```json
+{
+  "ai": {
+    "contexts": [
+      {
+        "name": "Python Guidelines",
+        "scope": "project",
+        "patterns": ["**/*.py"],
+        "content": "Use type hints and follow PEP 8"
+      }
+    ]
+  }
+}
+```
+
+### AI Context Schema Equivalent
+
+```yaml
+---
+id: 'python-zed-guidelines'
+title: 'Python Guidelines for Zed'
+description: 'Python development guidelines optimized for Zed editor'
+version: '1.0.0'
+category: 'language'
+language: 'python'
+platforms:
+  zed:
+    compatible: true
+    mode: 'project'
+    aiFeatures: true
+    collaborative: true
+    performance: 'high'
+  claude-code:
+    compatible: true
+    memory: true
+  cursor:
+    compatible: true
+    activation: 'auto-attached'
+    globs: ['**/*.py']
+  pycharm:
+    compatible: true
+    pythonInterpreter: true
+    virtualEnv: true
+    inspections: ['PythonPatterns']
+tags: ['python', 'zed', 'type-hints', 'pep8']
+---
+# Python Guidelines for Zed
+
+## Type Hints
+
+Always use type hints for function parameters and return values:
+
+```python
+def process_data(data: List[Dict[str, Any]]) -> Dict[str, int]:
+    """Process data and return summary statistics."""
+    return {"count": len(data), "total": sum(len(item) for item in data)}
+```
+
+## Platform Notes
+
+### Zed Editor
+- Utilizes high-performance parsing for real-time feedback
+- Collaborative features work with shared context schemas
+- AI features integrate seamlessly with project-level context
 ```
 
 ## Migrating from Custom JSON Formats

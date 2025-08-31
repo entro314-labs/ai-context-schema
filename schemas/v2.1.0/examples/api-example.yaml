@@ -19,6 +19,12 @@ platforms:
     command: true
     namespace: "project"
     allowedTools: ["web_search", "web_fetch"]
+    priority: 8
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
+    priority: 8
   cursor:
     compatible: true
     activation: "auto-attached"
@@ -29,11 +35,67 @@ platforms:
     mode: "workspace"
     xmlTag: "api-context"
     characterLimit: 5000
+    priority: 8
+  windsurf-next:
+    compatible: true
+    mode: "workspace"
+    xmlTag: "api-next-context"
+    characterLimit: 5000
+    priority: 8
   github-copilot:
     compatible: true
     priority: 8
     reviewType: "security"
     scope: "repository"
+  vscode:
+    compatible: true
+    extension: "ms-vscode.vscode-typescript-next"
+    commands: ["REST Client", "Thunder Client"]
+  vscode-insiders:
+    compatible: true
+    extension: "ms-vscode.vscode-typescript-next"
+    mcpIntegration: true
+  vscodium:
+    compatible: true
+    configPath: ".vscode-oss/"
+    extension: "humao.rest-client"
+  zed:
+    compatible: true
+    mode: "project"
+    aiFeatures: true
+    performance: "high"
+  jetbrains:
+    compatible: true
+    ide: "webstorm"
+    mcpIntegration: true
+    fileTemplates: true
+    inspections: ["NodeJSUnresolvedModule", "TypeScriptValidateTypes"]
+  webstorm:
+    compatible: true
+    nodeIntegration: true
+    typescript: true
+    plugin: "NodeJS"
+  intellij:
+    compatible: true
+    plugin: "NodeJS"
+    fileTemplates: true
+  pycharm:
+    compatible: true
+    pythonInterpreter: false
+    notes: "Limited support for TypeScript/Node.js projects"
+  datagrip:
+    compatible: true
+    databases: ["postgresql", "mysql", "mongodb"]
+    sqlDialect: "PostgreSQL"
+  openai:
+    compatible: false
+    status: "deprecated"
+    notes: "Use generic-ai instead"
+  generic-ai:
+    compatible: true
+    configPath: ".ai/"
+    rulesPath: ".ai/rules/"
+    priority: 7
 requires: []
 suggests: []
 conflicts: ["graphql-patterns"]

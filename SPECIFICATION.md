@@ -87,16 +87,35 @@ platforms:
     compatible: true
     memory: true
     command: true
+    priority: 8
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
   cursor:
     compatible: true
     activation: 'auto-attached'
     globs: ['**/*.tsx']
+    priority: 'high'
   windsurf:
     compatible: true
     mode: 'workspace'
+    characterLimit: 4500
+  zed:
+    compatible: true
+    aiFeatures: true
+    performance: 'high'
+  jetbrains:
+    compatible: true
+    ide: 'webstorm'
+    mcpIntegration: true
   github-copilot:
     compatible: true
     priority: 8
+    reviewType: 'code-quality'
+  generic-ai:
+    compatible: true
+    priority: 7
 ```
 
 ### 3.2 Platform Compatibility
@@ -107,30 +126,104 @@ Each platform object MUST include:
 
 ### 3.3 Platform-Specific Fields
 
-#### Claude Code Platform
+#### AI Assistants & Services
 
+**Claude Code Platform**
 - `memory`: Include in memory files
-- `command`: Enable as slash command
+- `command`: Enable as slash command  
 - `namespace`: Command namespace (project/user)
-- `allowedTools`: Tool permissions
+- `priority`: Memory hierarchy priority (1-10)
+- `allowedTools`: Tool permissions array
 - `mcpIntegration`: MCP server integration
 
-#### Cursor Platform
+**Claude Desktop Platform**
+- `mcpIntegration`: Uses MCP servers
+- `rules`: Include in rules folder
+- `priority`: Context priority (1-10)
 
+**GitHub Copilot Platform**
+- `priority`: Priority for guideline selection (1-10)
+- `reviewType`: Review focus (security/performance/code-quality/style/general)
+- `scope`: Configuration scope (repository/organization)
+
+**OpenAI Platform**
+- `compatible`: Usually false (deprecated)
+- `status`: Platform status (deprecated/limited/active)
+- `apiVersion`: OpenAI API version
+- `model`: OpenAI model to use
+
+**Generic AI Platform**
+- `configPath`: Configuration folder path (.ai/)
+- `rulesPath`: Rules folder path (.ai/rules/)
+- `priority`: Context priority (1-10)
+
+#### AI-First Editors
+
+**Cursor Platform**
 - `activation`: How schema is activated (auto-attached/agent-requested/manual/always)
 - `globs`: File patterns for auto-attachment
 - `priority`: Blueprint priority (high/medium/low)
+- `fileTypes`: Supported file types array
 
-#### Windsurf Platform
-
+**Windsurf Platform**
 - `mode`: Application mode (global/workspace)
 - `xmlTag`: XML tag for formatting
-- `characterLimit`: Estimated character usage
+- `characterLimit`: Estimated character usage (max 6000)
+- `priority`: Context priority (1-10)
 
-#### GitHub Copilot Platform
+**Windsurf Next Platform**
+- `mode`: Application mode (global/workspace)
+- `xmlTag`: XML tag for Windsurf Next formatting
+- `characterLimit`: Estimated character usage (max 6000)
+- `priority`: Context priority (1-10)
 
-- `priority`: Priority for guideline selection (1-10)
-- `reviewType`: Review focus (security/performance/code-quality/style)
+#### Code Editors & IDEs
+
+**VS Code Platform**
+- `extension`: Required VS Code extension
+- `settings`: VS Code settings integration object
+- `commands`: Available commands array
+- `mcpIntegration`: Uses MCP servers
+
+**VS Code Insiders Platform**
+- `extension`: Required VS Code Insiders extension
+- `mcpIntegration`: Uses MCP servers
+- `settings`: VS Code Insiders settings integration
+- `commands`: Available commands array
+
+**VSCodium Platform**
+- `extension`: Required VSCodium extension
+- `configPath`: Configuration path (.vscode-oss/)
+- `settings`: VSCodium settings integration
+- `commands`: Available commands array
+
+**Zed Platform**
+- `mode`: Configuration scope (global/project)
+- `aiFeatures`: Uses Zed AI features
+- `collaborative`: Supports collaborative features
+- `performance`: Performance optimization level (high/medium/low)
+
+#### JetBrains IDEs
+
+**General JetBrains Platform**
+- `ide`: Specific JetBrains IDE (intellij/webstorm/pycharm/etc.)
+- `plugin`: Required JetBrains plugin
+- `mcpIntegration`: Uses MCP servers (2025.1+)
+- `fileTemplates`: Uses file templates
+- `inspections`: Code inspections to enable array
+
+**IDE-Specific Platforms**
+Each JetBrains IDE has additional specific fields:
+
+- **WebStorm**: `nodeIntegration`, `typescript`
+- **PyCharm**: `pythonInterpreter`, `virtualEnv` 
+- **PHPStorm**: `phpVersion`, `composer`
+- **RubyMine**: `rubyVersion`, `rails`
+- **CLion**: `cmake`, `debugger`
+- **DataGrip**: `databases`, `sqlDialect`
+- **GoLand**: `goVersion`, `modules`
+- **Rider**: `dotnetVersion`, `unity`
+- **Android Studio**: `androidSdk`, `gradleVersion`
 
 ## 4. Relationship System
 

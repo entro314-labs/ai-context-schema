@@ -1,72 +1,95 @@
 # Platform Support
 
-AI Context Schema is designed to work across multiple AI coding assistant platforms. This document details the current platform support, integration methods, and platform-specific considerations.
+AI Context Schema is designed to work across multiple AI coding assistant platforms and IDEs. This document details the current platform support, integration methods, and platform-specific considerations based on the comprehensive list from [SUPPORTED_IDES_AND_AI_TOOLS.md](../../SUPPORTED_IDES_AND_AI_TOOLS.md).
 
 ## Supported Platforms
 
-### Claude Code
+### AI Assistants & Services
 
+#### Anthropic Claude
+
+##### Claude Code
 **Status**: ✅ Full Support  
 **Configuration Location**: `.claude/`  
 **Schema Version**: v2.1.0+
-
-Claude Code integrates AI Context Schema through memory files and slash commands:
-
-#### Memory Files
 
 ```yaml
 platforms:
   claude-code:
     compatible: true
     memory: true # Include in memory files
-    priority: 8 # Memory hierarchy priority (1-10)
-    namespace: 'project' # project or user scope
-```
-
-Generated files:
-
-- `.claude/CLAUDE.md` - Combined memory file with all schemas
-- `.claude/CLAUDE_COMMANDS.md` - Slash command definitions
-
-#### Slash Commands
-
-```yaml
-platforms:
-  claude-code:
-    compatible: true
     command: true # Enable as slash command
-    namespace: 'project' # Command scope
+    namespace: 'project' # project or user scope
+    priority: 8 # Memory hierarchy priority (1-10)
+    allowedTools: ['web_search', 'web_fetch']
+    mcpIntegration: true # Uses MCP servers
 ```
 
-Commands are generated as:
-
-```markdown
-## /schema-name
-
-Brief description of the schema
-
-Full schema content here...
-```
-
-#### MCP Integration
+##### Claude Desktop
+**Status**: ✅ Full Support  
+**Configuration Location**: `.claude-desktop/`  
+**MCP Support**: ✅ via `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 ```yaml
 platforms:
-  claude-code:
+  claude-desktop:
     compatible: true
-    mcpIntegration: true # Uses MCP servers
-    allowedTools: ['web_search', 'web_fetch']
+    mcpIntegration: true
+    rules: true # Include in rules folder
+    priority: 8 # Context priority (1-10)
 ```
 
-### Cursor
+#### OpenAI Tools
+**Status**: ⚠️ Limited Support  
+**Configuration Location**: `.openai/`  
+**Notes**: Original Codex API deprecated March 2023
 
+```yaml
+platforms:
+  openai:
+    compatible: false # Deprecated
+    status: "deprecated"
+    apiVersion: "v1"
+    model: "gpt-4"
+    notes: "Use generic-ai instead"
+```
+
+#### GitHub Services
+
+##### GitHub Copilot
 **Status**: ✅ Full Support  
-**Configuration Location**: `.cursor/rules/`  
-**Schema Version**: v2.1.0+
+**Configuration Location**: `.github/copilot/`  
+**Enterprise Support**: ✅
 
-Cursor integrates through MDC (Markdown + Component) rule files:
+```yaml
+platforms:
+  github-copilot:
+    compatible: true
+    priority: 8 # Priority for guideline selection (1-10)
+    reviewType: 'security' # security, performance, code-quality, style, general
+    scope: 'repository' # repository or organization
+```
 
-#### Auto-Attachment
+#### Generic AI Tool
+**Status**: ✅ Full Support  
+**Configuration Location**: `.ai/`  
+**Notes**: Standard configuration for most AI coding assistants
+
+```yaml
+platforms:
+  generic-ai:
+    compatible: true
+    configPath: ".ai/"
+    rulesPath: ".ai/rules/"
+    priority: 7 # Context priority (1-10)
+```
+
+### AI-First Editors
+
+#### Cursor AI
+**Status**: ✅ Full Support  
+**Configuration Location**: `.cursor/` or `.ai/rules/`  
+**MCP Support**: ✅
 
 ```yaml
 platforms:
@@ -75,50 +98,13 @@ platforms:
     activation: 'auto-attached' # auto-attached, agent-requested, manual, always
     globs: ['**/*.tsx', '**/*.ts'] # File patterns for activation
     priority: 'high' # high, medium, low
+    fileTypes: ['typescript', 'javascript', 'react']
 ```
 
-#### File Pattern Matching
-
-```yaml
-platforms:
-  cursor:
-    compatible: true
-    globs: [
-        '**/*.{ts,tsx}', # TypeScript files
-        '**/components/**/*', # Component directories
-        '**/pages/**/*', # Page directories
-        '**/{test,spec}/**/*' # Test directories
-      ]
-```
-
-Generated files:
-
-- `.cursor/rules/{schema-id}.mdc` - Individual rule files with YAML frontmatter
-
-#### Example Generated File
-
-```yaml
----
-title: 'React Component Patterns'
-description: 'Modern React development patterns'
-activation: 'auto-attached'
-globs: ['**/*.tsx', '**/*.jsx']
-priority: 'high'
----
-# React Component Development
-
-[Schema content here...]
-```
-
-### Windsurf
-
+#### Windsurf (Codeium)
 **Status**: ✅ Full Support  
-**Configuration Location**: `.windsurf/rules/`  
-**Schema Version**: v2.1.0+
-
-Windsurf uses XML-formatted memory files with character limits:
-
-#### Configuration Options
+**Configuration Location**: `.windsurf/`  
+**MCP Support**: ✅ via `~/.codeium/windsurf/mcp_config.json`
 
 ```yaml
 platforms:
@@ -130,89 +116,27 @@ platforms:
     priority: 7 # Context priority (1-10)
 ```
 
-#### Character Limit Handling
-
-Windsurf has a 6K character limit per memory file. The adapter:
-
-1. Estimates character usage based on `characterLimit` field
-2. Truncates content intelligently (preserves key sections)
-3. Prioritizes schemas with higher priority values
-4. Provides warnings when content is truncated
-
-Generated files:
-
-- `.windsurf/rules/{schema-id}.xml` - XML memory files
-
-#### Example Generated File
-
-```xml
-<react-context priority="7">
-  <purpose>React component development patterns</purpose>
-  <content>
-    [Truncated and optimized schema content...]
-  </content>
-</react-context>
-```
-
-### GitHub Copilot
-
+#### Windsurf Next
 **Status**: ✅ Full Support  
-**Configuration Location**: `.github/copilot/`  
-**Schema Version**: v2.1.0+
-
-GitHub Copilot integrates through JSON configuration files:
-
-#### Configuration Options
+**Configuration Location**: `.windsurf-next/`  
+**MCP Support**: ✅ via `~/.codeium/windsurf-next/mcp_config.json`
 
 ```yaml
 platforms:
-  github-copilot:
+  windsurf-next:
     compatible: true
-    priority: 8 # Priority for guideline selection (1-10)
-    reviewType: 'code-quality' # security, performance, code-quality, style
-    scope: 'repository' # repository or organization
+    mode: 'workspace' # global or workspace
+    xmlTag: 'windsurf-next-context' # XML wrapper tag
+    characterLimit: 4500 # Estimated character usage
+    priority: 7 # Context priority (1-10)
 ```
 
-#### Review Integration
+### Microsoft Visual Studio Code Family
 
-GitHub Copilot can use schemas for:
-
-- Code suggestion prioritization
-- Pull request review automation
-- Security pattern enforcement
-- Style guide compliance
-
-Generated files:
-
-- `.github/copilot/guidelines.json` - Combined guidelines
-- `.github/copilot/patterns/{schema-id}.json` - Individual pattern files
-
-#### Example Generated File
-
-```json
-{
-  "name": "React Component Patterns",
-  "description": "Modern React development patterns",
-  "priority": 8,
-  "reviewType": "code-quality",
-  "patterns": [
-    {
-      "type": "component-structure",
-      "rule": "Use functional components with hooks",
-      "examples": ["..."]
-    }
-  ]
-}
-```
-
-## Planned Platform Support
-
-### VS Code
-
-**Status**: 🚧 Planned  
-**Expected**: Q2 2024
-
-VS Code extension to support AI Context Schema:
+#### VS Code (Stable)
+**Status**: ✅ Full Support  
+**Configuration Location**: `.vscode/`  
+**MCP Support**: ✅ via `.vscode/mcp.json`
 
 ```yaml
 platforms:
@@ -220,281 +144,334 @@ platforms:
     compatible: true
     extension: 'ai-context-schema' # Required extension
     settings: # VS Code settings integration
-      { 'aiContext.autoActivate': true, 'aiContext.showInStatusBar': true }
+      { 'aiContext.autoActivate': true }
     commands: ['aiContext.apply', 'aiContext.validate']
 ```
 
-### IntelliJ IDEA
+#### VS Code Insiders
+**Status**: ✅ Full Support  
+**Configuration Location**: `.vscode-insiders/`  
+**MCP Support**: ✅ via `.vscode-insiders/mcp.json`
 
-**Status**: 🚧 Planned  
-**Expected**: Q3 2024
+```yaml
+platforms:
+  vscode-insiders:
+    compatible: true
+    extension: 'ai-context-schema-insiders'
+    mcpIntegration: true
+    settings: { 'aiContext.autoActivate': true }
+    commands: ['aiContext.apply', 'aiContext.validate']
+```
 
-IntelliJ plugin for AI Context Schema support:
+#### VSCodium
+**Status**: ✅ Full Support  
+**Configuration Location**: `.vscode-oss/`  
+**Notes**: Open source VS Code distribution
 
+```yaml
+platforms:
+  vscodium:
+    compatible: true
+    extension: 'ai-context-schema-oss'
+    configPath: ".vscode-oss/"
+    settings: { 'aiContext.autoActivate': true }
+    commands: ['aiContext.apply', 'aiContext.validate']
+```
+
+### Modern Editors
+
+#### Zed Editor
+**Status**: ✅ Full Support  
+**Configuration Location**: `.zed/`  
+**Notes**: High-performance collaborative editor with AI features
+
+```yaml
+platforms:
+  zed:
+    compatible: true
+    mode: 'project' # global or project
+    aiFeatures: true # Uses Zed AI features
+    collaborative: true # Supports collaborative features
+    performance: 'high' # high, medium, low
+```
+
+### JetBrains IDEs
+
+#### General JetBrains Platform
+**Status**: ✅ Full Support  
+**Configuration Location**: `.idea/`  
+**MCP Support**: ✅ (2025.1+ versions)
+
+```yaml
+platforms:
+  jetbrains:
+    compatible: true
+    ide: 'intellij' # intellij, webstorm, pycharm, phpstorm, rubymine, clion, datagrip, goland, rider, android-studio
+    plugin: 'ai-context-schema-plugin'
+    mcpIntegration: true # 2025.1+ versions
+    fileTemplates: true
+    inspections: ['ContextSchemaValidation']
+```
+
+#### IntelliJ IDEA
 ```yaml
 platforms:
   intellij:
     compatible: true
-    plugin: 'ai-context-schema-plugin' # Required plugin
-    fileTemplates: true # Uses file templates
-    inspections: # Code inspections to enable
-      ['react-patterns', 'typescript-conventions']
+    plugin: 'ai-context-schema-plugin'
+    fileTemplates: true
+    inspections: ['JavaPatterns', 'KotlinPatterns']
 ```
 
-## Platform-Specific Features
+#### WebStorm
+```yaml
+platforms:
+  webstorm:
+    compatible: true
+    nodeIntegration: true # Node.js integration
+    typescript: true # TypeScript support
+    plugin: 'NodeJS'
+    inspections: ['JavaScriptPatterns', 'TypeScriptPatterns']
+```
 
-### Feature Comparison
+#### PyCharm
+```yaml
+platforms:
+  pycharm:
+    compatible: true
+    pythonInterpreter: true # Python interpreter configuration
+    virtualEnv: true # Virtual environment support
+    inspections: ['PythonPatterns', 'DjangoPatterns']
+```
 
-| Feature               | Claude Code       | Cursor           | Windsurf         | GitHub Copilot   | VS Code\*   | IntelliJ\* |
-| --------------------- | ----------------- | ---------------- | ---------------- | ---------------- | ----------- | ---------- |
-| **Memory/Context**    | ✅ Memory files   | ✅ Rule files    | ✅ XML memory    | ✅ Guidelines    | 🚧 Settings | 🚧 Config  |
-| **Auto-activation**   | ✅ Always active  | ✅ File patterns | ✅ Workspace     | ✅ Repository    | 🚧 Planned  | 🚧 Planned |
-| **Commands**          | ✅ Slash commands | ❌ Not supported | ❌ Not supported | ❌ Not supported | 🚧 Planned  | 🚧 Planned |
-| **Character Limits**  | ❌ No limits      | ❌ No limits     | ⚠️ 6K limit      | ❌ No limits     | 🚧 TBD      | 🚧 TBD     |
-| **Priority System**   | ✅ 1-10 scale     | ✅ High/Med/Low  | ✅ 1-10 scale    | ✅ 1-10 scale    | 🚧 Planned  | 🚧 Planned |
-| **Real-time Updates** | ✅ File watching  | ✅ File watching | ✅ File watching | ⚠️ Git-based     | 🚧 Planned  | 🚧 Planned |
+#### PHPStorm
+```yaml
+platforms:
+  phpstorm:
+    compatible: true
+    phpVersion: '8.0' # Required PHP version
+    composer: true # Composer integration
+    inspections: ['PhpPatterns', 'LaravelPatterns']
+```
 
-\*Planned features
+#### RubyMine
+```yaml
+platforms:
+  rubymine:
+    compatible: true
+    rubyVersion: '3.0' # Required Ruby version
+    rails: true # Ruby on Rails support
+    inspections: ['RubyPatterns', 'RailsPatterns']
+```
 
-### Platform-Specific Optimizations
+#### CLion
+```yaml
+platforms:
+  clion:
+    compatible: true
+    cmake: true # CMake integration
+    debugger: true # Debugger configuration
+    inspections: ['CppPatterns', 'CMakePatterns']
+```
 
-#### Claude Code Optimizations
+#### DataGrip
+```yaml
+platforms:
+  datagrip:
+    compatible: true
+    databases: ['postgresql', 'mysql', 'mongodb']
+    sqlDialect: 'PostgreSQL'
+    inspections: ['SQLPatterns', 'DatabasePatterns']
+```
 
+#### GoLand
+```yaml
+platforms:
+  goland:
+    compatible: true
+    goVersion: '1.21' # Required Go version
+    modules: true # Go modules support
+    inspections: ['GoPatterns', 'GoModulePatterns']
+```
+
+#### Rider
+```yaml
+platforms:
+  rider:
+    compatible: true
+    dotnetVersion: '8.0' # Required .NET version
+    unity: true # Unity integration
+    inspections: ['CSharpPatterns', 'UnityPatterns']
+```
+
+#### Android Studio
+```yaml
+platforms:
+  android-studio:
+    compatible: true
+    androidSdk: '34' # Required Android SDK version
+    gradleVersion: '8.0' # Required Gradle version
+    inspections: ['AndroidPatterns', 'KotlinPatterns']
+```
+
+## Platform Feature Comparison
+
+| Platform | Memory/Context | Auto-activation | Commands | Character Limits | MCP Support | Priority System |
+|----------|---------------|-----------------|----------|------------------|-------------|----------------|
+| **Claude Code** | ✅ Memory files | ✅ Always active | ✅ Slash commands | ❌ No limits | ✅ Full | ✅ 1-10 scale |
+| **Claude Desktop** | ✅ Rules folder | ✅ Always active | ❌ Not supported | ❌ No limits | ✅ Full | ✅ 1-10 scale |
+| **Cursor** | ✅ Rule files | ✅ File patterns | ❌ Not supported | ❌ No limits | ✅ Full | ✅ High/Med/Low |
+| **Windsurf** | ✅ XML memory | ✅ Workspace | ❌ Not supported | ⚠️ 6K limit | ✅ Full | ✅ 1-10 scale |
+| **Windsurf Next** | ✅ XML memory | ✅ Workspace | ❌ Not supported | ⚠️ 6K limit | ✅ Full | ✅ 1-10 scale |
+| **GitHub Copilot** | ✅ Guidelines | ✅ Repository | ❌ Not supported | ❌ No limits | ❌ No | ✅ 1-10 scale |
+| **VS Code Family** | ✅ Settings | ✅ File patterns | ✅ Commands | ❌ No limits | ✅ Full | ✅ 1-10 scale |
+| **Zed** | ✅ Project config | ✅ Project | ✅ Commands | ❌ No limits | ❌ Planned | ✅ High/Med/Low |
+| **JetBrains IDEs** | ✅ Config files | ✅ File patterns | ✅ Actions | ❌ No limits | ✅ 2025.1+ | ✅ 1-10 scale |
+| **OpenAI** | ❌ Deprecated | ❌ Deprecated | ❌ Deprecated | ❌ Deprecated | ❌ No | ❌ Deprecated |
+| **Generic AI** | ✅ Rule files | ✅ Configurable | ✅ Configurable | ❌ No limits | ⚠️ Depends | ✅ 1-10 scale |
+
+## Model Context Protocol (MCP) Support
+
+The following platforms support MCP for enhanced AI context:
+
+- ✅ **VS Code** (all variants) - via `.vscode/mcp.json`
+- ✅ **Cursor AI** - via `.cursor/mcp.json`
+- ✅ **Windsurf** (all variants) - via `~/.codeium/windsurf/mcp_config.json`
+- ✅ **JetBrains IDEs** (2025.1+) - via Settings → Tools → AI Assistant → Model Context Protocol
+- ✅ **Claude Desktop** - via `~/Library/Application Support/Claude/claude_desktop_config.json`
+- ✅ **Claude Code** - built-in MCP integration
+
+## Platform-Specific Optimizations
+
+### Claude Code Optimizations
 - **Memory Hierarchy**: Organizes schemas by priority and scope
 - **Command Generation**: Creates contextual slash commands
 - **Tool Integration**: Supports MCP server integration
 - **Context Injection**: Seamless context switching
 
-#### Cursor Optimizations
-
+### Cursor Optimizations
 - **File Pattern Matching**: Intelligent auto-attachment based on file types
 - **Agent Integration**: Works with Cursor's agent system
 - **Real-time Activation**: Immediate schema application when files are opened
-- **IDE Integration**: Deep integration with VS Code base
 
-#### Windsurf Optimizations
-
+### Windsurf Optimizations
 - **Content Compression**: Intelligent truncation for character limits
 - **XML Formatting**: Structured XML for optimal parsing
 - **Workspace Awareness**: Project-level context understanding
-- **Memory Management**: Efficient memory usage optimization
 
-#### GitHub Copilot Optimizations
+### JetBrains Optimizations
+- **IDE-Specific Features**: Tailored for each JetBrains IDE
+- **File Templates**: Integration with IDE file templates
+- **Code Inspections**: Custom inspections for context validation
+- **Plugin Architecture**: Extensible through JetBrains plugin system
 
-- **Review Integration**: Automated code review based on schemas
-- **Repository Scope**: Organization and repository-level configuration
-- **Security Focus**: Enhanced security pattern enforcement
-- **PR Integration**: Pull request review automation
+### Zed Optimizations
+- **High Performance**: Optimized for Zed's high-performance architecture
+- **Collaborative Features**: Real-time collaborative context sharing
+- **AI Integration**: Deep integration with Zed's AI features
 
-## Adapter Development Guide
+## Auto-Detection Capabilities
 
-### Creating New Platform Adapters
+VDK CLI automatically detects IDE usage through:
 
-To add support for a new platform, implement the `PlatformAdapter` interface:
+- **Configuration folders**: `.vscode`, `.idea`, `.cursor`, `.windsurf`, etc.
+- **Settings files**: `settings.json`, `workspace.xml`, `config.json`
+- **Extension directories**: IDE-specific extension paths
+- **Global configuration files**: User-level IDE configurations
 
-```typescript
-interface PlatformAdapter {
-  name: string;
-  generate(schemas: ContextSchema[]): Promise<GeneratedFiles>;
-  validate?(config: any): ValidationResult;
-}
-```
-
-#### Example Adapter Implementation
-
-```typescript
-export class MyPlatformAdapter implements PlatformAdapter {
-  name = 'my-platform';
-
-  async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
-    const files: GeneratedFiles = {};
-
-    for (const schema of schemas) {
-      // Check platform compatibility
-      const config = schema.platforms['my-platform'];
-      if (!config?.compatible) continue;
-
-      // Generate platform-specific file
-      const content = this.transformSchema(schema, config);
-      files[`.my-platform/schemas/${schema.id}.config`] = content;
-    }
-
-    return files;
-  }
-
-  private transformSchema(schema: ContextSchema, config: any): string {
-    // Transform schema to platform-specific format
-    return JSON.stringify(
-      {
-        id: schema.id,
-        title: schema.title,
-        content: schema.content,
-        config: config
-      },
-      null,
-      2
-    );
-  }
-
-  validate(config: any): ValidationResult {
-    // Validate platform-specific configuration
-    const errors: string[] = [];
-
-    if (!config.someRequiredField) {
-      errors.push('someRequiredField is required');
-    }
-
-    return {
-      valid: errors.length === 0,
-      errors
-    };
-  }
-}
-```
-
-### Adapter Requirements
-
-1. **Handle all compatible schemas**: Process schemas marked as compatible
-2. **Respect platform limitations**: Handle character limits, format restrictions
-3. **Preserve intent**: Maintain behavioral intent across format translation
-4. **Provide validation**: Validate platform-specific configuration
-5. **Support relationships**: Handle schema dependencies and conflicts
-6. **Error handling**: Graceful degradation for unsupported features
-
-### Testing Adapters
-
-```typescript
-describe('MyPlatformAdapter', () => {
-  const adapter = new MyPlatformAdapter();
-
-  it('should generate files for compatible schemas', async () => {
-    const schema: ContextSchema = {
-      id: 'test-schema',
-      platforms: {
-        'my-platform': { compatible: true }
-      }
-      // ... other required fields
-    };
-
-    const files = await adapter.generate([schema]);
-
-    expect(files).toHaveProperty('.my-platform/schemas/test-schema.config');
-  });
-
-  it('should skip incompatible schemas', async () => {
-    const schema: ContextSchema = {
-      id: 'incompatible',
-      platforms: {
-        'my-platform': { compatible: false }
-      }
-    };
-
-    const files = await adapter.generate([schema]);
-
-    expect(Object.keys(files)).toHaveLength(0);
-  });
-});
-```
-
-## Migration from Platform-Specific Formats
-
-### From Cursor .mdc Files
-
+Example detection:
 ```bash
-# Using VDK CLI (reference implementation)
+# Auto-detect and initialize all IDEs in current project
+vdk init
+
+# Initialize specific IDE
+vdk init --ide webstorm
+
+# List all detected IDEs
+vdk detect
+```
+
+## Migration Guide
+
+### From Platform-Specific Formats
+
+#### From Cursor .mdc Files
+```bash
 vdk migrate cursor --input .cursor/rules --output schemas/
-
-# Manual conversion
-# .cursor/rules/my-rule.mdc -> schemas/my-context.yaml
 ```
 
-### From Custom JSON Configurations
-
+#### From JetBrains Templates
 ```bash
-# Custom migration script
-node scripts/migrate-from-json.js custom-config.json schemas/
+vdk migrate jetbrains --input .idea/fileTemplates --output schemas/
 ```
 
-### Migration Best Practices
-
-1. **Preserve behavioral intent**: Ensure migrated schemas maintain original purpose
-2. **Test compatibility**: Verify migrated schemas work across target platforms
-3. **Update metadata**: Add proper versioning, author, and description fields
-4. **Validate thoroughly**: Use schema validation tools before deployment
-5. **Document changes**: Note any behavioral differences in migration
+#### From VS Code Settings
+```bash
+vdk migrate vscode --input .vscode/settings.json --output schemas/
+```
 
 ## Troubleshooting
 
 ### Common Issues
 
 #### Schema Not Activating
-
-1. Check platform compatibility flag
+1. Check platform compatibility flag: `compatible: true`
 2. Verify file patterns (for auto-activation platforms)
-3. Validate schema syntax
+3. Validate schema syntax using `vdk validate`
 4. Check platform-specific requirements
 
 #### Content Truncation (Windsurf)
-
 1. Reduce schema content length
 2. Increase priority to avoid truncation
 3. Split complex schemas into smaller ones
-4. Use content optimization techniques
+4. Use `characterLimit` field appropriately
 
-#### Command Not Working (Claude Code)
-
-1. Verify `command: true` in platform configuration
-2. Check namespace settings
-3. Restart Claude Code to reload commands
-4. Validate command syntax in generated files
-
-#### Performance Issues
-
-1. Reduce number of active schemas
-2. Optimize schema content length
-3. Use appropriate priority settings
-4. Consider schema dependency optimization
+#### MCP Integration Issues
+1. Verify MCP configuration files exist
+2. Check MCP server status and logs
+3. Validate MCP server registration
+4. Ensure proper permissions for MCP access
 
 ### Debug Mode
 
-Most platform adapters support debug mode for troubleshooting:
+Enable debug logging for troubleshooting:
 
 ```bash
-# Enable debug logging
 export DEBUG=ai-context-schema:*
-
-# Generate with verbose output
 vdk generate --verbose --debug
 ```
 
 ## Contributing Platform Support
 
-We welcome contributions for new platform adapters! See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on:
+We welcome contributions for new platform adapters! See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines on:
 
 - Implementing new platform adapters
 - Testing adapter implementations
 - Documenting platform-specific features
 - Submitting adapter contributions
 
-## Platform Roadmap
+## Getting Started
 
-### Short-term (Q1-Q2 2024)
+To initialize AI Context Schema for your detected IDEs:
 
-- VS Code extension
-- IntelliJ IDEA plugin
-- Improved Windsurf character limit handling
-- Enhanced GitHub Copilot review integration
+```bash
+# Auto-detect and initialize all IDEs in current project
+vdk init
 
-### Medium-term (Q3-Q4 2024)
+# Initialize specific IDE
+vdk init --ide jetbrains
 
-- Vim/Neovim LSP integration
-- Sublime Text plugin
-- Web-based editor support
-- Mobile development platform support
+# List all supported IDEs
+vdk list-ides
 
-### Long-term (2025+)
+# Generate rules for specific IDE
+vdk scan --ide zed
 
-- Custom platform adapter SDK
-- Visual schema builder integration
-- Real-time collaborative editing
-- AI-powered schema optimization
+# Check detected IDEs
+vdk detect
+
+# Validate configuration
+vdk validate
+```
+
+For more detailed information about each platform, refer to the comprehensive [SUPPORTED_IDES_AND_AI_TOOLS.md](../../SUPPORTED_IDES_AND_AI_TOOLS.md) document.

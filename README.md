@@ -9,7 +9,7 @@
 
 ## The Problem
 
-AI coding assistants (Claude Code, Cursor, Windsurf, GitHub Copilot) each use different configuration formats for context and behavioral instructions. Developers must maintain separate configurations for each platform, leading to:
+AI coding assistants and IDEs (Claude Code, Claude Desktop, Cursor, Windsurf, VS Code, JetBrains IDEs, Zed, GitHub Copilot) each use different configuration formats for context and behavioral instructions. With 20+ supported platforms, developers must maintain separate configurations for each tool, leading to:
 
 - **Configuration fragmentation** across tools
 - **Behavioral inconsistencies** when switching platforms
@@ -43,6 +43,10 @@ platforms:
     compatible: true
     memory: true
     command: true
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
   cursor:
     compatible: true
     activation: "auto-attached"
@@ -51,10 +55,21 @@ platforms:
     compatible: true
     mode: "workspace"
     characterLimit: 4500
+  zed:
+    compatible: true
+    aiFeatures: true
+    performance: "high"
+  jetbrains:
+    compatible: true
+    ide: "webstorm"
+    mcpIntegration: true
   github-copilot:
     compatible: true
     priority: 8
     reviewType: "code-quality"
+  generic-ai:
+    compatible: true
+    priority: 7
 ---
 
 # React Development Guidelines
@@ -100,10 +115,11 @@ ai-context-schema check-compatibility schemas/
 
 ### Platform Configuration
 
-Each platform has specific configuration options:
+Each platform has specific configuration options. Here are examples for key platforms:
 
-#### Claude Code
+#### AI Assistants
 
+**Claude Code**
 ```yaml
 claude-code:
   compatible: true
@@ -111,10 +127,30 @@ claude-code:
   command: true # Enable as slash command
   namespace: 'project' # project or user scope
   priority: 8 # Memory hierarchy (1-10)
+  mcpIntegration: true # Uses MCP servers
 ```
 
-#### Cursor
+**Claude Desktop**
+```yaml
+claude-desktop:
+  compatible: true
+  mcpIntegration: true # MCP support
+  rules: true # Include in rules folder
+  priority: 8 # Context priority (1-10)
+```
 
+**Generic AI** (Universal format)
+```yaml
+generic-ai:
+  compatible: true
+  configPath: ".ai/"
+  rulesPath: ".ai/rules/"
+  priority: 7 # Context priority (1-10)
+```
+
+#### AI-First Editors
+
+**Cursor**
 ```yaml
 cursor:
   compatible: true
@@ -123,8 +159,7 @@ cursor:
   priority: 'high' # high, medium, low
 ```
 
-#### Windsurf
-
+**Windsurf**
 ```yaml
 windsurf:
   compatible: true
@@ -133,13 +168,57 @@ windsurf:
   characterLimit: 4500 # Content size estimate
 ```
 
-#### GitHub Copilot
+#### Modern Editors
 
+**Zed Editor**
+```yaml
+zed:
+  compatible: true
+  mode: 'project' # global or project
+  aiFeatures: true # Uses Zed AI features
+  collaborative: true # Supports collaborative features
+  performance: 'high' # high, medium, low
+```
+
+**VS Code Family**
+```yaml
+vscode:
+  compatible: true
+  extension: 'ai-context-schema' # Required extension
+  settings: { 'aiContext.autoActivate': true }
+  commands: ['aiContext.apply', 'aiContext.validate']
+  mcpIntegration: true
+```
+
+#### JetBrains IDEs
+
+**General JetBrains**
+```yaml
+jetbrains:
+  compatible: true
+  ide: 'webstorm' # intellij, webstorm, pycharm, etc.
+  mcpIntegration: true # 2025.1+ versions
+  fileTemplates: true
+  inspections: ['ContextSchemaValidation']
+```
+
+**WebStorm**
+```yaml
+webstorm:
+  compatible: true
+  nodeIntegration: true # Node.js integration
+  typescript: true # TypeScript support
+  inspections: ['JavaScriptPatterns', 'TypeScriptPatterns']
+```
+
+#### GitHub Services
+
+**GitHub Copilot**
 ```yaml
 github-copilot:
   compatible: true
   priority: 8 # Suggestion priority (1-10)
-  reviewType: 'code-quality' # security, performance, code-quality, style
+  reviewType: 'security' # security, performance, code-quality, style
   scope: 'repository' # repository or organization
 ```
 
@@ -216,14 +295,49 @@ The specification includes comprehensive validation:
 
 ## Implementation Status
 
-| Platform       | Status     | Configuration Location | Features                  |
-| -------------- | ---------- | ---------------------- | ------------------------- |
-| Claude Code    | ✅ Full    | `.claude/`             | Memory files, commands    |
-| Cursor         | ✅ Full    | `.cursor/rules/`       | Auto-attachment, patterns |
-| Windsurf       | ✅ Full    | `.windsurf/rules/`     | XML format, limits        |
-| GitHub Copilot | ✅ Full    | `.github/copilot/`     | Review integration        |
-| VS Code        | 🚧 Planned | Extension-based        | Settings integration      |
-| IntelliJ       | 🚧 Planned | Plugin-based           | Inspections, templates    |
+### AI Assistants & Services
+
+| Platform       | Status  | Configuration Location | Features                    |
+| -------------- | ------- | ---------------------- | --------------------------- |
+| Claude Code    | ✅ Full | `.claude/`             | Memory files, commands, MCP |
+| Claude Desktop | ✅ Full | `.claude-desktop/`     | Rules, MCP integration      |
+| GitHub Copilot | ✅ Full | `.github/copilot/`     | Review integration          |
+| Generic AI     | ✅ Full | `.ai/`                 | Universal format            |
+| OpenAI         | ⚠️ Limited | `.openai/`           | Deprecated support          |
+
+### AI-First Editors
+
+| Platform       | Status  | Configuration Location | Features                         |
+| -------------- | ------- | ---------------------- | -------------------------------- |
+| Cursor         | ✅ Full | `.cursor/rules/`       | Auto-attachment, patterns, MCP   |
+| Windsurf       | ✅ Full | `.windsurf/rules/`     | XML format, limits, MCP          |
+| Windsurf Next  | ✅ Full | `.windsurf-next/`      | Enhanced XML format, MCP         |
+
+### Code Editors & IDEs
+
+| Platform         | Status  | Configuration Location | Features                         |
+| ---------------- | ------- | ---------------------- | -------------------------------- |
+| VS Code          | ✅ Full | `.vscode/`             | Settings integration, MCP        |
+| VS Code Insiders | ✅ Full | `.vscode-insiders/`    | Settings integration, MCP        |
+| VSCodium         | ✅ Full | `.vscode-oss/`         | Open source VS Code support      |
+| Zed Editor       | ✅ Full | `.zed/`                | AI features, collaborative       |
+
+### JetBrains IDEs
+
+| Platform       | Status  | Configuration Location | Features                         |
+| -------------- | ------- | ---------------------- | -------------------------------- |
+| IntelliJ IDEA  | ✅ Full | `.idea/`               | Inspections, templates, MCP      |
+| WebStorm       | ✅ Full | `.idea/`               | Node.js, TypeScript integration |
+| PyCharm        | ✅ Full | `.idea/`               | Python interpreter, virtual env  |
+| PHPStorm       | ✅ Full | `.idea/`               | PHP version, Composer integration|
+| RubyMine       | ✅ Full | `.idea/`               | Ruby version, Rails support      |
+| CLion          | ✅ Full | `.idea/`               | CMake, debugger integration      |
+| DataGrip       | ✅ Full | `.idea/`               | Database, SQL dialect support    |
+| GoLand         | ✅ Full | `.idea/`               | Go modules, version support      |
+| Rider          | ✅ Full | `.idea/`               | .NET, Unity integration          |
+| Android Studio | ✅ Full | `.idea/`               | Android SDK, Gradle support      |
+
+**Total Supported Platforms: 20+**
 
 ## Examples
 

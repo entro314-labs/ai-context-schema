@@ -83,11 +83,28 @@
       "type": "object",
       "properties": {
         "claude-code": { "$ref": "#/definitions/claudePlatform" },
+        "claude-desktop": { "$ref": "#/definitions/claudeDesktopPlatform" },
         "cursor": { "$ref": "#/definitions/cursorPlatform" },
         "windsurf": { "$ref": "#/definitions/windsurfPlatform" },
+        "windsurf-next": { "$ref": "#/definitions/windsurfNextPlatform" },
         "github-copilot": { "$ref": "#/definitions/copilotPlatform" },
         "vscode": { "$ref": "#/definitions/vscodePlatform" },
-        "intellij": { "$ref": "#/definitions/intellijPlatform" }
+        "vscode-insiders": { "$ref": "#/definitions/vscodeInsidersPlatform" },
+        "vscodium": { "$ref": "#/definitions/vscodiumPlatform" },
+        "zed": { "$ref": "#/definitions/zedPlatform" },
+        "jetbrains": { "$ref": "#/definitions/jetbrainsPlatform" },
+        "intellij": { "$ref": "#/definitions/intellijPlatform" },
+        "webstorm": { "$ref": "#/definitions/webstormPlatform" },
+        "pycharm": { "$ref": "#/definitions/pycharmPlatform" },
+        "phpstorm": { "$ref": "#/definitions/phpstormPlatform" },
+        "rubymine": { "$ref": "#/definitions/rubymineplatform" },
+        "clion": { "$ref": "#/definitions/clionPlatform" },
+        "datagrip": { "$ref": "#/definitions/datagripPlatform" },
+        "goland": { "$ref": "#/definitions/golandPlatform" },
+        "rider": { "$ref": "#/definitions/riderPlatform" },
+        "android-studio": { "$ref": "#/definitions/androidStudioPlatform" },
+        "openai": { "$ref": "#/definitions/openaiPlatform" },
+        "generic-ai": { "$ref": "#/definitions/genericAiPlatform" }
       },
       "additionalProperties": { "$ref": "#/definitions/genericPlatform" },
       "minProperties": 1
@@ -354,6 +371,386 @@
               "type": "array",
               "items": { "type": "string" },
               "description": "Code inspections to enable"
+            }
+          }
+        }
+      ]
+    },
+    "claudeDesktopPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "mcpIntegration": {
+              "type": "boolean",
+              "description": "Uses MCP servers?"
+            },
+            "rules": {
+              "type": "boolean",
+              "description": "Should be included in rules folder?"
+            },
+            "priority": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Context priority"
+            }
+          }
+        }
+      ]
+    },
+    "windsurfNextPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": ["global", "workspace"],
+              "description": "Context schema application mode"
+            },
+            "xmlTag": {
+              "type": "string",
+              "description": "XML tag for Windsurf Next formatting"
+            },
+            "characterLimit": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10000,
+              "description": "Estimated character usage"
+            },
+            "priority": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Context priority"
+            }
+          }
+        }
+      ]
+    },
+    "vscodeInsidersPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "extension": {
+              "type": "string",
+              "description": "Required VS Code Insiders extension"
+            },
+            "settings": {
+              "type": "object",
+              "description": "VS Code Insiders settings integration"
+            },
+            "commands": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Available commands"
+            },
+            "mcpIntegration": {
+              "type": "boolean",
+              "description": "Uses MCP servers?"
+            }
+          }
+        }
+      ]
+    },
+    "vscodiumPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "extension": {
+              "type": "string",
+              "description": "Required VSCodium extension"
+            },
+            "settings": {
+              "type": "object",
+              "description": "VSCodium settings integration"
+            },
+            "commands": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Available commands"
+            },
+            "configPath": {
+              "type": "string",
+              "description": "Configuration path (.vscode-oss/)"
+            }
+          }
+        }
+      ]
+    },
+    "zedPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": ["global", "project"],
+              "description": "Configuration scope"
+            },
+            "aiFeatures": {
+              "type": "boolean",
+              "description": "Uses Zed AI features?"
+            },
+            "collaborative": {
+              "type": "boolean",
+              "description": "Supports collaborative features?"
+            },
+            "performance": {
+              "type": "string",
+              "enum": ["high", "medium", "low"],
+              "description": "Performance optimization level"
+            }
+          }
+        }
+      ]
+    },
+    "jetbrainsPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "ide": {
+              "type": "string",
+              "enum": ["intellij", "webstorm", "pycharm", "phpstorm", "rubymine", "clion", "datagrip", "goland", "rider", "android-studio"],
+              "description": "Specific JetBrains IDE"
+            },
+            "plugin": {
+              "type": "string",
+              "description": "Required JetBrains plugin"
+            },
+            "mcpIntegration": {
+              "type": "boolean",
+              "description": "Uses MCP servers (2025.1+)?"
+            },
+            "fileTemplates": {
+              "type": "boolean",
+              "description": "Uses file templates?"
+            },
+            "inspections": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Code inspections to enable"
+            }
+          }
+        }
+      ]
+    },
+    "webstormPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "nodeIntegration": {
+              "type": "boolean",
+              "description": "Uses Node.js integration?"
+            },
+            "typescript": {
+              "type": "boolean",
+              "description": "TypeScript support enabled?"
+            }
+          }
+        }
+      ]
+    },
+    "pycharmPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "pythonInterpreter": {
+              "type": "boolean",
+              "description": "Uses Python interpreter configuration?"
+            },
+            "virtualEnv": {
+              "type": "boolean",
+              "description": "Virtual environment support?"
+            }
+          }
+        }
+      ]
+    },
+    "phpstormPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "phpVersion": {
+              "type": "string",
+              "description": "Required PHP version"
+            },
+            "composer": {
+              "type": "boolean",
+              "description": "Uses Composer integration?"
+            }
+          }
+        }
+      ]
+    },
+    "rubymineplatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "rubyVersion": {
+              "type": "string",
+              "description": "Required Ruby version"
+            },
+            "rails": {
+              "type": "boolean",
+              "description": "Ruby on Rails support?"
+            }
+          }
+        }
+      ]
+    },
+    "clionPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "cmake": {
+              "type": "boolean",
+              "description": "Uses CMake integration?"
+            },
+            "debugger": {
+              "type": "boolean",
+              "description": "Debugger configuration?"
+            }
+          }
+        }
+      ]
+    },
+    "datagripPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "databases": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Supported database types"
+            },
+            "sqlDialect": {
+              "type": "string",
+              "description": "SQL dialect configuration"
+            }
+          }
+        }
+      ]
+    },
+    "golandPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "goVersion": {
+              "type": "string",
+              "description": "Required Go version"
+            },
+            "modules": {
+              "type": "boolean",
+              "description": "Go modules support?"
+            }
+          }
+        }
+      ]
+    },
+    "riderPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "dotnetVersion": {
+              "type": "string",
+              "description": "Required .NET version"
+            },
+            "unity": {
+              "type": "boolean",
+              "description": "Unity integration?"
+            }
+          }
+        }
+      ]
+    },
+    "androidStudioPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/jetbrainsPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "androidSdk": {
+              "type": "string",
+              "description": "Required Android SDK version"
+            },
+            "gradleVersion": {
+              "type": "string",
+              "description": "Required Gradle version"
+            }
+          }
+        }
+      ]
+    },
+    "openaiPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "apiVersion": {
+              "type": "string",
+              "description": "OpenAI API version"
+            },
+            "model": {
+              "type": "string",
+              "enum": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
+              "description": "OpenAI model to use"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["deprecated", "limited", "active"],
+              "description": "Platform status"
+            }
+          }
+        }
+      ]
+    },
+    "genericAiPlatform": {
+      "allOf": [
+        { "$ref": "#/definitions/genericPlatform" },
+        {
+          "type": "object",
+          "properties": {
+            "configPath": {
+              "type": "string",
+              "description": "Configuration folder path (.ai/)"
+            },
+            "rulesPath": {
+              "type": "string",
+              "description": "Rules folder path (.ai/rules/)"
+            },
+            "priority": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Context priority"
             }
           }
         }

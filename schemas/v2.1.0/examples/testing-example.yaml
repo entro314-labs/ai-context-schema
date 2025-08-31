@@ -17,6 +17,11 @@ platforms:
     command: true
     namespace: "project"
     priority: 7
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
+    priority: 7
   cursor:
     compatible: true
     activation: "auto-attached"
@@ -27,11 +32,74 @@ platforms:
     mode: "workspace"
     xmlTag: "testing-context"
     characterLimit: 5500
+    priority: 7
+  windsurf-next:
+    compatible: true
+    mode: "workspace"
+    xmlTag: "testing-next-context"
+    characterLimit: 5500
+    priority: 7
   github-copilot:
     compatible: true
     priority: 9
     reviewType: "code-quality"
     scope: "repository"
+  vscode:
+    compatible: true
+    extension: "ms-vscode.test-adapter-converter"
+    commands: ["Test: Run All Tests", "Test: Debug All Tests"]
+  vscode-insiders:
+    compatible: true
+    extension: "ms-vscode.test-adapter-converter"
+    mcpIntegration: true
+  vscodium:
+    compatible: true
+    configPath: ".vscode-oss/"
+    extension: "hbenl.vscode-test-explorer"
+  zed:
+    compatible: true
+    mode: "project"
+    aiFeatures: true
+    performance: "high"
+  jetbrains:
+    compatible: true
+    mcpIntegration: true
+    fileTemplates: true
+    inspections: ["TestMethodWithoutAssertion", "JUnit5AssertionsConverter"]
+  webstorm:
+    compatible: true
+    nodeIntegration: true
+    typescript: true
+    inspections: ["JSTestFailures"]
+  intellij:
+    compatible: true
+    plugin: "JUnit"
+    inspections: ["TestMethodWithoutAssertion"]
+  pycharm:
+    compatible: true
+    pythonInterpreter: true
+    inspections: ["PyTestParametrized", "PyUnresolvedReferences"]
+  phpstorm:
+    compatible: true
+    inspections: ["PhpUnitTestsInspection"]
+  clion:
+    compatible: true
+    inspections: ["GoogleTestInspection"]
+  rider:
+    compatible: true
+    inspections: ["NUnitTestInspection", "XUnitTestInspection"]
+  android-studio:
+    compatible: true
+    inspections: ["AndroidLintInspection", "EspressoInspection"]
+  openai:
+    compatible: false
+    status: "deprecated"
+    notes: "Use generic-ai instead"
+  generic-ai:
+    compatible: true
+    configPath: ".ai/"
+    rulesPath: ".ai/rules/"
+    priority: 7
 requires: []
 suggests: []
 tags: ["testing", "jest", "cypress", "playwright", "quality-assurance"]

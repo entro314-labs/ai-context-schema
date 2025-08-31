@@ -18,6 +18,11 @@ platforms:
     namespace: "project"
     priority: 10
     allowedTools: ["web_search", "web_fetch"]
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
+    priority: 10
   cursor:
     compatible: true
     activation: "always"
@@ -28,10 +33,65 @@ platforms:
     xmlTag: "security-context"
     characterLimit: 6000
     priority: 10
+  windsurf-next:
+    compatible: true
+    mode: "workspace"
+    xmlTag: "security-next-context"
+    characterLimit: 6000
+    priority: 10
   github-copilot:
     compatible: true
     priority: 10
     reviewType: "security"
+    scope: "organization"
+  vscode:
+    compatible: true
+    extension: "ms-vscode.security-scan"
+    commands: ["Security: Scan Workspace"]
+  vscode-insiders:
+    compatible: true
+    extension: "ms-vscode.security-scan"
+    mcpIntegration: true
+  vscodium:
+    compatible: true
+    configPath: ".vscode-oss/"
+  zed:
+    compatible: true
+    mode: "global"
+    aiFeatures: true
+    performance: "high"
+  jetbrains:
+    compatible: true
+    mcpIntegration: true
+    inspections: ["SecurityVulnerabilities", "SQLInjection", "XSSVulnerabilities"]
+  intellij:
+    compatible: true
+    inspections: ["SecurityVulnerabilities", "SQLInjection"]
+  webstorm:
+    compatible: true
+    nodeIntegration: true
+    inspections: ["NodeSecurityAdvisories"]
+  pycharm:
+    compatible: true
+    inspections: ["PythonSecurityVulnerabilities"]
+  phpstorm:
+    compatible: true
+    inspections: ["PhpSecurityVulnerabilities"]
+  clion:
+    compatible: true
+    inspections: ["BufferOverflow", "MemoryLeaks"]
+  datagrip:
+    compatible: true
+    inspections: ["SQLInjection", "SQLSecurityIssues"]
+  openai:
+    compatible: false
+    status: "deprecated"
+    notes: "Use generic-ai instead"
+  generic-ai:
+    compatible: true
+    configPath: ".ai/"
+    rulesPath: ".ai/rules/"
+    priority: 10
     scope: "repository"
 requires: []
 suggests: []

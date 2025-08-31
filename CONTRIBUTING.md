@@ -82,16 +82,42 @@ platforms:
   claude-code:
     compatible: true
     memory: true
+    command: true
+    priority: 8
+  claude-desktop:
+    compatible: true
+    mcpIntegration: true
+    rules: true
+    priority: 8
   cursor:
     compatible: true
     activation: 'auto-attached'
     globs: ['**/*.ext']
+    priority: 'high'
   windsurf:
     compatible: true
     mode: 'workspace'
+    characterLimit: 4500
+  zed:
+    compatible: true
+    aiFeatures: true
+    performance: 'high'
+  jetbrains:
+    compatible: true
+    ide: 'webstorm'  # or appropriate IDE
+    mcpIntegration: true
+    fileTemplates: true
+  vscode:
+    compatible: true
+    extension: 'ai-context-schema'
+    mcpIntegration: true
   github-copilot:
     compatible: true
     priority: 8
+    reviewType: 'code-quality'
+  generic-ai:
+    compatible: true
+    priority: 7
 tags: ['relevant', 'searchable', 'tags']
 author: 'your-github-username'
 ---
@@ -123,6 +149,8 @@ Clear explanation of what this context is for...
 
 ### Platform Adapter Contributions
 
+AI Context Schema supports 20+ platforms including Claude Code, Claude Desktop, Cursor, Windsurf, VS Code family, JetBrains IDEs, Zed, GitHub Copilot, and more. We welcome adapters for all supported platforms.
+
 #### Adapter Requirements
 
 1. **Implement PlatformAdapter interface**:
@@ -137,35 +165,190 @@ interface PlatformAdapter {
 
 2. **Handle all schema features**: Support required fields, optional fields, and relationships
 3. **Preserve behavioral intent**: Ensure AI behavior remains consistent across platform translation
-4. **Implement graceful degradation**: Handle unsupported features appropriately
-5. **Provide comprehensive tests**: Unit and integration tests required
+4. **Platform-specific optimizations**: Implement character limits, MCP integration, file patterns, etc.
+5. **Implement graceful degradation**: Handle unsupported features appropriately
+6. **Provide comprehensive tests**: Unit and integration tests required
 
-#### Adapter Implementation Guide
+#### Platform-Specific Adapter Features
 
+**AI Assistants & Services**
+
+- **Claude Code**: Memory files, slash commands, MCP integration, tool permissions
+- **Claude Desktop**: Rules folder, MCP integration, priority system
+- **GitHub Copilot**: JSON guidelines, review types, organization scope
+- **OpenAI**: Deprecated status handling, model selection (limited support)
+- **Generic AI**: Universal format, flexible configuration paths
+
+**AI-First Editors**
+
+- **Cursor**: MDC format, auto-attachment patterns, file glob matching
+- **Windsurf/Windsurf Next**: XML format, character limits (6K), MCP integration
+
+**Code Editors & IDEs**
+
+- **VS Code Family**: Settings integration, extensions, MCP support
+- **JetBrains IDEs**: File templates, code inspections, IDE-specific features, MCP (2025.1+)
+- **Zed**: High-performance features, collaborative mode, AI integration
+
+#### Adapter Implementation Examples
+
+**Claude Desktop Adapter**
 ```typescript
-export class MyPlatformAdapter implements PlatformAdapter {
-  name = 'my-platform';
+export class ClaudeDesktopAdapter implements PlatformAdapter {
+  name = 'claude-desktop';
 
   async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
     const files: GeneratedFiles = {};
 
     for (const schema of schemas) {
-      const platformConfig = schema.platforms['my-platform'];
-      if (!platformConfig?.compatible) continue;
+      const config = schema.platforms['claude-desktop'];
+      if (!config?.compatible) continue;
 
-      // Transform schema to platform-specific format
-      files[`config/${schema.id}.config`] = this.transformSchema(schema);
+      // Generate rules file
+      if (config.rules) {
+        files[`.claude-desktop/rules/${schema.id}.md`] = this.generateRuleFile(schema);
+      }
+
+      // Handle MCP integration if specified
+      if (config.mcpIntegration) {
+        files[`.claude-desktop/mcp/${schema.id}.json`] = this.generateMcpConfig(schema);
+      }
     }
 
     return files;
   }
+}
+```
 
-  private transformSchema(schema: ContextSchema): string {
-    // Platform-specific transformation logic
-    return transformedContent;
+**JetBrains IDE Adapter**
+```typescript
+export class JetBrainsAdapter implements PlatformAdapter {
+  name = 'jetbrains';
+
+  async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
+    const files: GeneratedFiles = {};
+
+    for (const schema of schemas) {
+      const config = schema.platforms['jetbrains'];
+      if (!config?.compatible) continue;
+
+      // Generate IDE-specific configuration
+      files[`.idea/ai-rules/${schema.id}.xml`] = this.generateIdeaConfig(schema, config);
+
+      // Handle file templates
+      if (config.fileTemplates) {
+        files[`.idea/fileTemplates/${schema.id}.ft`] = this.generateFileTemplate(schema);
+      }
+
+      // Handle code inspections
+      if (config.inspections) {
+        files[`.idea/inspectionProfiles/${schema.id}.xml`] = this.generateInspectionProfile(schema, config);
+      }
+
+      // Handle MCP integration for 2025.1+ versions
+      if (config.mcpIntegration) {
+        files[`.idea/mcp/${schema.id}.json`] = this.generateMcpConfig(schema);
+      }
+    }
+
+    return files;
   }
 }
 ```
+
+**Zed Adapter**
+```typescript
+export class ZedAdapter implements PlatformAdapter {
+  name = 'zed';
+
+  async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
+    const files: GeneratedFiles = {};
+
+    for (const schema of schemas) {
+      const config = schema.platforms['zed'];
+      if (!config?.compatible) continue;
+
+      // Generate Zed-specific configuration
+      const zedConfig = {
+        name: schema.title,
+        description: schema.description,
+        content: schema._content,
+        mode: config.mode || 'project',
+        aiFeatures: config.aiFeatures,
+        collaborative: config.collaborative,
+        performance: config.performance
+      };
+
+      files[`.zed/ai-rules/${schema.id}.json`] = JSON.stringify(zedConfig, null, 2);
+
+      // Handle high-performance optimizations
+      if (config.performance === 'high') {
+        files[`.zed/performance/${schema.id}.config`] = this.generatePerformanceConfig(schema);
+      }
+    }
+
+    return files;
+  }
+}
+```
+
+**VS Code Family Adapter**
+```typescript
+export class VSCodeAdapter implements PlatformAdapter {
+  name = 'vscode';
+
+  async generate(schemas: ContextSchema[]): Promise<GeneratedFiles> {
+    const files: GeneratedFiles = {};
+
+    for (const schema of schemas) {
+      const config = schema.platforms['vscode'];
+      if (!config?.compatible) continue;
+
+      // Generate VS Code settings integration
+      if (config.settings) {
+        files[`.vscode/ai-context/${schema.id}.json`] = this.generateVSCodeSettings(schema, config);
+      }
+
+      // Handle MCP integration
+      if (config.mcpIntegration) {
+        files[`.vscode/mcp/${schema.id}.json`] = this.generateMcpConfig(schema);
+      }
+
+      // Handle commands
+      if (config.commands) {
+        files[`.vscode/commands/${schema.id}.json`] = this.generateCommands(schema, config);
+      }
+    }
+
+    return files;
+  }
+}
+```
+
+#### Platform-Specific Considerations
+
+**Character Limits**
+- **Windsurf/Windsurf Next**: 6K character limit, implement intelligent truncation
+- **VS Code**: No limits, but consider memory usage
+- **JetBrains**: No limits, optimize for IDE performance
+
+**MCP Integration**
+- **Claude Code/Desktop**: Built-in MCP support
+- **VS Code Family**: Via `.vscode/mcp.json` configuration
+- **JetBrains IDEs**: 2025.1+ versions via Settings → AI Assistant
+- **Cursor**: Via `.cursor/mcp.json`
+- **Windsurf**: Via `~/.codeium/windsurf/mcp_config.json`
+
+**File Pattern Matching**
+- **Cursor**: Auto-attachment via globs array
+- **VS Code**: File associations and workspace patterns
+- **JetBrains**: Scope-based activation and file templates
+
+**Priority Systems**
+- **Claude Code/Desktop/Windsurf**: 1-10 numeric scale
+- **Cursor**: high/medium/low string values
+- **GitHub Copilot**: 1-10 for guideline priority
+- **Generic AI**: Configurable priority system
 
 ### Documentation Contributions
 
